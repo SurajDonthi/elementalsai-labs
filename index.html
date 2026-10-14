@@ -1,0 +1,731 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ElementalsAI Labs</title>
+<meta name="description" content="Agent workflows for performance marketing, multi-channel outbound and content — built for your company in 15–20 days, run by you, inside your policy.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..800&family=Geist+Mono:wght@400..600&family=Instrument+Serif:ital@0;1&display=swap">
+<style>
+:root{
+  color-scheme: dark;
+  --ink:#07080b; --ink-2:#0c0e13; --ink-3:#12151c; --ink-4:#1a1e28;
+  --line:rgba(236,240,255,.08); --line-2:rgba(236,240,255,.15);
+  --fg:#eef0f5; --fg-2:#a9b0bf; --fg-3:#6e7586;
+  --lime:#c6ff4a; --lime-d:#9fd629; --coral:#ff5b45; --amber:#ffb547; --blue:#6f8cff; --violet:#ae93ff;
+  --paper:#f3f0e8; --paper-2:#e9e4d8; --paper-ink:#17191e; --paper-ink-2:#5b5f68; --paper-line:#d8d1c1;
+  --sans:"Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono:"Geist Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --serif:"Instrument Serif", "Iowan Old Style", Georgia, serif;
+  --gutter:clamp(16px, 4vw, 48px);
+  --maxw:1240px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ink);color:var(--fg);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+a{color:inherit}
+::selection{background:var(--lime);color:#000}
+.wrap{max-width:var(--maxw);margin:0 auto;padding-inline:var(--gutter)}
+.wrap.wide{max-width:1560px}
+.wrap.wide .sec-head{max-width:var(--maxw);margin-inline:auto}
+.mono{font-family:var(--mono)}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-3)}
+.eyebrow b{color:var(--lime);font-weight:500}
+h1,h2,h3{text-wrap:balance;margin:0;font-weight:600;letter-spacing:-.025em}
+h2{font-size:clamp(34px,5.2vw,68px);line-height:1.02}
+h2 em,h1 em{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.01em}
+.lede{font-size:clamp(17px,1.6vw,20px);color:var(--fg-2);max-width:62ch}
+.tnum{font-variant-numeric:tabular-nums}
+
+/* ---------- nav ---------- */
+.nav{position:fixed;inset:0 0 auto 0;z-index:50;padding-top:env(safe-area-inset-top,0px);transition:background .3s, border-color .3s;border-bottom:1px solid transparent}
+.nav.solid{background:rgba(7,8,11,.72);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);border-bottom-color:var(--line)}
+.nav .wrap{display:flex;align-items:center;gap:28px;height:64px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:600;letter-spacing:-.01em}
+.logo-mark{width:26px;height:26px;border-radius:7px;background:conic-gradient(from 210deg,var(--lime),var(--blue),var(--violet),var(--lime));position:relative}
+.logo-mark::after{content:"";position:absolute;inset:6px;border-radius:3px;background:var(--ink)}
+.nav-links{display:flex;gap:22px;margin-left:auto}
+.nav-links a{font-size:14px;color:var(--fg-2);text-decoration:none}
+.nav-links a:hover{color:var(--fg)}
+.btn{display:inline-flex;align-items:center;gap:10px;border-radius:999px;padding:12px 20px;font-weight:600;font-size:15px;text-decoration:none;border:1px solid transparent;cursor:pointer;font-family:var(--sans);transition:transform .2s, background .2s, border-color .2s}
+.btn-primary{background:var(--lime);color:#0a0c06}
+.btn-primary:hover{background:#d6ff74}
+.btn-ghost{background:transparent;color:var(--fg);border-color:var(--line-2)}
+.btn-ghost:hover{border-color:var(--fg-2)}
+.btn .arr{transition:transform .2s}
+.btn:hover .arr{transform:translateX(3px)}
+.nav .btn{padding:9px 16px;font-size:14px}
+@media (max-width:860px){.nav-links{display:none}.nav .btn{margin-left:auto}}
+
+/* ---------- hero ---------- */
+.hero{position:relative;min-height:100svh;display:flex;flex-direction:column;overflow:hidden;isolation:isolate}
+#flow{position:absolute;inset:0;width:100%;height:100%;z-index:-1;display:block}
+.hero::after{content:"";position:absolute;inset:auto 0 0 0;height:160px;background:linear-gradient(transparent,var(--ink));z-index:-1;pointer-events:none}
+.hero-copy{padding-top:calc(64px + clamp(28px,6vh,80px));text-align:center}
+.hero h1{font-size:clamp(42px,7.4vw,112px);line-height:.94;letter-spacing:-.045em;font-weight:650}
+.hero h1 .line{display:block;overflow:hidden;padding-bottom:.14em;margin-bottom:-.1em}
+.hero h1 .line>span{display:inline-block}
+.hero h1 em{color:var(--lime)}
+.hero .lede{margin:22px auto 0;text-align:center}
+.hero-ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:30px}
+.flow-labels{position:absolute;inset:0;pointer-events:none;z-index:1}
+.flab{position:absolute;transform:translate(-50%,-50%);font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--fg-2);white-space:nowrap;display:flex;align-items:center;gap:8px;opacity:0;transition:opacity .8s}
+.flab i{width:7px;height:7px;border-radius:50%;background:var(--blue);box-shadow:0 0 12px var(--blue)}
+.flab.src{transform:translate(0,-50%)}
+.flab.src i{background:#cfd6ff}
+.flab.core{color:var(--fg);font-size:13px;text-transform:uppercase;letter-spacing:.18em}
+.flab.rev{color:var(--lime);transform:translate(-100%,-50%);font-size:13px;text-transform:uppercase;letter-spacing:.18em}
+.flab.rev i{background:var(--lime);box-shadow:0 0 14px var(--lime)}
+.flab.bin{color:var(--coral)}
+.flab.bin i{background:var(--coral);box-shadow:0 0 12px var(--coral)}
+.flab.on{opacity:1}
+.flow-zone{position:relative;height:clamp(210px,31vh,400px);margin-bottom:-36px;pointer-events:none}
+.hero-proof{margin-top:auto;position:relative;z-index:2;padding-bottom:28px}
+.proof-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.proof-strip>div{background:rgba(10,12,16,.72);padding:16px 18px}
+.proof-strip .n{font-size:clamp(22px,2.6vw,34px);font-weight:600;letter-spacing:-.03em}
+.proof-strip .n.red{color:var(--coral)}
+.proof-strip .n.lime{color:var(--lime)}
+.proof-strip .l{font-size:13px;color:var(--fg-2);line-height:1.35}
+@media (max-width:760px){.proof-strip{grid-template-columns:repeat(2,1fr)}}
+
+/* ---------- ticker ---------- */
+.ticker{border-block:1px solid var(--line);background:var(--ink-2);overflow:hidden;white-space:nowrap;position:relative}
+.ticker::before,.ticker::after{content:"";position:absolute;top:0;bottom:0;width:80px;z-index:1;pointer-events:none}
+.ticker::before{left:0;background:linear-gradient(90deg,var(--ink-2),transparent)}
+.ticker::after{right:0;background:linear-gradient(-90deg,var(--ink-2),transparent)}
+.ticker-track{display:inline-flex;gap:0;animation:tick 120s linear infinite;padding-block:14px}
+.ticker:hover .ticker-track{animation-play-state:paused}
+@keyframes tick{to{transform:translateX(-50%)}}
+.tk{display:inline-flex;align-items:center;gap:10px;padding:0 26px;font-size:14px;color:var(--fg-2);border-right:1px solid var(--line)}
+.tk b{font-family:var(--mono);font-weight:500;color:var(--fg)}
+.dot{width:7px;height:7px;border-radius:50%;flex:none}
+.k-waste{background:var(--coral)} .k-opp{background:var(--lime)} .k-signal{background:var(--blue)} .k-rule{background:var(--amber)}
+
+/* ---------- sections ---------- */
+section.sec{padding-block:clamp(80px,12vw,150px)}
+.sec-head{display:grid;grid-template-columns:1fr;gap:18px;margin-bottom:clamp(36px,5vw,60px)}
+.sec-head .lede{margin:0}
+
+/* pillars */
+.pillars{display:grid;grid-template-columns:1.35fr 1fr;grid-template-rows:auto auto;gap:16px}
+.pill{position:relative;border:1px solid var(--line);border-radius:22px;padding:28px;background:linear-gradient(180deg,var(--ink-3),var(--ink-2));overflow:hidden;min-height:250px;display:flex;flex-direction:column;cursor:pointer;transition:border-color .3s, transform .3s}
+.pill:hover{border-color:var(--line-2)}
+.pill.big{grid-row:span 2;min-height:520px}
+.pill .num{font-family:var(--mono);font-size:12px;color:var(--fg-3);letter-spacing:.12em}
+.pill h3{font-size:clamp(26px,3vw,40px);margin-top:10px;line-height:1.05}
+.pill p{color:var(--fg-2);margin:12px 0 0;max-width:46ch}
+.pill .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:22px}
+.chip{font-family:var(--mono);font-size:12px;padding:6px 10px;border-radius:999px;border:1px solid var(--line-2);color:var(--fg-2);background:rgba(255,255,255,.02)}
+.pill .go{position:absolute;right:24px;top:24px;width:38px;height:38px;border-radius:50%;border:1px solid var(--line-2);display:grid;place-items:center;transition:background .3s, transform .3s}
+.pill:hover .go{background:var(--lime);color:#000;transform:rotate(-45deg)}
+.pill-viz{position:absolute;inset:auto 0 0 0;height:56%;pointer-events:none;opacity:.9}
+.pill.big .pill-viz{height:62%}
+.pill:not(.big) .pill-viz{height:48%;opacity:.55}
+@media (max-width:900px){.pillars{grid-template-columns:1fr}.pill.big{grid-row:auto;min-height:440px}}
+
+/* ---------- workflows ---------- */
+#workflows{background:radial-gradient(1200px 500px at 50% -10%, rgba(111,140,255,.10), transparent 60%)}
+.wf-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.wf-tab{font-family:var(--sans);font-size:15px;font-weight:600;padding:10px 16px;border-radius:12px;border:1px solid var(--line);background:var(--ink-2);color:var(--fg-2);cursor:pointer;display:flex;align-items:center;gap:10px}
+.wf-tab[aria-selected="true"]{background:var(--fg);color:#08090c;border-color:var(--fg)}
+.wf-tab .c{font-family:var(--mono);font-size:11px;opacity:.6}
+.wf-list{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.wf-chip{font-size:14px;padding:8px 12px;border-radius:999px;border:1px dashed var(--line-2);background:transparent;color:var(--fg-2);cursor:pointer;font-family:var(--sans)}
+.wf-chip[aria-pressed="true"]{border-style:solid;border-color:var(--lime);color:var(--lime)}
+.wf-shell{display:grid;grid-template-columns:minmax(0,1fr) 340px;border:1px solid var(--line-2);border-radius:20px;overflow:hidden;background:var(--ink-2);box-shadow:0 40px 120px -40px rgba(0,0,0,.8)}
+@media (max-width:1180px){.wf-shell{grid-template-columns:1fr}}
+.wf-bar{grid-column:1/-1;display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--ink-3);flex-wrap:wrap}
+.wf-bar .lights{display:flex;gap:6px}
+.wf-bar .lights i{width:10px;height:10px;border-radius:50%;background:#2a2f3b}
+.wf-title{font-weight:600;font-size:15px}
+.wf-when{font-family:var(--mono);font-size:12px;color:var(--fg-3)}
+.badge{font-family:var(--mono);font-size:11px;padding:4px 8px;border-radius:6px;letter-spacing:.04em}
+.badge.real{background:rgba(198,255,74,.12);color:var(--lime);border:1px solid rgba(198,255,74,.3)}
+.badge.ex{background:rgba(255,255,255,.04);color:var(--fg-2);border:1px solid var(--line-2)}
+.wf-bar .spacer{flex:1}
+.run-btn{font-family:var(--sans);font-weight:600;font-size:14px;border-radius:10px;padding:8px 14px;border:0;background:var(--lime);color:#000;cursor:pointer;display:flex;gap:8px;align-items:center}
+.run-btn[disabled]{opacity:.5;cursor:default}
+.stage-wrap{position:relative;overflow:hidden;padding:8px;background-color:#090b10;background-image:radial-gradient(rgba(236,240,255,.09) 1px, transparent 1.2px);background-size:22px 22px;scrollbar-width:thin}
+.stage{position:relative;width:1150px;height:410px}
+.stage svg{position:absolute;inset:0;overflow:visible}
+.edge{fill:none;stroke:#2c3342;stroke-width:2}
+.edge.hot{stroke:var(--blue);stroke-dasharray:6 6;animation:march .6s linear infinite}
+.edge.done{stroke:#4a5a7c}
+@keyframes march{to{stroke-dashoffset:-12}}
+.pulse-dot{fill:#fff;filter:drop-shadow(0 0 6px var(--blue))}
+.node{position:absolute;width:152px;height:62px;border-radius:14px;background:#141824;border:1px solid #262c3a;display:flex;align-items:center;gap:10px;padding:0 12px 0 10px;transition:border-color .25s, box-shadow .25s, transform .25s;user-select:none}
+.node .tile{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;font-family:var(--mono);font-size:12px;font-weight:600;flex:none;color:#0b0d12}
+.node .tx{min-width:0}
+.node .tt{font-size:13px;font-weight:600;line-height:1.18;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.node .ts{font-size:11.5px;color:var(--fg-3);line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.node::before,.node::after{content:"";position:absolute;top:50%;width:9px;height:9px;border-radius:50%;background:#0b0d12;border:2px solid #3a4253;transform:translateY(-50%)}
+.node::before{left:-6px}.node::after{right:-6px}
+.node.t-trigger .tile{background:var(--lime)}
+.node.t-data .tile{background:#9fb2ff}
+.node.t-agent .tile{background:linear-gradient(135deg,var(--violet),var(--blue));color:#fff}
+.node.t-check .tile{background:#cfd4de}
+.node.t-approve .tile{background:var(--amber)}
+.node.t-action .tile{background:#7ee0b0}
+.node.t-report .tile{background:var(--paper);color:var(--paper-ink)}
+.node.t-trigger{border-radius:30px 14px 14px 30px}
+.node.run{border-color:var(--blue);box-shadow:0 0 0 4px rgba(111,140,255,.16),0 0 40px -6px rgba(111,140,255,.6)}
+.node.wait{border-color:var(--amber);box-shadow:0 0 0 4px rgba(255,181,71,.16),0 0 40px -6px rgba(255,181,71,.6);animation:breathe 1.6s ease-in-out infinite}
+@keyframes breathe{50%{box-shadow:0 0 0 8px rgba(255,181,71,.10),0 0 50px -6px rgba(255,181,71,.7)}}
+.node.ok{border-color:#3d4a63}
+.node .st{position:absolute;right:-8px;top:-8px;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;opacity:0;transform:scale(.4);transition:all .25s}
+.node.ok .st{opacity:1;transform:scale(1);background:var(--lime);color:#000}
+.node.wait .st{opacity:1;transform:scale(1);background:var(--amber);color:#000}
+.node.t-approve .ts::before{content:"👤 "}
+.log{border-left:1px solid var(--line);background:var(--ink-2);display:flex;flex-direction:column;height:452px}
+@media (max-width:1180px){.log{border-left:0;border-top:1px solid var(--line);height:300px}}
+.log-head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--fg-3);letter-spacing:.08em;text-transform:uppercase}
+.log-body{padding:12px 14px 16px;overflow:auto;display:flex;flex-direction:column;gap:8px;scrollbar-width:thin;flex:1}
+.ll{display:grid;grid-template-columns:52px 1fr;gap:8px;font-size:13.5px;line-height:1.45;color:var(--fg-2);animation:in .35s ease both}
+.ll time{font-family:var(--mono);font-size:11.5px;color:var(--fg-3);padding-top:2px}
+.ll.ok span::before{content:"✓ ";color:var(--lime)}
+@keyframes in{from{opacity:0;transform:translateY(6px)}}
+.find{margin-left:60px;border-radius:10px;padding:10px 12px;font-size:13.5px;line-height:1.4;animation:in .35s ease both;border:1px solid}
+.find small{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px;opacity:.8}
+.find.waste{background:rgba(255,91,69,.08);border-color:rgba(255,91,69,.35);color:#ffd5cf}
+.find.opp{background:rgba(198,255,74,.07);border-color:rgba(198,255,74,.3);color:#e9ffc1}
+.find.signal{background:rgba(111,140,255,.08);border-color:rgba(111,140,255,.35);color:#d9e0ff}
+.appr{margin-left:60px;border:1px solid rgba(255,181,71,.45);background:rgba(255,181,71,.08);border-radius:12px;padding:12px;animation:in .35s ease both}
+.appr small{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);margin-bottom:6px}
+.appr p{margin:0 0 10px;font-size:14px;color:#ffe9c7;line-height:1.4}
+.appr .row{display:flex;gap:8px}
+.appr button{font-family:var(--sans);font-size:13px;font-weight:600;border-radius:8px;padding:7px 12px;cursor:pointer;border:1px solid rgba(255,181,71,.5);background:transparent;color:var(--amber)}
+.appr button.yes{background:var(--amber);color:#000;border-color:var(--amber)}
+.appr.done{opacity:.75}
+.appr.done .row{display:none}
+.appr .res{font-size:13px;color:var(--amber)}
+.wf-foot{grid-column:1/-1;display:flex;gap:18px;flex-wrap:wrap;padding:12px 16px;border-top:1px solid var(--line);font-size:12.5px;color:var(--fg-3);font-family:var(--mono)}
+.wf-foot span{display:flex;align-items:center;gap:6px}
+.wf-foot i{width:10px;height:10px;border-radius:3px;display:inline-block}
+
+/* ---------- proof ---------- */
+#proof{position:relative}
+.big-nums{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:44px}
+.big-nums>div{padding:26px 22px 26px 0;border-right:1px solid var(--line)}
+.big-nums>div+div{padding-left:22px}
+.big-nums>div:last-child{border-right:0}
+.big-nums .n{font-size:clamp(40px,5.6vw,80px);font-weight:600;letter-spacing:-.05em;line-height:1}
+.big-nums .l{color:var(--fg-2);font-size:14.5px;margin-top:10px;max-width:24ch}
+@media (max-width:860px){.big-nums{grid-template-columns:repeat(2,1fr)}.big-nums>div{border-bottom:1px solid var(--line);padding-left:0!important;padding-right:14px}.big-nums>div:nth-child(2n){border-right:0;padding-left:14px!important}}
+.f-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
+.f-filters button{font-family:var(--sans);font-size:14px;border-radius:999px;padding:8px 14px;border:1px solid var(--line-2);background:transparent;color:var(--fg-2);cursor:pointer;display:flex;gap:8px;align-items:center}
+.f-filters button[aria-pressed="true"]{background:var(--fg);color:#000;border-color:var(--fg)}
+.f-filters .cnt{font-family:var(--mono);font-size:12px;opacity:.6}
+.f-grid{columns:4 260px;column-gap:14px}
+.fc{break-inside:avoid;margin-bottom:14px;border:1px solid var(--line);border-radius:16px;padding:16px 16px 18px;background:var(--ink-2);transition:border-color .25s, transform .25s}
+.fc:hover{border-color:var(--line-2);transform:translateY(-2px)}
+.fc .top{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-3)}
+.fc .n{font-size:28px;font-weight:600;letter-spacing:-.03em;margin:10px 0 4px;line-height:1.05}
+.fc.waste .n{color:#ff8a78}.fc.opp .n{color:var(--lime)}.fc.signal .n{color:#a9b9ff}.fc.rule .n{color:var(--amber)}
+.fc p{margin:0;color:var(--fg-2);font-size:14px;line-height:1.45}
+.note{font-size:13px;color:var(--fg-3);margin-top:22px;max-width:80ch}
+.more-wrap{text-align:center;margin-top:10px}
+
+/* ---------- library + bench ---------- */
+.lib{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:980px){.lib{grid-template-columns:1fr}}
+.lib-col{border:1px solid var(--line);border-radius:20px;background:var(--ink-2);padding:8px}
+.lib-head{display:flex;justify-content:space-between;align-items:center;padding:12px 12px 10px;font-size:12px;color:var(--fg-3)}
+.lib-head .eyebrow{color:var(--fg)}
+.lib-item{padding:12px;border-radius:12px;transition:background .2s}
+.lib-item:hover{background:var(--ink-3)}
+.lib-item+.lib-item{border-top:1px solid var(--line)}
+.lib-name{font-weight:600;font-size:15px}
+.lib-trig{font-family:var(--mono);font-size:11.5px;color:var(--lime);margin-top:2px}
+.lib-alert{font-size:13.5px;color:var(--fg-2);margin-top:6px;line-height:1.45}
+.bench-head{margin:48px 0 14px}
+.bench-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:900px){.bench-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.bench-grid{grid-template-columns:1fr}}
+.bench{display:block;text-decoration:none;border:1px solid var(--line);border-radius:16px;padding:18px;background:linear-gradient(180deg,rgba(255,91,69,.06),transparent);transition:border-color .2s}
+.bench:hover{border-color:var(--line-2)}
+.bench .bn{font-size:36px;font-weight:650;letter-spacing:-.04em;color:#ff8a78}
+.bench p{margin:6px 0 10px;color:var(--fg-2);font-size:14px}
+.bench .src{font-family:var(--mono);font-size:11.5px;color:var(--fg-3)}
+
+
+
+.found{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:22px;align-items:center;border:1px solid rgba(111,140,255,.35);border-radius:22px;padding:24px;margin-bottom:22px;background:linear-gradient(120deg,rgba(111,140,255,.10),rgba(174,147,255,.04) 60%,transparent)}
+@media (max-width:900px){.found{grid-template-columns:1fr}}
+.found .lt{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#a9b9ff}
+.found h3{font-size:clamp(22px,2.4vw,30px);margin-top:8px;letter-spacing:-.02em}
+.found p{color:var(--fg-2);margin:10px 0 0;font-size:15px}
+.found ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:520px){.found ul{grid-template-columns:1fr}}
+.found li{border:1px solid var(--line-2);border-radius:14px;padding:12px 14px;font-size:14px;color:var(--fg);background:rgba(7,8,11,.5);line-height:1.4}
+.found li::before{content:"✕ ";color:var(--coral);font-family:var(--mono)}
+
+
+.wfi{width:20px;height:13px;fill:none;stroke:currentColor;stroke-width:1.6;flex:none}
+.wfi circle{fill:currentColor;stroke:none}
+.wf-howto{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--fg-2);margin:4px 0 14px}
+.wf-howto b{color:var(--lime)}
+.wf-chip{display:inline-flex;align-items:center;gap:8px}
+.wf-chip .no{font-family:var(--mono);font-size:11.5px;color:var(--fg-3)}
+.wf-chip[aria-pressed="true"] .no{color:var(--lime)}
+.wf-tab .c{font-family:var(--mono);font-size:11.5px;opacity:.8;padding:2px 7px;border-radius:6px;border:1px solid currentColor}
+.wf-no{font-family:var(--mono);font-size:12px;color:var(--lime);border:1px solid rgba(198,255,74,.4);border-radius:6px;padding:3px 7px;display:inline-flex;align-items:center;gap:6px;margin-right:6px}
+.auto-pillar{margin-bottom:34px}
+.auto-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line-2);padding-bottom:10px;margin-bottom:6px;flex-wrap:wrap}
+.auto-head h3{font-size:clamp(20px,2.2vw,26px);letter-spacing:-.02em}
+.auto-head .mono{font-size:12px;color:var(--fg-3)}
+.auto-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;column-gap:28px}
+@media (max-width:860px){.auto-list{grid-template-columns:1fr}}
+.auto-list li{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:baseline;padding:11px 0;border-bottom:1px solid var(--line)}
+.auto-list .n{font-family:var(--mono);font-size:12px;color:var(--fg-3)}
+.auto-list .t{font-size:15px;color:var(--fg);line-height:1.4}
+.auto-list .demo{font-family:var(--mono);font-size:11.5px;color:var(--lime);white-space:nowrap;border:1px solid rgba(198,255,74,.35);border-radius:6px;padding:2px 7px;cursor:pointer;background:none}
+.auto-list .demo:hover{background:rgba(198,255,74,.1)}
+
+
+.cur{display:flex;border:1px solid var(--line-2);border-radius:999px;padding:3px;gap:2px}
+.cur button{font-family:var(--mono);font-size:12px;border:0;border-radius:999px;padding:6px 10px;background:transparent;color:var(--fg-2);cursor:pointer}
+.cur button[aria-pressed="true"]{background:var(--fg);color:#000}
+@media (max-width:860px){.cur{margin-left:auto}.nav .btn{margin-left:0}}
+@media (max-width:420px){.nav .btn{display:none}}
+.cur-note{font-size:12.5px;color:var(--fg-3);margin:10px 0 0;font-family:var(--mono)}
+.cur-note[hidden]{display:none}
+
+
+.flab.rev .spark{display:inline-flex;align-items:flex-end;gap:2px;height:16px;margin-right:6px}
+.flab.rev .spark b{display:block;width:4px;border-radius:1px;background:var(--lime);animation:sparkUp 2.4s ease-in-out infinite;transform-origin:bottom}
+.flab.rev .spark b:nth-child(1){height:4px;animation-delay:0s}.flab.rev .spark b:nth-child(2){height:7px;animation-delay:.12s}.flab.rev .spark b:nth-child(3){height:9px;animation-delay:.24s}.flab.rev .spark b:nth-child(4){height:12px;animation-delay:.36s}.flab.rev .spark b:nth-child(5){height:16px;animation-delay:.48s}
+@keyframes sparkUp{0%{transform:scaleY(.35);opacity:.6}60%{transform:scaleY(1);opacity:1}100%{transform:scaleY(.35);opacity:.6}}
+.stack{list-style:none;padding:0;margin:26px auto 0;display:flex;flex-wrap:wrap;justify-content:center;gap:10px;max-width:860px}
+.stack li{border:1px solid var(--line-2);border-radius:999px;padding:8px 14px;font-size:14px;color:var(--fg);background:rgba(255,255,255,.02)}
+.stack li::before{content:"✓ ";color:var(--lime)}
+.risk{font-family:var(--mono);font-size:13px;color:var(--lime);margin-top:16px}
+@media (prefers-reduced-motion:reduce){.flab.rev .spark b{animation:none}}
+
+/* ---------- three levels ---------- */
+.levels-head{margin-bottom:16px}
+.levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:56px;counter-reset:lv}
+@media (max-width:980px){.levels{grid-template-columns:1fr}}
+.lvl{position:relative;border:1px solid var(--line-2);border-radius:22px;padding:24px 22px 22px;background:linear-gradient(180deg,rgba(255,91,69,.07),var(--ink-2) 55%);overflow:hidden;cursor:pointer;transition:border-color .25s,transform .25s}
+.lvl:hover{border-color:rgba(255,91,69,.5);transform:translateY(-2px)}
+.lvl::before{counter-increment:lv;content:"0" counter(lv);position:absolute;right:18px;top:12px;font-family:var(--serif);font-style:italic;font-size:64px;line-height:1;color:rgba(255,255,255,.06)}
+.lvl .lt{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#ff8a78}
+.lvl h3{font-size:26px;margin-top:8px;letter-spacing:-.02em}
+.lvl .wh{color:var(--fg-3);font-size:13.5px;margin-top:2px}
+.lvl .mn{display:flex;align-items:baseline;gap:8px;margin:16px 0 10px;flex-wrap:wrap}
+.lvl .mn b{font-size:clamp(34px,3.6vw,46px);font-weight:650;letter-spacing:-.04em;color:var(--coral)}
+.lvl .mn span{color:var(--fg-2);font-size:14px}
+.lvl ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.lvl li{font-size:14px;color:var(--fg-2);line-height:1.4;padding-left:16px;position:relative}
+.lvl li::before{content:"";position:absolute;left:0;top:.55em;width:7px;height:7px;border-radius:2px;background:var(--coral)}
+.lvl .fx{margin-top:16px;padding-top:14px;border-top:1px dashed var(--line-2);font-size:13.5px;color:var(--fg)}
+.lvl .fx small{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--lime);margin-bottom:4px}
+.lvl-total{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:16px 22px;border-radius:16px;border:1px solid rgba(255,91,69,.35);background:rgba(255,91,69,.06);font-size:15px;color:var(--fg-2)}
+.lvl-total b{color:var(--fg);font-size:20px;letter-spacing:-.02em}
+.f-filters.lv{margin-top:-8px}
+.f-filters.lv button{font-size:13px;padding:6px 12px}
+.fc .lvtag{margin-left:auto;color:var(--fg-3);border:1px solid var(--line-2);border-radius:6px;padding:2px 6px;letter-spacing:.06em}
+
+/* ---------- reports (paper) ---------- */
+#reports{background:linear-gradient(180deg,var(--ink),#0b0c10)}
+.rep-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+@media (max-width:900px){.rep-grid{grid-template-columns:1fr}}
+.paper{background:var(--paper);color:var(--paper-ink);border-radius:20px;padding:26px 26px 22px;position:relative;box-shadow:0 30px 80px -30px rgba(0,0,0,.7);min-width:0}
+.paper::before{content:"";position:absolute;inset:0;border-radius:20px;pointer-events:none;background:repeating-linear-gradient(0deg,transparent 0 31px,rgba(0,0,0,.025) 31px 32px)}
+.paper .tag{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--paper-ink-2);display:flex;gap:8px;align-items:center}
+.paper h3{font-size:clamp(22px,2.3vw,30px);margin-top:10px;line-height:1.1;letter-spacing:-.02em}
+.paper h3 em{font-family:var(--serif);font-weight:400}
+.paper p{color:var(--paper-ink-2);font-size:14.5px;margin:10px 0 0}
+.paper .viz{margin-top:18px;overflow-x:auto}
+.paper svg text{font-family:var(--mono);font-size:11px;fill:var(--paper-ink-2)}
+.paper svg .lbl-strong{fill:var(--paper-ink);font-family:var(--sans);font-size:13px;font-weight:600}
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px;font-size:13px;color:var(--paper-ink-2)}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.plan-list{list-style:none;padding:0;margin:16px 0 0;display:flex;flex-direction:column;gap:8px}
+.plan-list li{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px;border-radius:12px;background:var(--paper-2);border:1px solid var(--paper-line);cursor:pointer;transition:background .2s}
+.plan-list li:hover{background:#e3ddcf}
+.plan-list .tg{width:40px;height:24px;border-radius:999px;background:#c9c2b2;position:relative;transition:background .2s;flex:none}
+.plan-list .tg::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.plan-list li.on .tg{background:#2c7a3f}
+.plan-list li.on .tg::after{transform:translateX(16px)}
+.plan-list .what{font-size:14px;line-height:1.35}
+.plan-list .what small{display:block;color:var(--paper-ink-2);font-size:12.5px}
+.plan-list .amt{font-family:var(--mono);font-size:13px;font-weight:600;text-align:right;white-space:nowrap}
+.plan-total{display:flex;justify-content:space-between;align-items:end;margin-top:16px;padding-top:14px;border-top:1px dashed var(--paper-line);gap:12px;flex-wrap:wrap}
+.plan-total .big{font-size:clamp(26px,3vw,36px);font-weight:650;letter-spacing:-.03em}
+.plan-total small{color:var(--paper-ink-2);font-size:12.5px;display:block}
+
+/* ---------- how ---------- */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative;counter-reset:s}
+.steps::before{content:"";position:absolute;left:0;right:0;top:22px;height:1px;background:linear-gradient(90deg,var(--lime),var(--blue),var(--violet),var(--amber))}
+.step{padding:0 22px 0 0;position:relative}
+.step .d{width:44px;height:44px;border-radius:50%;background:var(--ink);border:1px solid var(--line-2);display:grid;place-items:center;font-family:var(--mono);font-size:13px;position:relative;z-index:1}
+.step h3{font-size:22px;margin-top:20px;letter-spacing:-.02em}
+.step .when{font-family:var(--mono);font-size:12px;color:var(--lime);margin-top:6px}
+.step p{color:var(--fg-2);font-size:15px;margin:10px 0 0}
+@media (max-width:900px){.steps{grid-template-columns:1fr 1fr;row-gap:40px}.steps::before{display:none}}
+@media (max-width:520px){.steps{grid-template-columns:1fr}}
+
+/* ---------- control + who ---------- */
+.ctrl{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.ctrl>div{border:1px solid var(--line);border-radius:18px;padding:22px;background:var(--ink-2)}
+.ctrl .ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--ink-4);font-size:17px}
+.ctrl h3{font-size:18px;margin-top:14px;letter-spacing:-.01em}
+.ctrl p{color:var(--fg-2);font-size:14.5px;margin:6px 0 0}
+@media (max-width:900px){.ctrl{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.ctrl{grid-template-columns:1fr}}
+.who{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.who>div{border-radius:22px;padding:30px;border:1px solid var(--line-2);background:linear-gradient(160deg,var(--ink-3),var(--ink-2));position:relative;overflow:hidden}
+.who h3{font-size:clamp(24px,2.6vw,34px);line-height:1.1}
+.who p{color:var(--fg-2);margin:12px 0 0}
+.who ul{margin:18px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.who li{display:flex;gap:10px;font-size:15px;color:var(--fg)}
+.who li::before{content:"→";color:var(--lime);font-family:var(--mono)}
+@media (max-width:980px){.who{grid-template-columns:1fr}}
+
+/* ---------- faq ---------- */
+.faq{display:grid;grid-template-columns:1fr 1fr;gap:0 40px}
+.faq details{border-top:1px solid var(--line);padding:18px 0}
+.faq summary{cursor:pointer;font-weight:600;font-size:17px;list-style:none;display:flex;justify-content:space-between;gap:16px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-family:var(--mono);color:var(--fg-3);transition:transform .2s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq p{color:var(--fg-2);margin:10px 0 0;font-size:15px}
+@media (max-width:860px){.faq{grid-template-columns:1fr}}
+
+/* ---------- final cta ---------- */
+.final{position:relative;overflow:hidden;border-top:1px solid var(--line);text-align:center}
+.final h2{font-size:clamp(44px,8vw,120px);letter-spacing:-.05em;line-height:.95}
+.final .lede{margin:22px auto 0}
+.final .hero-ctas{margin-top:34px}
+.final-glow{position:absolute;left:50%;bottom:-40%;width:1100px;height:700px;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(198,255,74,.18),rgba(111,140,255,.10) 50%,transparent 75%);pointer-events:none;filter:blur(10px)}
+.reply-note{font-family:var(--mono);font-size:13px;color:var(--fg-3);margin-top:16px}
+footer{border-top:1px solid var(--line);padding-block:28px;color:var(--fg-3);font-size:13px}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(24px)}
+.no-js .rv,.reduced .rv{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.ticker-track{animation:none}.edge.hot{animation:none}.node.wait{animation:none}}
+
+/* ---------- phones ---------- */
+.pill-viz{width:100%}
+@media (max-width:640px){
+  section.sec{padding-block:72px}
+  .wf-tabs,.wf-list{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:calc(var(--gutter) * -1);padding-inline:var(--gutter);-webkit-overflow-scrolling:touch}
+  .wf-tabs::-webkit-scrollbar,.wf-list::-webkit-scrollbar{display:none}
+  .wf-tab,.wf-chip{flex:none;white-space:nowrap}
+  .wf-bar{gap:8px}
+  .wf-bar .lights{display:none}
+  .wf-title{width:100%;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .run-btn{margin-left:auto}
+  .log{height:260px}
+  .find,.appr{margin-left:0}
+  .ll{grid-template-columns:46px 1fr}
+  .plan-list li{grid-template-columns:auto 1fr;row-gap:4px}
+  .plan-list .amt{grid-column:2;text-align:left}
+  .plan-total{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .plan-total>div:last-child{grid-column:1/-1;text-align:left!important}
+  .auto-list li{grid-template-columns:28px 1fr;row-gap:6px}
+  .auto-list li .demo,.auto-list li>span:last-child{grid-column:2;justify-self:start}
+  .big-nums .n{font-size:clamp(34px,11vw,52px)}
+  .proof-strip>div{padding:12px 14px}
+  .paper{padding:20px 16px 18px}
+  .lvl{padding:20px 18px}
+  .found{padding:18px}
+  .fc .lvtag{display:none}
+  .final h2{font-size:clamp(40px,13vw,64px)}
+  .stack li{font-size:13px}
+  .hero-ctas .btn{width:100%;justify-content:center}
+}
+</style>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%228%22 fill=%22%23c6ff4a%22/%3E%3Crect x=%229%22 y=%229%22 width=%2214%22 height=%2214%22 rx=%223%22 fill=%22%2307080b%22/%3E%3C/svg%3E">
+</head>
+<body>
+<nav class="nav" id="nav">
+  <div class="wrap">
+    <a class="logo" href="#top"><span class="logo-mark"></span><span data-brand>ElementalsAI Labs</span></a>
+    <div class="nav-links">
+      <a href="#workflows">Workflows</a><a href="#proof">Proof</a><a href="#reports">Reports</a><a href="#how">How it works</a><a href="#faq">Questions</a>
+    </div>
+    <div class="cur" data-noconv role="group" aria-label="Currency"><button type="button" data-cur="INR" aria-pressed="false">₹ INR</button><button type="button" data-cur="USD" aria-pressed="false">$ USD</button></div>
+    <a class="btn btn-primary" href="#book" data-book>Book a 15-min call</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <canvas id="flow" aria-hidden="true"></canvas>
+  <div class="flow-labels" id="flowLabels" aria-hidden="true"></div>
+  <div class="wrap hero-copy">
+    <div class="eyebrow rv"><b>●</b>&nbsp; Agentic GTM systems · built for you in 15–20 days</div>
+    <h1 style="margin-top:22px">
+      <span class="line"><span>Agents run your GTM.</span></span>
+      <span class="line"><span><em>You set the rules.</em></span></span>
+    </h1>
+    <p class="lede rv">Most ad accounts waste money. In one account, we found 48% waste. Our agents find the waste, fix it and move the money to what sells. They work on all your channels, inside your rules.</p>
+    <div class="hero-ctas rv">
+      <a class="btn btn-primary" href="#book" data-book>Get a free audit of your ad account <span class="arr">→</span></a>
+      <a class="btn btn-ghost" href="#workflows">Watch a workflow run</a>
+    </div>
+  </div>
+  <div class="flow-zone" id="flowZone" aria-hidden="true"></div>
+  <div class="wrap hero-proof rv">
+    <div class="proof-strip" aria-label="Found in one audit">
+      <div><div class="n red tnum">48%</div><div class="l">of one store's ad budget found wasted</div></div>
+      <div><div class="n lime tnum">₹1 lakh+</div><div class="l">a month found in that single account</div></div>
+      <div><div class="n">3 levels</div><div class="l">campaign · asset · product, watched by agents</div></div>
+      <div><div class="n tnum">15–20 days</div><div class="l">to build your system. Then you scale exponentially.</div></div>
+    </div>
+  </div>
+</header>
+
+<div class="ticker" aria-label="Outcomes"><div class="ticker-track" id="ticker"></div></div>
+
+<section class="sec" id="engines">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow rv">01 · Three engines, one system</div>
+      <h2 class="rv">Stop paying smart people to do busywork. <em>Agents run the routine. Your team runs the strategy.</em></h2>
+      <p class="lede rv">Setup, checks, reports, follow-ups: agents do them around the clock, inside your rules. Your team gets back to the work that doubles revenue.</p>
+    </div>
+    <div class="pillars">
+      <article class="pill big rv" data-goto="perf">
+        <div class="num">ENGINE 01</div>
+        <h3>Multi-channel performance marketing</h3>
+        <p>First, we fix the base: pixels, conversion goals and offline sales. Campaigns stop fighting each other. Then agents find waste at three levels: campaign, asset and product. Then they move the money to what sells.</p>
+        <div class="chips"><span class="chip">Pixels & conversion goals</span><span class="chip">No cannibalisation</span><span class="chip">Region · time · bids</span><span class="chip">Waste hunt</span><span class="chip">Product feed pruning (D2C)</span><span class="chip">Creative refresh</span><span class="chip">Budget to what sells</span></div>
+        <span class="go" aria-hidden="true">↗</span>
+        <svg class="pill-viz" id="vizPerf" viewBox="0 0 600 300" preserveAspectRatio="none"></svg>
+      </article>
+      <article class="pill rv" data-goto="out">
+        <div class="num">ENGINE 02</div>
+        <h3>Multi-channel outbound</h3>
+        <p>Email, AI voice calls, LinkedIn, Instagram, Facebook and Reddit. Agents find buyers who show intent. They write a personal first line. A voice agent calls new leads in minutes.</p>
+        <div class="chips"><span class="chip">Email</span><span class="chip">AI calls</span><span class="chip">LinkedIn</span><span class="chip">Instagram</span><span class="chip">Facebook</span><span class="chip">Reddit</span></div>
+        <span class="go" aria-hidden="true">↗</span>
+      </article>
+      <article class="pill rv" data-goto="content">
+        <div class="num">ENGINE 03</div>
+        <h3>Content & social, on autopilot</h3>
+        <p>Agents read your website and reviews. They plan your week. They make carousels, reels and UGC videos. Then they learn what works.</p>
+        <div class="chips"><span class="chip">Weekly plan</span><span class="chip">UGC snippets</span><span class="chip">What's-working loop</span></div>
+        <span class="go" aria-hidden="true">↗</span>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="workflows">
+  <div class="wrap wide">
+    <div class="sec-head">
+      <div class="eyebrow rv">02 · See it work</div>
+      <h2 class="rv">Press Run. <em>Watch the agents work.</em></h2>
+      <p class="lede rv">These are the workflows we build. <span class="badge real">REAL DATA</span> means real numbers from a real audit. The other runs use example data.</p>
+    </div>
+    <div class="wf-tabs" role="tablist" id="wfTabs"></div>
+    <div class="wf-howto"><svg class="wfi" viewBox="0 0 22 14" aria-hidden="true"><circle cx="3" cy="7" r="2.3"/><circle cx="19" cy="3" r="2.3"/><circle cx="19" cy="11" r="2.3"/><path d="M5.3 7 C11 7 11 3 16.7 3 M5.3 7 C11 7 11 11 16.7 11"/></svg><span>Pick a workflow. Press <b>Run</b>. Each box is one step. Amber steps follow your rules: the agent acts, or asks you.</span></div>
+    <div class="wf-list" id="wfList"></div>
+    <div class="wf-shell rv">
+      <div class="wf-bar">
+        <div class="lights"><i></i><i></i><i></i></div>
+        <span class="wf-title" id="wfTitle">—</span>
+        <span class="wf-when" id="wfWhen"></span>
+        <span id="wfBadge"></span>
+        <span class="spacer"></span>
+        <button class="run-btn" id="runBtn" type="button">▶ Run workflow</button>
+      </div>
+      <div class="stage-wrap" id="stageWrap"><div class="stage" id="stage"><svg id="edges"></svg></div></div>
+      <aside class="log" aria-live="polite">
+        <div class="log-head"><span>Execution</span><span id="logState">idle</span></div>
+        <div class="log-body" id="logBody"></div>
+      </aside>
+      <div class="wf-foot">
+        <span><i style="background:var(--lime)"></i>trigger</span><span><i style="background:#9fb2ff"></i>data</span><span><i style="background:linear-gradient(135deg,var(--violet),var(--blue))"></i>agent</span><span><i style="background:#cfd4de"></i>guardrail</span><span><i style="background:var(--amber)"></i>your policy</span><span><i style="background:#7ee0b0"></i>action</span><span><i style="background:var(--paper)"></i>report</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="library" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow rv">Every workflow automation we build</div>
+      <h2 class="rv" style="font-size:clamp(30px,4vw,52px)"><span id="autoCount">55+</span> automations. <em>Pick the ones your team repeats.</em></h2>
+      <p class="lede rv">One line each. ▶ means you can watch it run above. Every change follows your rules.</p>
+    </div>
+    <div class="lib" id="libGrid"></div>
+  </div>
+</section>
+
+<section class="sec" id="proof">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow rv">03 · Proof</div>
+      <h2 class="rv">One account. Three levels. <em>60 findings.</em> Each one has a fix.</h2>
+      <p class="lede rv">We audited one Indian D2C store: 3.8 years, 5,788 orders, 1,027 products. We keep the brand private. The numbers are real.</p>
+    </div>
+    <div class="found rv" id="found"></div>
+    <div class="levels-head rv"><span class="eyebrow"><b>●</b>&nbsp; Waste hides at three levels. Agents watch all three.</span></div>
+    <div class="levels" id="levels"></div>
+    <div class="big-nums rv">
+      <div><div class="n tnum" style="color:var(--coral)" data-count="48" data-suffix="%">48%</div><div class="l">of the ad budget sold nothing</div></div>
+      <div><div class="n tnum" data-count="34400" data-prefix="₹">₹34,400</div><div class="l">a month of waste to stop</div></div>
+      <div><div class="n tnum" style="color:var(--lime)" data-count="70000" data-prefix="₹" data-suffix="">₹70,000</div><div class="l">a month of projected new revenue, at the top of the range</div></div>
+      <div><div class="n tnum" data-count="792">792</div><div class="l">products took ad money and never sold through ads</div></div>
+    </div>
+    <div class="f-filters" id="fFilters"></div>
+    <div class="f-filters lv" id="lFilters"></div>
+    <div class="f-grid" id="fGrid"></div>
+    <div class="more-wrap"><button class="btn btn-ghost" id="moreBtn" type="button">Show all findings</button></div>
+    <div class="bench-head rv"><span class="eyebrow">This is not one bad account · industry data</span></div>
+    <div class="bench-grid" id="benchGrid"></div>
+    <p class="cur-note" data-noconv hidden>Dollar figures: the store's rupee numbers converted at ₹95 = $1 and scaled 5× to a US-sized business. Percentages, ratios and counts are unchanged.</p>
+    <p class="note">Sources: the store's Google Ads account (every campaign since Apr 2023), Google Analytics and store orders. "Projected" numbers are estimates from the store's own data, not promises. Revenue is before product cost; offline orders are not counted.</p>
+  </div>
+</section>
+
+<section class="sec" id="reports">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow rv">04 · Reports that tell you what to do</div>
+      <h2 class="rv">Not a dashboard. <em>Problems, fixes and a plan.</em></h2>
+      <p class="lede rv">You see the waste in rupees. You see each chance to grow, with a range. You see what works. Then you see the plan: what the agents do alone, and what needs your OK.</p>
+    </div>
+    <div class="rep-grid">
+      <div class="paper rv">
+        <div class="tag"><span class="dot k-waste"></span>Waste finding</div>
+        <h3>Where every <em>₹71,800</em> went, each month</h3>
+        <p>Red and orange sold nothing. Green works. Grow only the green.</p>
+        <div class="viz" id="vizWaste"></div>
+        <div class="legend"><span><i style="background:#d8432f"></i>Products that never sell · ₹16,900</span><span><i style="background:#e8902c"></i>Video ads with no product · ₹17,500</span><span><i style="background:#2c7a3f"></i>Search, Display, products that sell · ₹37,400</span></div>
+      </div>
+      <div class="paper rv">
+        <div class="tag"><span class="dot k-signal"></span>Insight</div>
+        <h3>Spend doubled. <em>Revenue didn't.</em></h3>
+        <p>Same months, one year apart. The extra money went to places that do not sell.</p>
+        <div class="viz" id="vizGrowth"></div>
+      </div>
+      <div class="paper rv">
+        <div class="tag"><span class="dot k-opp"></span>Optimisation opportunity</div>
+        <h3>Every extra ₹1,000 brings <em>less than the last</em></h3>
+        <p>Sales from each extra ₹1,000 a week on Search. 140 weeks of data, season and sales removed. So agents add money in small steps. Each step must pay.</p>
+        <div class="viz" id="vizCurve"></div>
+      </div>
+      <div class="paper rv">
+        <div class="tag"><span class="dot k-signal"></span>Signals · what's working</div>
+        <h3>₹ back for each <em>₹1</em> of ads, by product line</h3>
+        <p>Last 3 months. Anything left of the line loses money.</p>
+        <div class="viz" id="vizLines"></div>
+      </div>
+      <div class="paper rv" style="grid-column:1/-1">
+        <div class="tag"><span class="dot k-rule"></span>Automated planning · inside your rules</div>
+        <h3>The agents' plan for next month. <em>Switch on what you want.</em></h3>
+        <ul class="plan-list" id="planList"></ul>
+        <div class="plan-total">
+          <div><small>Monthly ad budget</small><div class="big tnum" id="planBudget">₹71,800</div></div>
+          <div><small>Waste stopped</small><div class="big tnum" id="planSave" style="color:#2c7a3f">₹0</div></div>
+          <div style="text-align:right"><small>Projected extra revenue a month</small><div class="big tnum" id="planRev">₹0</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="how">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow rv">05 · How it works</div>
+      <h2 class="rv">Built for your workflows in <em>15–20 days.</em> Then it is yours.</h2>
+      <p class="lede rv">We build it for you. You do not learn a new tool. You run the system. Need a change? Ask us. You pay only for the change.</p>
+    </div>
+    <div class="steps">
+      <div class="step rv"><div class="d">01</div><h3>Free audit</h3><div class="when">Day 0</div><p>We read your account. We change nothing. You get the waste and the chances to grow, in rupees.</p></div>
+      <div class="step rv"><div class="d">02</div><h3>Map your workflows</h3><div class="when">Days 1–5</div><p>We learn how your team decides. Then we turn it into workflows.</p></div>
+      <div class="step rv"><div class="d">03</div><h3>Build and connect</h3><div class="when">Days 5–15</div><p>We connect ads, store, CRM, inboxes and WhatsApp. We fix tracking first. We test every workflow on your data.</p></div>
+      <div class="step rv"><div class="d">04</div><h3>Hand over. You run it.</h3><div class="when">Days 15–20 → always</div><p>Agents act inside your rules. Big decisions come to your phone. Need a change? We make it. You pay only for that change.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="control" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow rv">06 · You stay in control</div>
+      <h2 class="rv">Your rules. <em>Agents work inside them.</em></h2>
+    </div>
+    <div class="ctrl">
+      <div class="rv"><div class="ic">👁</div><h3>Read-only first</h3><p>First we only read. You give write access when you are ready.</p></div>
+      <div class="rv"><div class="ic">✓</div><h3>Your rules decide</h3><p>You decide what agents change alone, by how much, and what needs your OK.</p></div>
+      <div class="rv"><div class="ic">↶</div><h3>Logged, with undo</h3><p>Every change has a number, a reason and an undo button.</p></div>
+      <div class="rv"><div class="ic">◷</div><h3>Agents pick the timing</h3><p>Daily, weekly, or wait-and-watch during a test. Hard caps. One change at a time. Auto-undo if sales drop.</p></div>
+      <div class="rv"><div class="ic">⌂</div><h3>You own everything</h3><p>Your accounts. Your data. Your workflows. If we part ways, the system stays with you.</p></div>
+      <div class="rv"><div class="ic">₹</div><h3>Real sales, not clicks</h3><p>We match results to your store and CRM, not to what the ad platforms claim.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="who" style="padding-top:0">
+  <div class="wrap">
+    <div class="who">
+      <div class="rv">
+        <div class="eyebrow">For founders, business owners and CEOs</div>
+        <h3 style="margin-top:12px">Get a full performance-marketing team's system.</h3>
+        <p>Agents do the tracking, the setup, the checks and the reports. You make the big calls.</p>
+        <ul><li>Problems and fixes in plain words and rupees</li><li>Waste stopped before it grows</li><li>Money moved to what sells, in safe steps</li></ul>
+      </div>
+      <div class="rv">
+        <div class="eyebrow">For marketing heads</div>
+        <h3 style="margin-top:12px">Put your strategy in the system, not in your head.</h3>
+        <p>Deploy your playbook once. Agents run it on every channel, the way you would. Setup, checks, pacing and reports run alone, inside your rules.</p>
+        <ul><li>Every channel read against real sales</li><li>No conflicting goals, no cannibalising campaigns</li><li>Reports your CEO reads in one minute</li></ul>
+      </div>
+      <div class="rv">
+        <div class="eyebrow">For marketing agencies</div>
+        <h3 style="margin-top:12px">Run up to 3× to 5× more clients. Add zero headcount.</h3>
+        <p>Go from 10 clients to 30–50 clients with the same team. Agents set up, watch and report every campaign for every client. Your team works on strategy and clients.</p>
+        <ul><li>Every client's waste surfaced with a fix</li><li>Client reports written for you</li><li>Your rules per client, your brand</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="faq" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head"><div class="eyebrow rv">07 · Questions</div><h2 class="rv">Fair questions. <em>Straight answers.</em></h2></div>
+    <div class="faq">
+      <details class="rv"><summary>Google and Meta already have AI. Why this?</summary><p>Their AI works inside one platform. It chases that platform's numbers, sometimes page views. Our agents look at all platforms and decide on your real sales.</p></details>
+      <details class="rv"><summary>Will AI burn my budget?</summary><p>No. Agents act alone only inside your rules. You get hard caps, one change at a time, wait-and-watch on tests and auto-undo if sales drop.</p></details>
+      <details class="rv"><summary>How often do the agents act?</summary><p>As often as each fix needs: daily, weekly, or after a test ends. They tell you what they found, what they recommend and why.</p></details>
+      <details class="rv"><summary>I don't want to hand over my ad accounts.</summary><p>Start read-only. The free audit needs nothing more. Give write access only when you want agents to act.</p></details>
+      <details class="rv"><summary>We already have an agency or a marketer.</summary><p>Good. The system works for them. It does the setup, the checks and the reports. They spend their time on decisions.</p></details>
+      <details class="rv"><summary>What happens after the 15–20 days?</summary><p>You run it. Want a new workflow or a change? We make it. You pay only for that change.</p></details>
+      <details class="rv"><summary>Our tracking is broken. Can we still start?</summary><p>Yes. We fix tracking first. Without it, no other number is true.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="sec final" id="book">
+  <div class="final-glow"></div>
+  <div class="wrap">
+    <div class="eyebrow rv">Start with the audit</div>
+    <h2 class="rv" style="margin-top:18px">Find your <em>48%.</em></h2>
+    <p class="lede rv">Get a free, read-only audit of your ad account. See your waste and your chances to grow, in rupees. Then talk to us for 15 minutes about what to build.</p>
+    <ul class="stack rv"><li>Waste at three levels: campaign, asset, product</li><li>Your top 10 fixes, ranked by money</li><li>A tracking health check</li><li>A 15-minute call to plan the build</li></ul>
+    <p class="risk rv">Free. Read-only. We change nothing. You keep the report.</p>
+    <div class="hero-ctas rv"><a class="btn btn-primary" id="bookBtn" href="#book">Book a 15-minute call <span class="arr">→</span></a></div>
+    <div class="reply-note rv" id="replyNote">Got this page in a message? Reply to it with "audit" and I'll send a time.</div>
+  </div>
+</section>
+
+<footer><div class="wrap"><span><span data-brand>ElementalsAI Labs</span> · Agentic GTM systems</span><span>Proof figures: one real audit, brand kept private.</span></div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
