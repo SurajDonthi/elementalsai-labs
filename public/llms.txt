@@ -1,0 +1,11 @@
+# ElementalsAI Labs
+
+> Forward-deployed AI engineers who build agentic GTM systems: performance marketing, multi-channel outbound (email, AI voice calls, LinkedIn, Instagram, Facebook, Reddit) and content. Built for a company's own workflows in 15–20 days; agents find waste, recommend fixes and act inside the client's rules.
+
+Key facts:
+- In one real audit of an Indian D2C store, 48% of a ₹71,800/month Google Ads budget sold nothing (₹34,400 a month).
+- Waste was found at three levels: campaign (₹17,500/month), asset (64–88% of images had no sale) and product (₹16,900/month; 792 of 1,027 products never sold through ads).
+- Ad spend grew 96% in a year while online revenue grew 31%.
+
+## Pages
+- [Home: Agents run your GTM. You set the rules.](https://elementalsai-labs.com/)
