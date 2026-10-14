@@ -113,7 +113,7 @@
      Spend streams in from every channel, passes the agent ring,
      waste (48%) drops out in coral, the rest becomes revenue.
      ========================================================= */
-  const SOURCES = ["Google Ads", "Meta", "LinkedIn", "YouTube", "Email", "AI calls"];
+  const SOURCES = ["Google Ads", "Meta", "LinkedIn", "YouTube", "Reddit", "Email", "AI calls"];
   function startHero() {
     const canvas = $("#flow");
     const labelsEl = $("#flowLabels");
@@ -158,7 +158,7 @@
         void main(){
           float t = fract(uTime*aSpeed + aSeed);
           float R = uW*0.5 + 0.4;
-          float sy = uCoreY + (0.5 - aSrc/5.0) * uBand * 1.25;
+          float sy = uCoreY + (0.5 - aSrc/6.0) * uBand * 1.3;
           vec3 S = vec3(uSrcX, sy, 0.0);
           vec3 C = vec3(0.0, uCoreY, 0.0);
           float wob = sin(uTime*1.3 + aSeed*40.0)*0.035;
@@ -280,7 +280,7 @@
       const pxToWorldX = (px) => (px / w - 0.5) * W;
       uniforms.uSrcX.value = pxToWorldX(gutter + (narrow ? 74 : 104));
       SOURCES.forEach((_, i) => {
-        const sy = coreY + (0.5 - i / 5) * band * 1.25;
+        const sy = coreY + (0.5 - i / 6) * band * 1.3;
         const [, py] = project(0, sy);
         labels[i].style.left = gutter + "px";
         labels[i].style.top = py + "px";
