@@ -5,8 +5,9 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PUB = os.path.join(ROOT, "public")
 BLOG = os.path.join(PUB, "blog")
 SITE = "https://elementalsai-labs.com"
-ORDER = ["google-ads-not-converting", "google-ads-waste-of-money", "how-to-scale-google-ads",
-         "ai-for-google-ads", "ai-performance-marketing", "cold-email-reply-rate-benchmarks"]
+ORDER = ["google-ads-statistics", "google-ads-audit-checklist", "common-google-ads-mistakes", "performance-max-vs-search",
+         "best-ai-agents-for-marketing", "best-ai-tools-for-google-ads", "will-ai-replace-performance-marketing",
+         "google-ads-management-cost", "best-ai-sdr-agents", "best-ai-agents-for-content-marketing"]
 
 def meta(slug):
     s = io.open(os.path.join(BLOG, slug, "index.html"), encoding="utf-8").read()
@@ -61,7 +62,7 @@ sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps
 io.open(os.path.join(PUB, "sitemap.xml"), "w", encoding="utf-8").write(sm)
 
 llms = ["# ElementalsAI Labs", "",
-        "> Forward-deployed AI engineers who build agentic GTM systems: performance marketing, multi-channel outbound (email, AI voice calls, LinkedIn, Instagram, Facebook, Reddit) and content. Built for a company's own workflows in 15–20 days; agents find waste, recommend fixes and act inside the client's rules.", "",
+        "> ElementalsAI Labs helps founders, CEOs, business owners and marketing heads grow revenue 3–4× in 90 days using a 24/7 AI-agent GTM system built specifically for their business, with proven strategies baked in, without hiring more people. The agents run ads, outbound (email, AI voice calls, LinkedIn, Instagram, Facebook, Reddit) and content; they catch wasted spend and failing campaigns, spot new opportunities and launch what is next.", "",
         "Key facts:",
         "- In one real audit of an Indian D2C store, 48% of a ₹71,800/month Google Ads budget sold nothing (₹34,400 a month).",
         "- Waste was found at three levels: campaign (₹17,500/month), asset (64–88% of images had no sale) and product (₹16,900/month; 792 of 1,027 products never sold through ads).",

@@ -1,6 +1,6 @@
 # ElementalsAI Labs
 
-> Forward-deployed AI engineers who build agentic GTM systems: performance marketing, multi-channel outbound (email, AI voice calls, LinkedIn, Instagram, Facebook, Reddit) and content. Built for a company's own workflows in 15–20 days; agents find waste, recommend fixes and act inside the client's rules.
+> ElementalsAI Labs helps founders, CEOs, business owners and marketing heads grow revenue 3–4× in 90 days using a 24/7 AI-agent GTM system built specifically for their business, with proven strategies baked in, without hiring more people. The agents run ads, outbound (email, AI voice calls, LinkedIn, Instagram, Facebook, Reddit) and content; they catch wasted spend and failing campaigns, spot new opportunities and launch what is next.
 
 Key facts:
 - In one real audit of an Indian D2C store, 48% of a ₹71,800/month Google Ads budget sold nothing (₹34,400 a month).
@@ -9,3 +9,13 @@ Key facts:
 
 ## Pages
 - [Home: Agents run your GTM. You set the rules.](https://elementalsai-labs.com/)
+- [Google Ads Statistics 2026: 50+ Numbers, Including Our Own Audit Data](https://elementalsai-labs.com/blog/google-ads-statistics): Google Ads statistics 2026: average CPC $5.42, CTR 6.64%, conversion rate 8.18%, cost per lead $66.69, plus waste, PMax, AI and our own audit data.
+- [Google Ads Audit Checklist 2026: 40 Checks + Free Template](https://elementalsai-labs.com/blog/google-ads-audit-checklist): Google Ads audit checklist for 2026: 40 checks in 7 stages, each with the menu path, the red-flag number and the fix. Plus a free, copyable audit template.
+- [12 Common Google Ads Mistakes That Waste Your Budget (From a Real Audit)](https://elementalsai-labs.com/blog/common-google-ads-mistakes): 12 common Google Ads mistakes from one real audit, where 48% of a ₹71,800 monthly budget sold nothing. Each with the proof, the fix path and a 30-minute scan.
+- [Performance Max vs Search Campaigns: Which Wins in 2026?](https://elementalsai-labs.com/blog/performance-max-vs-search): Performance Max vs Search campaigns in 2026: real numbers, Google's rules on which one serves, and a clear rule for when to run Search, PMax or both.
+- [Best AI Agents for Marketing in 2026: 10 Tools Compared](https://elementalsai-labs.com/blog/best-ai-agents-for-marketing): Compare the 10 best AI agents for marketing in 2026: what each does, channels, price as of October 2026, best fit and limits, plus a free 12-question scorecard.
+- [Best AI Tools for Google Ads in 2026 (Tested on a Real Account)](https://elementalsai-labs.com/blog/best-ai-tools-for-google-ads): Best AI tools for Google Ads in 2026: 9 tools scored against 10 real problems from one audit, with October 2026 prices and a free scorecard template.
+- [Will AI Replace Performance Marketing? What Agents Do (and Don't) in 2026](https://elementalsai-labs.com/blog/will-ai-replace-performance-marketing): Will AI replace performance marketing? No. Agents now run bids, placements and reports; people set the goals and guardrails. What changes in 2026 and 2027.
+- [Google Ads Management Cost in 2026: Agency vs Freelancer vs AI Agents](https://elementalsai-labs.com/blog/google-ads-management-cost): Google Ads management cost in 2026: agencies charge 10–20% of ad spend, freelancers $15–$45 an hour, AI tools from $89 a month. Plus the hidden cost: waste.
+- [Best AI SDR Agents in 2026: What They Do, Cost and Replace](https://elementalsai-labs.com/blog/best-ai-sdr-agents): Best AI SDR agents in 2026: 10 tools compared on what they do, channels and price ($49 to $2,500 a month) vs an $80,000 human SDR, and what AI can't replace.
+- [Best AI Agents for Content Marketing in 2026: Plan, Create, Repurpose](https://elementalsai-labs.com/blog/best-ai-agents-for-content-marketing): Best AI agents for content marketing in 2026: 10 tools to plan, create and repurpose, with October 2026 prices, honest limits and a free one-week content plan.
