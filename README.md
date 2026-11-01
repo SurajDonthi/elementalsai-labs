@@ -35,7 +35,7 @@ ElevenLabs agent "Diya" (ID in `src/build.mjs`). With no tap, she asks for the m
 ## Settings for Vercel (at deploy)
 
 - `RESEND_API_KEY`, `LEAD_TO` (hello@elementalsai-labs.com), `LEAD_FROM` (a sender on a domain verified in Resend).
-- For the build: `LABS_ADS_ID` (the Google Ads tag, AW-…) and `LABS_ADS_LEAD_LABEL` (the lead conversion label). Without them, the pages have no Google tag.
+- Tracking: production pages load Google Tag Manager (GTM-T9SDG58F). Tag Manager holds Analytics (G-C7M17NZPNQ), Microsoft Clarity (z6ygwy0jmz) and the Google Ads conversion tags. The page only pushes 4 events to `dataLayer`: `generate_lead` (a lead was saved, with `lead_source` form or voice), `phone_click`, `email_click` and `voice_call_start`.
 
 ## Still to do
 

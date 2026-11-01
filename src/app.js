@@ -17,6 +17,12 @@ function onView(el, fn, th) {
   io.observe(el);
 }
 var PAGE = W.LABS || {};
+/* events for Tag Manager (Analytics, Google Ads conversions): generate_lead, phone_click, email_click, voice_call_start */
+function track(event, data) { (W.dataLayer = W.dataLayer || []).push(Object.assign({ event: event }, data || {})); }
+d.addEventListener('click', function (e) {
+  var a = e.target.closest && e.target.closest('a[href^="tel:"],a[href^="mailto:"]');
+  if (a) track(a.protocol === 'tel:' ? 'phone_click' : 'email_click', { lead_source: a.protocol === 'tel:' ? 'phone' : 'email' });
+});
 
 /* ---------- speech: words arrive one at a time, as on surajdonthi.com (lib/speech.ts) ---------- */
 function wrapWords(el) {
@@ -218,7 +224,9 @@ if (form) {
       .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); })
       .then(function () {
         say('Thank you, ' + name.split(' ')[0] + '. We reply within 1 hour. Your free quote comes in 12 hours.');
-        if (PAGE.ads && PAGE.ads.label && W.gtag) W.gtag('event', 'conversion', { send_to: PAGE.ads.id + '/' + PAGE.ads.label });
+        /* user_data feeds enhanced conversions; Google hashes it in the browser before it is sent */
+        var digits = phone.replace(/\D/g, ''), e164 = digits.length === 10 ? '+91' + digits : digits.length > 10 ? '+' + digits : '';
+        track('generate_lead', { lead_source: source || 'form', user_data: { email: valid.email(email) ? email.toLowerCase() : undefined, phone_number: e164 || undefined } });
         return { ok: true, why: 'sent' };
       })
       .catch(function () {
@@ -408,7 +416,7 @@ function listenLv(t) { var a = Math.abs(Math.sin(t * 5.3 + Math.sin(t * 1.1) * 3
           fill_field: function (p) { fill(p && p.field, p && p.value); },
           submit_quote: function () { return sendLead('voice', conv && conv.getId ? conv.getId() : '').then(function (r) { if (r.ok) { sent = true; remember('done'); } return r.ok ? 'Sent.' : 'Not sent: ' + r.why + '.'; }); }
         },
-        onConnect: function () { setTimeout(dropMic, 1500); idleWatch(); if (quiet && state === 'connecting') { setState('listening', 'Listening'); show(GREET, 'I’m listening.'); } },
+        onConnect: function () { track('voice_call_start', { lead_source: 'voice' }); setTimeout(dropMic, 1500); idleWatch(); if (quiet && state === 'connecting') { setState('listening', 'Listening'); show(GREET, 'I’m listening.'); } },
         onModeChange: function (m) {
           if (state === 'ready') return;
           var sp = m && m.mode === 'speaking'; setState(sp ? 'speaking' : 'listening', sp ? 'Speaking' : 'Listening');

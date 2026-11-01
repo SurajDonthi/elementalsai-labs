@@ -28,9 +28,10 @@ const PHONE = '+91 80887 33622', TEL = '+918088733622', EMAIL = 'hello@elemental
 const VOICE_AGENT = 'agent_9701m6bb1fwqese82y1t2mjabdv5';
 /* the live build: no draft notes, the form sends leads to /api/lead, search engines may index the pages, and the Google tag counts leads when its ID is set */
 const PROD = !!process.env.LABS_PROD;
-const ADS = process.env.LABS_ADS_ID ? { id: process.env.LABS_ADS_ID, label: process.env.LABS_ADS_LEAD_LABEL || '' } : null;
-const headExtra = () => (PROD && ADS ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${ADS.id}"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${ADS.id}');</script>\n` : '');
-const labsCfg = (service) => ({ service, agent: VOICE_AGENT, lead: PROD ? '/api/lead' : '', ads: PROD ? ADS : null, phone: PHONE, email: EMAIL });
+// Google Tag Manager loads Analytics, Clarity and the Google Ads conversion tags; app.js only pushes events to dataLayer.
+const GTM = 'GTM-T9SDG58F';
+const headExtra = () => (PROD ? `<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s);j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${GTM}');</script>\n` : '');
+const labsCfg = (service) => ({ service, agent: VOICE_AGENT, lead: PROD ? '/api/lead' : '', phone: PHONE, email: EMAIL });
 const robots = () => (PROD ? 'index, follow' : 'noindex, nofollow');
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const I = (id) => `<svg class="i" aria-hidden="true"><use href="#i-${id}"/></svg>`;
@@ -295,7 +296,7 @@ const titleHTML = (p) => {
   const ws = (s) => s.split(' ').map((w) => `<span class="w">${esc(w)}</span>`).join(' ');
   return `<h1 class="title" data-talk data-verbs='${JSON.stringify(p.verbs).replace(/'/g, '&#39;')}'><span class="sr">${esc(p.line)} ${esc(p.verbs[0])}</span><span class="false" aria-hidden="true">${ws(p.falseStart)}</span><span class="line" aria-hidden="true">${ws(p.line)} <span class="band"><span class="rot"><span class="w">${esc(p.verbs[0])}</span></span></span><span class="pad"></span></span></h1>`;
 };
-const quoteCard = (p) => `<form class="card" id="quote-form" novalidate aria-labelledby="qf-t">
+const quoteCard = (p) => `<form class="card" id="quote-form" novalidate aria-labelledby="qf-t" data-clarity-mask="True">
   <div class="card-h"><h2 class="eyebrow" id="qf-t">Your free quote</h2><span class="state">Talk or type</span></div>
   <div class="va" data-va data-state="idle">
    <button type="button" class="orb" aria-label="Talk to Diya, our voice agent"><canvas width="236" height="236"></canvas><span class="orb-css"></span></button>

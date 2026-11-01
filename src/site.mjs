@@ -286,10 +286,12 @@ ${reach()}` },
 <h3>When you email us</h3>
 <p>We get your email address, your name if you give it, and what you write.</p>
 <h3>When you visit this site</h3>
-<p>This site uses the Google tag. It collects data about your visit: the pages that you see, the ad that brought you here, and technical data such as your browser, your device and your IP address. It also records when you send the quote form and when you book a call with us.</p>
+<p>This site uses the Google tag and Google Analytics. They collect data about your visit: the pages that you see, the ad that brought you here, and technical data such as your browser, your device and your IP address. They also record when you send the quote form, start a call with the voice agent, tap our phone number or email address, and book a call with us.</p>
+<p>When you send the quote form, the Google tag sends your email address and phone number to Google in a scrambled (hashed) form. Google uses them only to count which ads bring requests.</p>
 <p>The Google tag also adds your browser to our visitor lists. With these lists, Google can show you our ads again later.</p>
+<p>This site also uses Microsoft Clarity. It records how you use the site: where you click, how far you scroll and which pages you open. We see this as recordings and heat maps, and we use them to make the site easier to use. Clarity does not record what you type in the quote form.</p>
 <h3>Cookies</h3>
-<p>The Google tag uses cookies. Cookies are small files that your browser keeps. They let Google connect a visit, a sent form or a booked call to the ad that brought you here. They also add your browser to our visitor lists.</p>
+<p>The Google tag, Google Analytics and Microsoft Clarity use cookies. Cookies are small files that your browser keeps. They let Google connect a visit, a sent form or a booked call to the ad that brought you here, and they let Google and Microsoft know that two visits came from the same browser. They also add your browser to our visitor lists.</p>
 <p>You can block or delete cookies in your browser settings. This site still works without them. To turn off personalised ads from Google, use <a href="https://myadcenter.google.com/" rel="noopener">My Ad Center</a>. To learn how Google uses data from sites like this one, read <a href="https://policies.google.com/technologies/partner-sites" rel="noopener">Google’s page about it</a>.</p>
 <h3>What we do not collect</h3>
 <p>We do not ask for bank or card details, ID numbers, health data or passwords on this site or in our forms. Please do not send them to us.</p>` },
@@ -300,6 +302,7 @@ ${reach()}` },
 <li>To support you after launch, if you are a client.</li>
 <li>To keep records of our work, and to do what the law requires, for example for tax and accounts.</li>
 <li>To learn which of our ads bring requests, so that we spend on the ads that work.</li>
+<li>To learn how visitors use this site, so that we can make it better.</li>
 <li>To show our ads again to people who visited this site.</li>
 <li>To keep this site and our services safe and working.</li>
 </ul>
@@ -315,7 +318,8 @@ ${reach()}` },
 <p>Withdrawing does not change what we did before. If you withdraw, we may not be able to send your quote or continue your project.</p>` },
   { id: 'share', t: 'Who we share it with', html: `<p><b>We never sell your data.</b> We do not rent it or trade it. We share it only with:</p>
 <ul>
-<li><b>Google</b>, for our ads, the Google lead form, call reporting and the Google tag. Google also uses data under its own <a href="https://policies.google.com/privacy" rel="noopener">privacy policy</a>.</li>
+<li><b>Google</b>, for our ads, the Google lead form, call reporting, the Google tag and Google Analytics. Google also uses data under its own <a href="https://policies.google.com/privacy" rel="noopener">privacy policy</a>.</li>
+<li><b>Microsoft</b>, for Clarity. Microsoft also uses data under its own <a href="https://privacy.microsoft.com/privacystatement" rel="noopener">privacy statement</a>.</li>
 <li><b>Our service providers</b>, for example the companies that host this site, run the voice agent, and carry our email and calls. They use your data only to do that work for us, and they must keep it safe.</li>
 <li><b>The people on our team</b> who work on your request or your project.</li>
 <li><b>Government bodies and courts</b>, only when a law requires it.</li>
