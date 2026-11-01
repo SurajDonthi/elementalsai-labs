@@ -20,6 +20,8 @@ const deviceOf = (p) => (!p.try ? '' : hasDev(p.try.device) ? p.try.device : (p.
 const LOGO = b64('logo-dark.png', 'image/png');
 const IMG = Object.fromEntries(['toothlens', 'volunteeryatra', 'agshift', 'pilarsai'].map((k) => [k, b64(k + '.jpg', 'image/jpeg')]));
 const DEEP = b64('deep-mehta.jpg', 'image/jpeg');
+/* Diya's opening (D-98): her two lines, made in the agent's own voice, and the glass knock (the word times are in app.js) */
+const SND = { hello: b64('diya-hello.mp3', 'audio/mpeg'), knock: b64('knock.wav', 'audio/wav'), name: b64('diya-name.mp3', 'audio/mpeg') };
 const PHONE = '+91 80887 33622', TEL = '+918088733622', EMAIL = 'hello@elementalsai-labs.com';
 /* the ElevenLabs free quote agent (Suraj's script, 29 Oct 2026). The ID is public; the API key never goes in a page */
 const VOICE_AGENT = 'agent_9701m6bb1fwqese82y1t2mjabdv5';
@@ -295,8 +297,9 @@ const titleHTML = (p) => {
 const quoteCard = (p) => `<form class="card" id="quote-form" novalidate aria-labelledby="qf-t">
   <div class="card-h"><h2 class="eyebrow" id="qf-t">Your free quote</h2><span class="state">Talk or type</span></div>
   <div class="va" data-va data-state="idle">
-   <button type="button" class="orb" aria-label="Talk to our voice agent"><canvas width="236" height="236"></canvas><span class="orb-css"></span></button>
-   <div><p class="state" aria-hidden="true"><span class="led"></span><i class="eq"><b></b><b></b><b></b></i><span data-st>Voice agent</span></p><p class="va-cap" data-cap aria-hidden="true">Hey! What should I call you?</p><button type="button" class="talk" data-talk-btn>${I('stop')}Stop</button><p class="sr" role="status" data-va-live></p></div>
+   <button type="button" class="orb" aria-label="Talk to Diya, our voice agent"><canvas width="236" height="236"></canvas><span class="orb-css"></span></button>
+   <div><p class="state" aria-hidden="true"><span class="led"></span><i class="eq"><b></b><b></b><b></b></i><span data-st>Diya</span></p><p class="va-cap" data-cap aria-hidden="true">Hello? Anybody there?</p><button type="button" class="talk" data-talk-btn>${I('stop')}Stop</button><p class="sr" role="status" data-va-live></p></div>
+   ${Object.entries(SND).map(([k, src]) => `<audio data-snd="${k}" preload="auto" src="${src}"></audio>`).join('')}
   </div>
   <p class="or">Or type it</p>
   <div class="fld"><label for="f-name">Your name</label><div class="box"><input id="f-name" name="name" autocomplete="name"></div></div>

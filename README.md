@@ -28,7 +28,7 @@ The website for the Google Ads campaign: the home page, 5 service landing pages 
 
 ## The voice agent
 
-ElevenLabs agent "ElementalsAI Labs - Free quote agent" (ID in `src/build.mjs`). It says Suraj's script, reads the phone number and email back, fills the form, sends it through `/api/lead`, and waits for the result before it says thank you. The API key stays in the credentials folder; the pages hold only the public agent ID. Details: `ai-services-gtm/lead-capture/voice-lead-form-v1.md`.
+ElevenLabs agent "Diya" (ID in `src/build.mjs`). With no tap, she asks for the microphone when the quote card is in view; once it is allowed, the browser lets her speak, so she plays her opening ("Hello? Hi… anybody there?", three knocks on the glass, "Oh, hi! I'm Diya. What should I call you?") from clips in her voice (`src/assets/diya-*.mp3`, `knock.wav`) and starts the live call by herself. If the microphone is blocked, the opening plays without sound and the visitor types. It says Suraj's script, reads the phone number and email back, fills the form, sends it through `/api/lead`, and waits for the result before it says thank you. The API key stays in the credentials folder; the pages hold only the public agent ID. Details: `ai-services-gtm/lead-capture/voice-lead-form-v1.md`.
 
 ## Settings for Vercel (at deploy)
 

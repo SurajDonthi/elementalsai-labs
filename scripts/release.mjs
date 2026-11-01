@@ -22,14 +22,14 @@ try {
   rmSync(PUB, { recursive: true, force: true }); mkdirSync(AS, { recursive: true });
   const saved = new Map();
   const save = (buf, ext) => { const h = createHash('sha1').update(buf).digest('hex').slice(0, 12), name = h + '.' + ext; if (!saved.has(name)) { writeFileSync(new URL(name, AS), buf); saved.set(name, buf.length); } return '/assets/' + name; };
-  const EXT = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp', 'image/gif': 'gif', 'image/svg+xml': 'svg' };
+  const EXT = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp', 'image/gif': 'gif', 'image/svg+xml': 'svg', 'audio/mpeg': 'mp3', 'audio/wav': 'wav' };
   const routes = [];
   let mainCss = '';
 
   for (const file of readdirSync(tmp).filter((f) => f.endsWith('.html'))) {
     const name = file.replace(/\.html$/, ''), r = route(name);
     let html = readFileSync(join(tmp, file), 'utf8');
-    html = html.replace(/data:(image\/(?:png|jpeg|webp|gif|svg\+xml));base64,([A-Za-z0-9+/=]+)/g, (_, type, b64) => save(Buffer.from(b64, 'base64'), EXT[type]));
+    html = html.replace(/data:(image\/(?:png|jpeg|webp|gif|svg\+xml)|audio\/(?:mpeg|wav));base64,([A-Za-z0-9+/=]+)/g, (_, type, b64) => save(Buffer.from(b64, 'base64'), EXT[type]));
     html = html.replace(/<style>([\s\S]*?)<\/style>/g, (_, css) => { const u = save(Buffer.from(css), 'css'); if (!mainCss) mainCss = u; return `<link rel="stylesheet" href="${u}">`; });
     html = html.replace(/<script>([\s\S]*?)<\/script>/g, (all, js) => (js.length > 400 ? `<script src="${save(Buffer.from(js), 'js')}"></script>` : all));
     html = html.replace(/href="([a-z0-9-]+)\.html(#[^"]*)?"/g, (_, n, hash) => `href="/${route(n)}${hash || ''}"`);

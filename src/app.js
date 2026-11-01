@@ -298,27 +298,89 @@ function listenLv(t) { var a = Math.abs(Math.sin(t * 5.3 + Math.sin(t * 1.1) * 3
 (function voice() {
   var va = $('[data-va]'); if (!va) return;
   var orbBtn = $('.orb', va), orb = makeOrb(orbBtn), cap = $('[data-cap]', va), stT = $('[data-st]', va), tBtn = $('[data-talk-btn]', va), live = $('[data-va-live]', va);
-  /* Suraj's script (29 Oct 2026) lives in the ElevenLabs agent; the page only greets in text until the visitor taps, because browsers block the mic and sound before a tap */
-  var hr = new Date().getHours(), TOD = hr < 12 ? 'morning' : hr < 17 ? 'afternoon' : 'evening';
-  var GREET = 'Hey, good ' + TOD + '! What should I call you?', TAP = 'Tap the orb to talk to me.';
+  /* Suraj's script (29 Oct 2026) lives in the ElevenLabs agent "Diya". Her opening (D-98) plays here from recorded clips in her voice:
+     "Hello? Hi… anybody there? Hello?", three knocks on the glass, then "Oh, hi! I'm Diya. What should I call you?".
+     No tap is needed: when the card is in view, she asks for the microphone. Once the visitor allows it, the browser lets the page play sound,
+     so she knocks, says her opening and starts the live call by herself, then waits for the visitor's name. */
+  var NAME = 'Diya', hr = new Date().getHours(), TOD = hr < 12 ? 'morning' : hr < 17 ? 'afternoon' : 'evening';
+  var GREET = 'Oh, hi! I’m Diya. What should I call you?', TAP = 'Tap me to talk.';
+  var INTRO = {
+    hello: { d: 4.24, w: [['Hello?', .16], ['Hi…', 1.36], ['anybody', 2.24], ['there?', 2.74], ['Hello?', 3.58]] },
+    knock: { d: 1.4, hits: [.04, .51, .99] },
+    name: { d: 3.76, w: [['Oh,', .16], ['hi!', .52], ['I’m', 1.28], ['Diya.', 1.54], ['What', 2.5], ['should', 2.64], ['I', 2.86], ['call', 2.96], ['you?', 3.22]] }
+  };
   var SDK = 'https://cdn.jsdelivr.net/npm/@elevenlabs/client@1.28.0/dist/lib.iife.js';
-  var state = 'idle', greeted = false, typing = 0, gate = true, conv = null, sent = false, ending = false, lastAi = GREET;
+  var state = 'idle', greeted = false, conv = null, sent = false, ending = false, lastAi = GREET;
+  var run = 0, stops = [], heard = false, kick = 0, talking = false, gate = true, micStream = null;
+  /* once a tab: 'met' after her opening, 'done' after the lead is sent or the visitor stops her (then she waits for a tap) */
+  var MEM = 'labs-diya', mem = ''; try { mem = sessionStorage.getItem(MEM) || ''; } catch (e) {}
+  function remember(v) { mem = v; try { sessionStorage.setItem(MEM, v); } catch (e) {} }
   function fit() { var keep = cap.innerHTML; cap.style.minHeight = ''; cap.textContent = 'Okay, great. I have captured this information. Can you tell me how our team can get back to you?'; cap.style.minHeight = cap.offsetHeight + 'px'; cap.innerHTML = keep; }
   cap.textContent = RM ? GREET : ''; fit();
   var fz = 0; W.addEventListener('resize', function () { clearTimeout(fz); fz = setTimeout(fit, 150); }, { passive: true });
   fontsReady.then(fit);
   function setState(s, label) { state = s; va.setAttribute('data-state', s); if (label) stT.textContent = label; }
-  function typeCap(text, ms) {
-    clearTimeout(typing); cap.textContent = '';
-    return new Promise(function (res) { var i = 0; gate = true; (function nx() { if (i >= text.length) { res(); return; } var ch = text.charAt(i++); cap.textContent = text.slice(0, i); var w = ms + rnd(-8, 14); if (/[.!?]/.test(ch)) { gate = false; w = ms * 9; } else if (ch === ',') { gate = false; w = ms * 5; } else gate = true; typing = setTimeout(nx, w); })(); });
+  function show(text, extra) { cap.textContent = text; if (extra) { var sm = d.createElement('small'); sm.textContent = extra; cap.appendChild(sm); } }
+
+  /* ---- the opening ---- */
+  var talkLv = speechLv(function () { return gate; });
+  function introLv(t) { var k = kick; kick *= .84; return Math.max(k, talking ? talkLv(t) : .05); }
+  function knockFx() {
+    kick = 1;
+    orbBtn.classList.remove('knk'); void orbBtn.offsetWidth; orbBtn.classList.add('knk');
+    var rp = d.createElement('span'); rp.className = 'rip'; orbBtn.appendChild(rp); setTimeout(function () { rp.remove(); }, 900);
+    var tk = d.createElement('span'); tk.className = 'tuk'; tk.textContent = 'tuk';
+    tk.style.left = (orbBtn.offsetLeft + orbBtn.offsetWidth * (.62 + Math.random() * .3)) + 'px'; tk.style.top = (orbBtn.offsetTop + orbBtn.offsetHeight * (.02 + Math.random() * .2)) + 'px';
+    va.appendChild(tk); setTimeout(function () { tk.remove(); }, 1000);
   }
-  function show(text, extra) { clearTimeout(typing); cap.textContent = text; if (extra) { var sm = d.createElement('small'); sm.textContent = extra; cap.appendChild(sm); } }
+  function clip(k) { return $('audio[data-snd="' + k + '"]', va); }
+  /* plays one part (its sound, if allowed) and runs its words or knocks on the clip's own clock */
+  function part(k, sound) {
+    return new Promise(function (res) {
+      var p = INTRO[k], el = sound ? clip(k) : null, timers = [];
+      stops.push(function () { timers.forEach(clearTimeout); if (el) { try { el.pause(); } catch (e) {} } });
+      function go() {
+        talking = k !== 'knock';
+        if (k === 'knock') p.hits.forEach(function (t) { timers.push(setTimeout(knockFx, t * 1000)); });
+        else { cap.textContent = ''; p.w.forEach(function (w) { timers.push(setTimeout(function () { gate = true; cap.textContent += (cap.textContent ? ' ' : '') + w[0]; live.textContent = cap.textContent; }, w[1] * 1000)); }); }
+        timers.push(setTimeout(function () { talking = false; res(); }, p.d * 1000 + 160));
+      }
+      if (!el) { go(); return; }
+      var pr; try { el.currentTime = 0; pr = el.play(); } catch (e) { heard = false; go(); return; }
+      if (pr && pr.then) pr.then(go, function () { heard = false; go(); }); else go();
+    });
+  }
+  function stopIntro() { run++; stops.splice(0).forEach(function (f) { f(); }); talking = false; }
+  /* resolves true when the whole opening was heard with sound */
+  function intro(sound) {
+    stopIntro(); var my = run; heard = !!sound;
+    setState('greet', NAME); orb.setLevel(RM ? null : introLv);
+    var alive = function () { if (my !== run) throw 0; };
+    return part('hello', sound).then(function () { alive(); return part('knock', sound); })
+      .then(function () { alive(); return part('name', sound); })
+      .then(function () { alive(); stops = []; orb.setLevel(null); return heard; });
+  }
+  function dropMic() { if (micStream) { micStream.getTracks().forEach(function (t) { t.stop(); }); micStream = null; } }
+  function askMic() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return Promise.reject(new Error('no microphone'));
+    return navigator.mediaDevices.getUserMedia({ audio: true }).then(function (st) { micStream = st; return st; });
+  }
   function greet() {
     if (greeted || state !== 'idle') return; greeted = true;
-    if (RM) { show(GREET, TAP); return; }
-    setState('greet', 'Voice agent'); orb.setLevel(speechLv(function () { return gate; }));
-    typeCap(GREET, 38).then(function () { if (state !== 'greet') return; orb.setLevel(null); setState('ready', 'Voice agent'); show(GREET, TAP); });
+    if (mem === 'done') { setState('ready', NAME); show(GREET, TAP); return; }
+    setState('greet', NAME); show('Hello? Anybody there?', 'Allow the microphone, and I will talk to you.');
+    orb.setLevel(RM ? null : introLv); if (!RM) INTRO.knock.hits.forEach(function (t) { setTimeout(knockFx, 400 + t * 1000); });
+    askMic().then(function () {
+      if (state !== 'greet') { dropMic(); return; }
+      if (mem === 'met') { start(false, 'Hi again! What should I call you?'); return; }
+      intro(true).then(function (ok) { remember('met'); start(ok); }, function () {});
+    }, function () {
+      if (state !== 'greet') return;
+      intro(false).then(function () { setState('ready', NAME); show(GREET, 'Type your details below, or allow the microphone and tap me.'); }, function () {});
+    });
   }
+
+  /* ---- the live call ---- */
   function loadSdk() {
     if (W.ElevenLabsClient) return Promise.resolve(W.ElevenLabsClient);
     return new Promise(function (res, rej) { var s = d.createElement('script'); s.src = SDK; s.async = true; s.onload = function () { if (W.ElevenLabsClient) res(W.ElevenLabsClient); else rej(new Error('sdk')); }; s.onerror = function () { rej(new Error('sdk')); }; d.head.appendChild(s); });
@@ -329,21 +391,24 @@ function listenLv(t) { var a = Math.abs(Math.sin(t * 5.3 + Math.sin(t * 1.1) * 3
     f.value = String(value); f.dispatchEvent(new Event('input', { bubbles: true }));
     var fl = f.closest('.fld'); if (fl) { fl.classList.remove('filled'); void fl.offsetWidth; fl.classList.add('filled'); }
   }
-  function idle(text, extra) { conv = null; ending = false; orb.setLevel(null); setState('ready', 'Voice agent'); show(text || GREET, extra === undefined ? TAP : extra); }
-  function stop() { var c = conv; conv = null; if (c) { try { c.endSession(); } catch (e) {} } idle(sent ? 'Thank you. Our team will get back to you in the next hour.' : lastAi, sent ? '' : 'Tap the orb to talk again.'); live.textContent = 'The call ended.'; }
-  function start() {
+  function idle(text, extra) { conv = null; ending = false; orb.setLevel(null); setState('ready', NAME); show(text || GREET, extra === undefined ? TAP : extra); }
+  function stop() { var c = conv; conv = null; if (c) { try { c.endSession(); } catch (e) {} } idle(sent ? 'Thank you. Our team will get back to you in the next hour.' : lastAi, sent ? '' : 'Tap me to talk again.'); live.textContent = 'The call ended.'; }
+  /* quiet: she has just asked for the name in her opening, so she listens first instead of greeting again */
+  function start(quiet, firstMessage) {
     if (!PAGE.agent) { idle('The voice agent is not set up on this page. Please type your details below.', ''); return; }
-    clearTimeout(typing); sent = false; ending = false; setState('connecting', 'Connecting');
-    show('Connecting…', 'Allow the microphone when your browser asks.'); orb.setLevel(RM ? null : listenLv);
+    stopIntro(); sent = false; ending = false; setState('connecting', 'Connecting');
+    show(quiet ? GREET : 'Connecting…', quiet ? 'Allow the microphone, then tell me your name.' : 'Allow the microphone when your browser asks.'); orb.setLevel(RM ? null : listenLv);
     loadSdk().then(function (EL) {
       if (state !== 'connecting') return null;
       return EL.Conversation.startSession({
         agentId: PAGE.agent,
+        overrides: quiet ? { agent: { firstMessage: '' } } : firstMessage ? { agent: { firstMessage: firstMessage } } : undefined,
         dynamicVariables: { time_of_day: TOD, service: PAGE.service || 'apps, software and AI' },
         clientTools: {
           fill_field: function (p) { fill(p && p.field, p && p.value); },
-          submit_quote: function () { return sendLead('voice', conv && conv.getId ? conv.getId() : '').then(function (r) { if (r.ok) sent = true; return r.ok ? 'Sent.' : 'Not sent: ' + r.why + '.'; }); }
+          submit_quote: function () { return sendLead('voice', conv && conv.getId ? conv.getId() : '').then(function (r) { if (r.ok) { sent = true; remember('done'); } return r.ok ? 'Sent.' : 'Not sent: ' + r.why + '.'; }); }
         },
+        onConnect: function () { setTimeout(dropMic, 1500); if (quiet && state === 'connecting') { setState('listening', 'Listening'); show(GREET, 'I’m listening.'); } },
         onModeChange: function (m) {
           if (state === 'ready') return;
           var sp = m && m.mode === 'speaking'; setState(sp ? 'speaking' : 'listening', sp ? 'Speaking' : 'Listening');
@@ -363,20 +428,30 @@ function listenLv(t) { var a = Math.abs(Math.sin(t * 5.3 + Math.sin(t * 1.1) * 3
       if (state === 'ready' || state === 'idle') { try { c.endSession(); } catch (e) {} return; }
       conv = c;
     }).catch(function (e) {
-      var why = String(e && (e.name + ' ' + e.message));
-      idle(/NotAllowed|Permission|denied/i.test(why) ? 'The microphone is blocked. Please type your details below, or allow the microphone and tap the orb.' : 'The voice agent could not start. Please type your details below.', '');
+      dropMic(); var why = String(e && (e.name + ' ' + e.message));
+      idle(/NotAllowed|Permission|denied/i.test(why) ? 'The microphone is blocked. Please type your details below, or allow the microphone and tap me.' : 'The voice agent could not start. Please type your details below.', '');
     });
   }
-  function talk() { if (state === 'connecting' || conv) { stop(); return; } start(); }
+  /* the orb: stops a call (then she waits for a tap), or starts one */
+  function talk() {
+    if (state === 'connecting' || conv) { remember('done'); stop(); return; }
+    if (state === 'greet') return;
+    remember(''); start(false);
+  }
   tBtn.addEventListener('click', talk); orbBtn.addEventListener('click', talk);
-  /* typed details go to the agent, so it does not ask for them again */
+  /* typed details go to the agent, so it does not ask for them again; typing stops the opening */
   if (form) form.addEventListener('change', function (e) { var f = e.target; if (conv && f && f.name && f.value) { try { conv.sendContextualUpdate('The visitor typed their ' + f.name + ' in the form: ' + f.value); } catch (x) {} } });
+  if (form) form.addEventListener('focusin', function (e) { if (/INPUT|TEXTAREA/.test(e.target.tagName) && state === 'greet') { stopIntro(); orb.setLevel(null); setState('ready', NAME); show(GREET, TAP); } });
   var vis = false, gT = 0;
   function sync() { if (vis && !d.hidden) orb.start(); else orb.stop(); }
-  if (hasIO) new IntersectionObserver(function (es) { vis = es[0].isIntersecting; sync(); if (vis && !greeted) { clearTimeout(gT); gT = setTimeout(greet, 1200); } else if (!vis) clearTimeout(gT); }, { threshold: .5 }).observe(orbBtn);
-  else { vis = true; sync(); setTimeout(greet, 1200); }
+  if (hasIO) new IntersectionObserver(function (es) {
+    vis = es[0].isIntersecting; sync();
+    if (vis && !greeted) { clearTimeout(gT); gT = setTimeout(greet, 900); }
+    else if (!vis) clearTimeout(gT);
+  }, { threshold: .5 }).observe(orbBtn);
+  else { vis = true; sync(); setTimeout(greet, 900); }
   d.addEventListener('visibilitychange', sync);
-  W.addEventListener('pagehide', function () { if (conv) { try { conv.endSession(); } catch (e) {} } });
+  W.addEventListener('pagehide', function () { dropMic(); if (conv) { try { conv.endSession(); } catch (e) {} } });
   W.addEventListener('resize', function () { orb.redraw(); }, { passive: true });
 })();
 
