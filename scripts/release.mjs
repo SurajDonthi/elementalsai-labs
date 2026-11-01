@@ -2,7 +2,7 @@
 // It builds every page with LABS_PROD, then moves the inline styles, scripts and images into cached files under public/assets/,
 // gives each page its clean address (/mobile-app-development, /quote …), and writes robots.txt, sitemap.xml and 404.html.
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, readdirSync, readFileSync, writeFileSync, mkdirSync, rmSync } from 'node:fs';
+import { mkdtempSync, readdirSync, readFileSync, writeFileSync, mkdirSync, rmSync, copyFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -12,6 +12,13 @@ const ROOT = new URL('../', import.meta.url), PUB = new URL('public/', ROOT), AS
 const SITE = 'https://elementalsai-labs.com';
 /* the review files keep their numbers; the live addresses match the Google Ads final URLs and sitelinks */
 const ROUTE = { '01-mobile-app-development': 'mobile-app-development', '02-app-development': 'app-development', '06-ai-development': 'ai-development', '08-ai-agents-and-automation': 'ai-agents-and-automation', '11-custom-software': 'custom-software' };
+/* the icons (from the official Elementals.ai-icons folder) and the sharing image, served from the site root */
+const BRAND = ['favicon.ico', 'favicon-16x16.png', 'favicon-32x32.png', 'favicon-96x96.png', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png', 'icon-512-maskable.png', 'og-image.png'];
+const ICONS = `<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32"><link rel="icon" href="/favicon-96x96.png" type="image/png" sizes="96x96">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180"><link rel="manifest" href="/site.webmanifest">
+<meta name="apple-mobile-web-app-title" content="ElementalsAI Labs"><meta name="application-name" content="ElementalsAI Labs">`;
+const ORG = JSON.stringify({ '@context': 'https://schema.org', '@type': 'Organization', name: 'ElementalsAI Labs', url: 'https://elementalsai-labs.com/', logo: 'https://elementalsai-labs.com/icon-512.png', email: 'hello@elementalsai-labs.com', telephone: '+91 80887 33622', areaServed: 'IN' });
 const route = (name) => (name === 'index' ? '' : ROUTE[name] || name); // the home page is /
 
 const tmp = mkdtempSync(join(tmpdir(), 'labs-release-'));
@@ -37,22 +44,25 @@ try {
     const desc = (html.match(/<meta name="description" content="([^"]*)">/) || [])[1] || '';
     const url = SITE + '/' + r;
     html = html.replace('</head>', `<link rel="canonical" href="${url}">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<meta property="og:type" content="website"><meta property="og:site_name" content="ElementalsAI Labs">
+${ICONS}
+<meta property="og:type" content="website"><meta property="og:site_name" content="ElementalsAI Labs"><meta property="og:locale" content="en_IN">
 <meta property="og:title" content="${title}"><meta property="og:description" content="${desc}"><meta property="og:url" content="${url}">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="${SITE}/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="ElementalsAI Labs: we build apps and AI your users will love. Free quote in 12 hours, working demo in 3 days.">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="${SITE}/og-image.png">${r ? '' : '\n<script type="application/ld+json">' + ORG + '</script>'}
 </head>`);
     writeFileSync(new URL((r || 'index') + '.html', PUB), html);
     routes.push(r);
     console.log('public/' + (r || 'index') + '.html', Math.round(html.length / 1024) + ' KB');
   }
 
-  writeFileSync(new URL('favicon.svg', PUB), '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="#0A0A0B"/><circle cx="32" cy="32" r="22" fill="#FFBD59"/></svg>\n');
+  for (const f of BRAND) copyFileSync(new URL('src/assets/brand/' + f, ROOT), new URL(f, PUB));
+  writeFileSync(new URL('site.webmanifest', PUB), JSON.stringify({ name: 'ElementalsAI Labs', short_name: 'ElementalsAI', start_url: '/', display: 'browser', background_color: '#0A0A0B', theme_color: '#0A0A0B',
+    icons: [{ src: '/icon-192.png', sizes: '192x192', type: 'image/png' }, { src: '/icon-512.png', sizes: '512x512', type: 'image/png' }, { src: '/icon-512-maskable.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }] }, null, 1) + '\n');
   writeFileSync(new URL('robots.txt', PUB), `User-agent: *\nAllow: /\nSitemap: ${SITE}/sitemap.xml\n`);
   writeFileSync(new URL('sitemap.xml', PUB), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${routes.sort().map((r) => `  <url><loc>${SITE}/${r}</loc></url>`).join('\n')}\n</urlset>\n`);
   writeFileSync(new URL('404.html', PUB), `<!doctype html>
 <html lang="en-IN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Page not found · ElementalsAI Labs</title><meta name="robots" content="noindex">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Serif:wght@600&display=swap"><link rel="stylesheet" href="${mainCss}"></head>
+${ICONS}<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Serif:wght@600&display=swap"><link rel="stylesheet" href="${mainCss}"></head>
 <body><main class="wrap" style="min-height:100vh;display:grid;align-content:center;gap:20px"><span class="eyebrow">404</span><h1 class="h2">This page does not exist.</h1><p class="lede">Get a free quote in 12 hours, or see what we build.</p><p><a class="btn primary" href="/quote">Get a free quote</a></p><p><a href="/mobile-app-development">Mobile apps</a> · <a href="/app-development">App development</a> · <a href="/ai-development">AI development</a> · <a href="/ai-agents-and-automation">AI agents</a> · <a href="/custom-software">Custom software</a></p></main></body></html>
 `);
   const kb = [...saved.values()].reduce((a, b) => a + b, 0) / 1024;

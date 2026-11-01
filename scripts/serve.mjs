@@ -1,5 +1,5 @@
 // npm run dev → http://localhost:4173 serves public/ the way Vercel does (clean addresses; / is the home page).
-// POST /api/lead runs api/lead.js when RESEND_API_KEY is set; without it, the lead is only saved to leads.local.jsonl, so you can test the form and the voice agent.
+// POST /api/lead saves the lead to leads.local.jsonl, so local tests never reach the live lead store; LABS_REAL_LEADS=1 runs api/lead.js instead.
 import { createServer } from 'node:http';
 import { readFile, appendFile } from 'node:fs/promises';
 import handler from '../api/lead.js';
@@ -12,7 +12,7 @@ createServer(async (req, res) => {
   if (path === '/api/lead') {
     let raw = ''; for await (const c of req) raw += c;
     let body = null; try { body = JSON.parse(raw); } catch {}
-    if (!process.env.RESEND_API_KEY) {
+    if (!process.env.LABS_REAL_LEADS) {
       await appendFile(new URL('../leads.local.jsonl', import.meta.url), JSON.stringify({ at: new Date().toISOString(), ...body }) + '\n');
       console.log('lead (saved locally, not emailed):', body && body.name, '|', body && (body.phone || body.email), '|', body && body.source);
       res.writeHead(200, { 'Content-Type': 'application/json' }); return res.end('{"ok":true}');

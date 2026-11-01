@@ -17,7 +17,8 @@ const devFiles = (ext, name) => (!NO_DEV && existsSync(DEV_DIR) ? readdirSync(DE
 // one script block per device, so an error in one device cannot stop the others
 const devScripts = (name) => (!NO_DEV && existsSync(DEV_DIR) ? readdirSync(DEV_DIR).filter((f) => f === name + '.js').sort().map((f) => '<script>' + readFileSync(new URL(f, DEV_DIR), 'utf8') + '</script>').join('\n') : '');
 const deviceOf = (p) => (!p.try ? '' : hasDev(p.try.device) ? p.try.device : (p.try.fallback || p.try.device || 'phone'));
-const LOGO = b64('logo-dark.png', 'image/png');
+/* the official single-line logo (Nourd lettering), with white text for the dark site, made from the 2344 px original (D-99) */
+const LOGO = b64('brand/logo-line-white.png', 'image/png');
 const IMG = Object.fromEntries(['toothlens', 'volunteeryatra', 'agshift', 'pilarsai'].map((k) => [k, b64(k + '.jpg', 'image/jpeg')]));
 const DEEP = b64('deep-mehta.jpg', 'image/jpeg');
 /* Diya's opening (D-98): her two lines, made in the agent's own voice, and the glass knock (the word times are in app.js) */
@@ -289,7 +290,7 @@ const P = {
 // ---- sections ----
 const derisk = `<p class="derisk">${I('shield')}<span><b>Pay only when you see it built.</b> <span class="sep">·</span> Full money back if we don’t deliver.</span></p>`;
 const strip = () => { const it = (f) => `<span class="it"${f ? '' : ' aria-hidden="true"'}>${I('phone')}Call <a href="tel:${TEL}"${f ? '' : ' tabindex="-1"'}>${PHONE}</a> or email <a href="mailto:${EMAIL}"${f ? '' : ' tabindex="-1"'}>${EMAIL}</a></span>`; return `<div class="strip" role="note" aria-label="Call or email us"><div class="trk">${Array.from({ length: 12 }, (_, i) => it(i === 0)).join('')}</div></div>`; };
-const header = () => `<header class="top"><div class="wrap"><a class="brand" href="index.html" aria-label="ElementalsAI Labs home"><img src="${LOGO}" alt="ElementalsAI Labs" width="198" height="28"></a><nav aria-label="Free quote"><a class="btn primary sm" href="#quote">Get a free quote</a></nav></div><span class="prog" aria-hidden="true"></span></header>`;
+const header = () => `<header class="top"><div class="wrap"><a class="brand" href="index.html" aria-label="ElementalsAI Labs home"><img src="${LOGO}" alt="ElementalsAI Labs" width="208" height="28"></a><nav aria-label="Free quote"><a class="btn primary sm" href="#quote">Get a free quote</a></nav></div><span class="prog" aria-hidden="true"></span></header>`;
 const titleHTML = (p) => {
   const ws = (s) => s.split(' ').map((w) => `<span class="w">${esc(w)}</span>`).join(' ');
   return `<h1 class="title" data-talk data-verbs='${JSON.stringify(p.verbs).replace(/'/g, '&#39;')}'><span class="sr">${esc(p.line)} ${esc(p.verbs[0])}</span><span class="false" aria-hidden="true">${ws(p.falseStart)}</span><span class="line" aria-hidden="true">${ws(p.line)} <span class="band"><span class="rot"><span class="w">${esc(p.verbs[0])}</span></span></span><span class="pad"></span></span></h1>`;
@@ -389,7 +390,7 @@ const cta = (p) => `<section class="cta" aria-labelledby="cta-t"><div class="wra
  <div class="act reveal"><a class="btn primary" href="#quote">Get my free quote ${I('arrow')}</a>${derisk}</div>
 </div></section>`;
 const footer = (slug) => `<footer class="foot"><div class="wrap">
- <div><a class="brand" href="index.html" aria-label="ElementalsAI Labs home"><img src="${LOGO}" alt="ElementalsAI Labs" width="184" height="26"></a><p>Apps your users will love. Built with passion for great products.</p></div>
+ <div><a class="brand" href="index.html" aria-label="ElementalsAI Labs home"><img src="${LOGO}" alt="ElementalsAI Labs" width="194" height="26"></a><p>Apps your users will love. Built with passion for great products.</p></div>
  <nav aria-label="Services">${PAGES_ORDER.map(([s, n]) => `<a href="${s}.html"${s === slug ? ' aria-current="page"' : ''}>${n}</a>`).join('')}</nav>
  <p class="fine">© 2026 ElementalsAI Labs · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="contact.html">Contact</a>${PROD ? '' : ' · Draft for review, not the live site'}</p>
 </div></footer>`;

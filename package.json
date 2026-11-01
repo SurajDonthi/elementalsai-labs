@@ -8,5 +8,10 @@
     "dev": "node scripts/serve.mjs",
     "review": "node scripts/review.mjs"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@vercel/blob": "2.8.2"
+  }
 }
