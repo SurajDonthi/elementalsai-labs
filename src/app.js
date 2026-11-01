@@ -312,6 +312,9 @@ function listenLv(t) { var a = Math.abs(Math.sin(t * 5.3 + Math.sin(t * 1.1) * 3
   var SDK = 'https://cdn.jsdelivr.net/npm/@elevenlabs/client@1.28.0/dist/lib.iife.js';
   var state = 'idle', greeted = false, conv = null, sent = false, ending = false, lastAi = GREET;
   var run = 0, stops = [], heard = false, kick = 0, talking = false, gate = true, micStream = null;
+  /* the call ends by itself: Diya calls end_call when she is done; as a backstop, the page ends it after 3 of her turns with no answer, or 60 s without the visitor speaking */
+  var aiRun = 0, winding = false, idleT = 0;
+  function idleWatch() { clearTimeout(idleT); idleT = setTimeout(function () { if (conv) stop(); }, 60000); }
   /* once a tab: 'met' after her opening, 'done' after the lead is sent or the visitor stops her (then she waits for a tap) */
   var MEM = 'labs-diya', mem = ''; try { mem = sessionStorage.getItem(MEM) || ''; } catch (e) {}
   function remember(v) { mem = v; try { sessionStorage.setItem(MEM, v); } catch (e) {} }
@@ -389,11 +392,11 @@ function listenLv(t) { var a = Math.abs(Math.sin(t * 5.3 + Math.sin(t * 1.1) * 3
     var fl = f.closest('.fld'); if (fl) { fl.classList.remove('filled'); void fl.offsetWidth; fl.classList.add('filled'); }
   }
   function idle(text, extra) { conv = null; ending = false; orb.setLevel(null); setState('ready', NAME); show(text || GREET, extra === undefined ? TAP : extra); }
-  function stop() { var c = conv; conv = null; if (c) { try { c.endSession(); } catch (e) {} } idle(sent ? 'Thank you. Our team will get back to you in the next hour.' : lastAi, sent ? '' : 'Tap me to talk again.'); live.textContent = 'The call ended.'; }
+  function stop() { clearTimeout(idleT); var c = conv; conv = null; if (c) { try { c.endSession(); } catch (e) {} } idle(sent ? 'Thank you. Our team will get back to you in the next hour.' : lastAi, sent ? '' : 'Tap me to talk again.'); live.textContent = 'The call ended.'; }
   /* quiet: she has just asked for the name in her opening, so she listens first instead of greeting again */
   function start(quiet, firstMessage) {
     if (!PAGE.agent) { idle('The voice agent is not set up on this page. Please type your details below.', ''); return; }
-    stopIntro(); sent = false; ending = false; setState('connecting', 'Connecting');
+    stopIntro(); sent = false; ending = false; aiRun = 0; winding = false; setState('connecting', 'Connecting');
     show(quiet ? GREET : 'Connecting…', quiet ? 'Allow the microphone, then tell me your name.' : 'Allow the microphone when your browser asks.'); orb.setLevel(RM ? null : listenLv);
     loadSdk().then(function (EL) {
       if (state !== 'connecting') return null;
@@ -405,17 +408,17 @@ function listenLv(t) { var a = Math.abs(Math.sin(t * 5.3 + Math.sin(t * 1.1) * 3
           fill_field: function (p) { fill(p && p.field, p && p.value); },
           submit_quote: function () { return sendLead('voice', conv && conv.getId ? conv.getId() : '').then(function (r) { if (r.ok) { sent = true; remember('done'); } return r.ok ? 'Sent.' : 'Not sent: ' + r.why + '.'; }); }
         },
-        onConnect: function () { setTimeout(dropMic, 1500); if (quiet && state === 'connecting') { setState('listening', 'Listening'); show(GREET, 'I’m listening.'); } },
+        onConnect: function () { setTimeout(dropMic, 1500); idleWatch(); if (quiet && state === 'connecting') { setState('listening', 'Listening'); show(GREET, 'I’m listening.'); } },
         onModeChange: function (m) {
           if (state === 'ready') return;
           var sp = m && m.mode === 'speaking'; setState(sp ? 'speaking' : 'listening', sp ? 'Speaking' : 'Listening');
           orb.setLevel(RM ? null : sp ? level(function () { return conv && conv.getOutputVolume(); }, 1.5) : level(function () { return conv && conv.getInputVolume(); }, 1.2));
-          if (!sp && sent && !ending) { ending = true; setTimeout(stop, 700); }
+          if (!sp && (sent || winding) && !ending) { ending = true; setTimeout(stop, 700); }
         },
         onMessage: function (m) {
           var t = m && m.message ? String(m.message).replace(/\[[^\]]*\]\s*/g, '').trim() : ''; if (!t) return; /* drop the voice's mood tags, e.g. [warm] */
-          if (m.source === 'ai') { lastAi = t; show(t); live.textContent = t; }
-          else if (t !== '...') show(lastAi, 'You: ' + t);
+          if (m.source === 'ai') { lastAi = t; show(t); live.textContent = t; if (++aiRun >= 3) winding = true; }
+          else if (t !== '...') { aiRun = 0; idleWatch(); show(lastAi, 'You: ' + t); }
         },
         onDisconnect: function () { if (conv) stop(); },
         onError: function (msg) { if (W.console) console.warn('Voice agent:', msg); }

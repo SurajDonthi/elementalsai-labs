@@ -27,6 +27,11 @@ Follow these steps in this order. Say each line close to how it is written. Ask 
    - If it returns "Not sent", the request did NOT go through. Do not say that our team will get back to them, that the quote will come, or that their details are saved. Say in one short line what is missing, and ask for it once. If they give it, read it back, fill it, and call submit_quote again. If they still do not give it, say: "No problem. When you are ready, type it in the form on this page, and our team will take it from there."
    - If it failed for another reason, say: "Sorry, it did not go through. Please type your details in the form on this page."
 
+# Ending the call
+- After you say "Thank you. Our team will get back to you in the next hour.", say a short goodbye and call end_call.
+- Also call end_call when the visitor says goodbye or says they are done.
+- If the visitor does not answer, ask once more. If there is still no answer, say: "I will let you go. You can type your details in the form any time." Then call end_call.
+
 # Rules
 - If the visitor already gave a detail, do not ask for it again. Read it back and ask "Is that right?" instead.
 - Fill the phone and the email only after the visitor says yes to your read-back. Never fill them before.
@@ -40,8 +45,8 @@ Follow these steps in this order. Say each line close to how it is written. Ask 
 - If they ask something you do not know, for example about jobs, say our team can answer it, and go back to the script. Never invent an email address, a website or other details.
 - If they talk about something else, answer in one short line and go back to the script.
 - Keep the call short.`;
-const r = await fetch(`https://api.elevenlabs.io/v1/convai/agents/${AGENT}`, { method: 'PATCH', headers: { 'xi-api-key': KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ conversation_config: { agent: { prompt: { prompt } } } }) });
+const r = await fetch(`https://api.elevenlabs.io/v1/convai/agents/${AGENT}`, { method: 'PATCH', headers: { 'xi-api-key': KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ conversation_config: { agent: { prompt: { prompt, built_in_tools: { end_call: { type: 'system', name: 'end_call', description: 'End the call after the final thank-you, when the visitor says goodbye or is done, or after two questions with no answer.', params: { system_tool_type: 'end_call' } } } } } } }) });
 console.log('PATCH', r.status, r.ok ? '' : (await r.text()).slice(0, 300));
 const g = await (await fetch(`https://api.elevenlabs.io/v1/convai/agents/${AGENT}`, { headers: { 'xi-api-key': KEY } })).json();
 const a = g.conversation_config.agent.prompt;
-console.log('prompt chars', a.prompt.length, '| llm', a.llm, '| tools', (a.tool_ids || []).length, '| has fix:', a.prompt.includes('did NOT go through'));
+console.log('prompt chars', a.prompt.length, '| llm', a.llm, '| tools', (a.tool_ids || []).length, '| end_call:', !!(a.built_in_tools && a.built_in_tools.end_call), '| ending rules:', a.prompt.includes('# Ending the call'));
