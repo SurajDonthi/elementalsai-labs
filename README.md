@@ -1,6 +1,6 @@
 # ElementalsAI Labs website
 
-Status: Live on elementalsai-labs.com since 1 Nov 2026 (D-97). A push to main deploys to production through Vercel. Lead emails are not working until RESEND_API_KEY is set in Vercel.
+Status: Live on elementalsai-labs.com since 1 Nov 2026 (D-97). A push to main deploys to production. Every lead is kept in the private Vercel Blob store "elementalsai-labs-leads" (Mumbai); email notices wait for a mailbox and a sender (D-99).
 Last change: 1 Nov 2026.
 
 The website for the Google Ads campaign: the home page, 5 service landing pages and 6 site pages, on the D-91 design. The older agentic GTM page and its blog are in [archive/agentic-gtm-v1/](archive/agentic-gtm-v1/README.md). The words, decisions and review notes live in `ai-services-gtm` (campaign docs, decision log, `labs-site/landing-pages-v2/pages.json`).
@@ -22,7 +22,9 @@ The website for the Google Ads campaign: the home page, 5 service landing pages 
 ## Folders
 
 - `src/`: the source. `build.mjs` (the home page, the service pages and their words, and the shared header and footer), `site.mjs` (the site pages), `styles.css`, `app.js` (every interaction, the form and the voice agent), `devices/` (the "Try it" demos), `assets/`.
-- `api/lead.js`: the Vercel function that emails each lead to hello@elementalsai-labs.com through Resend.
+- `api/lead.js`: the Vercel function that keeps each lead in the private Blob store, and also emails it when RESEND_API_KEY is set.
+- `api/leads.js`: the password page that lists every lead (https://elementalsai-labs.com/api/leads). Set LEADS_KEY in Vercel to open it; any user name works.
+- `src/assets/brand/`: the official icons (from the company OneDrive folder Elementals.ai-icons), the one-line white logo built from the official 2000 px artwork, and the sharing image.
 - `agent/`: the ElevenLabs voice agent. `update-prompt.mjs` holds its instructions; `tests.mjs` runs its 8 visitor tests in ElevenLabs.
 - `scripts/`: `release.mjs` (the live build), `serve.mjs` (the local server), `review.mjs` (the review copies).
 
