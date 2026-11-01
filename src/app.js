@@ -299,14 +299,14 @@ function listenLv(t) { var a = Math.abs(Math.sin(t * 5.3 + Math.sin(t * 1.1) * 3
   var va = $('[data-va]'); if (!va) return;
   var orbBtn = $('.orb', va), orb = makeOrb(orbBtn), cap = $('[data-cap]', va), stT = $('[data-st]', va), tBtn = $('[data-talk-btn]', va), live = $('[data-va-live]', va);
   /* Suraj's script (29 Oct 2026) lives in the ElevenLabs agent "Diya". Her opening (D-98) plays here from recorded clips in her voice:
-     "Hello? Hi… anybody there? Hello?", three knocks on the glass, then "Oh, hi! I'm Diya. What should I call you?".
+     "Hello? Hi… anybody there? Hello?", three taps on the glass, then "Oh, hi! I'm Diya. What should I call you?".
      No tap is needed: when the card is in view, she asks for the microphone. Once the visitor allows it, the browser lets the page play sound,
      so she knocks, says her opening and starts the live call by herself, then waits for the visitor's name. */
   var NAME = 'Diya', hr = new Date().getHours(), TOD = hr < 12 ? 'morning' : hr < 17 ? 'afternoon' : 'evening';
   var GREET = 'Oh, hi! I’m Diya. What should I call you?', TAP = 'Tap me to talk.';
   var INTRO = {
     hello: { d: 4.24, w: [['Hello?', .16], ['Hi…', 1.36], ['anybody', 2.24], ['there?', 2.74], ['Hello?', 3.58]] },
-    knock: { d: 1.4, hits: [.04, .51, .99] },
+    knock: { d: 1.1, hits: [.04, .38, .72] }, /* three taps on the glass */
     name: { d: 3.76, w: [['Oh,', .16], ['hi!', .52], ['I’m', 1.28], ['Diya.', 1.54], ['What', 2.5], ['should', 2.64], ['I', 2.86], ['call', 2.96], ['you?', 3.22]] }
   };
   var SDK = 'https://cdn.jsdelivr.net/npm/@elevenlabs/client@1.28.0/dist/lib.iife.js';
@@ -329,9 +329,6 @@ function listenLv(t) { var a = Math.abs(Math.sin(t * 5.3 + Math.sin(t * 1.1) * 3
     kick = 1;
     orbBtn.classList.remove('knk'); void orbBtn.offsetWidth; orbBtn.classList.add('knk');
     var rp = d.createElement('span'); rp.className = 'rip'; orbBtn.appendChild(rp); setTimeout(function () { rp.remove(); }, 900);
-    var tk = d.createElement('span'); tk.className = 'tuk'; tk.textContent = 'tuk';
-    tk.style.left = (orbBtn.offsetLeft + orbBtn.offsetWidth * (.62 + Math.random() * .3)) + 'px'; tk.style.top = (orbBtn.offsetTop + orbBtn.offsetHeight * (.02 + Math.random() * .2)) + 'px';
-    va.appendChild(tk); setTimeout(function () { tk.remove(); }, 1000);
   }
   function clip(k) { return $('audio[data-snd="' + k + '"]', va); }
   /* plays one part (its sound, if allowed) and runs its words or knocks on the clip's own clock */
