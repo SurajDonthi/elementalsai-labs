@@ -1,0 +1,12 @@
+{
+  "name": "elementalsai-labs-services",
+  "private": true,
+  "type": "module",
+  "description": "ElementalsAI Labs services website: the 5 service landing pages for Google Ads and the site pages (quote, how it works, work, contact, privacy, terms).",
+  "scripts": {
+    "build": "node scripts/release.mjs",
+    "dev": "node scripts/serve.mjs",
+    "review": "node scripts/review.mjs"
+  },
+  "engines": { "node": ">=20" }
+}

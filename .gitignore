@@ -1,5 +1,6 @@
 .vercel
 .env*
-
-.vercel
-.env*
+node_modules/
+/public/
+/review/
+leads.local.jsonl

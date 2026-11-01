@@ -1,0 +1,8 @@
+.env*
+.claude
+archive
+review
+public
+agent
+leads.local.jsonl
+node_modules
