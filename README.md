@@ -1,6 +1,6 @@
 # ElementalsAI Labs website
 
-Status: Built and tested on this computer (1 Nov 2026). Not deployed yet. Suraj approved all pages on 1 Nov 2026 (D-95). This repository is the one linked to Vercel and elementalsai-labs.com (D-96).
+Status: Live on elementalsai-labs.com since 1 Nov 2026 (D-97). A push to main deploys to production through Vercel. Lead emails are not working until RESEND_API_KEY is set in Vercel.
 Last change: 1 Nov 2026.
 
 The website for the Google Ads campaign: the home page, 5 service landing pages and 6 site pages, on the D-91 design. The older agentic GTM page and its blog are in [archive/agentic-gtm-v1/](archive/agentic-gtm-v1/README.md). The words, decisions and review notes live in `ai-services-gtm` (campaign docs, decision log, `labs-site/landing-pages-v2/pages.json`).
@@ -35,10 +35,9 @@ ElevenLabs agent "ElementalsAI Labs - Free quote agent" (ID in `src/build.mjs`).
 - `RESEND_API_KEY`, `LEAD_TO` (hello@elementalsai-labs.com), `LEAD_FROM` (a sender on a domain verified in Resend).
 - For the build: `LABS_ADS_ID` (the Google Ads tag, AW-…) and `LABS_ADS_LEAD_LABEL` (the lead conversion label). Without them, the pages have no Google tag.
 
-## Before launch
+## Still to do
 
-- Commit and push this repository only after Suraj's yes: a push to main can deploy to elementalsai-labs.com. Check the Vercel project uses `npm run build` and the `public` folder (vercel.json sets both).
 - Set up Resend (or another email sender) and verify the domain.
 - Fill the legal facts in the privacy and terms pages, and have a lawyer read them.
-- On the ElevenLabs agent: allow only the live site's address, and decide how long call audio and text are kept.
+- On the ElevenLabs agent: decide how long call audio and text are kept. (Done: it accepts calls only from elementalsai-labs.com, www and localhost.)
 - Add the Google tag IDs when the Google Ads conversion actions exist.
