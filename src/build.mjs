@@ -360,7 +360,7 @@ const SERVICES = [
   ['11-custom-software', 'tool', 'Custom software', 'Software built around how your business works today.', 'Job tracking · stock · billing'],
 ];
 const services = () => `<section class="sec" id="services" aria-labelledby="sv-t"><div class="wrap">
- <div class="sec-h reveal"><span class="eyebrow">What we build</span><h2 class="h2" id="sv-t">Pick what you need. <em>See it working in 3 days.</em></h2><p class="lede">Every service starts the same way: a free quote in 12 hours, then a working demo in 3 days.</p></div>
+ <div class="sec-h reveal"><span class="eyebrow">What we build</span><h2 class="h2" id="sv-t">Pick what you need. <em>See a working demo in 3 days.</em></h2><p class="lede">Every service starts the same way: a free quote in 12 hours, then a working demo in 3 days.</p></div>
  <div class="svc reveal">${SERVICES.map(([slug, ic, h, t, ex], i) => `<a class="svc-c" href="${slug}.html"><span class="hd"><span class="ic">${I(ic)}</span><span class="n">0${i + 1}</span></span><h3>${h}</h3><p>${t}</p><small>${ex}</small><span class="go">See this service ${I('arrow')}</span></a>`).join('')}</div>
 </div></section>`;
 const numParts = (v) => v.split(/(\d[\d,]*(?:\.\d+)?)/).filter(Boolean).map((t) => /^\d/.test(t) ? `<span class="num" data-to="${t.replace(/,/g, '')}"${t.includes(',') ? ' data-grp' : ''} style="--w:${t.length}ch">${t}</span>` : esc(t)).join('');
