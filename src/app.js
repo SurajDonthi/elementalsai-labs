@@ -201,11 +201,11 @@ var ORIGIN = (function () {
   if (Object.keys(q).length) { keep = q; keep.landing = location.pathname; try { sessionStorage.setItem('labs-origin', JSON.stringify(keep)); } catch (e) {} }
   return keep;
 })();
-var valid = { name: function (v) { return v.trim().length > 1; }, idea: function (v) { return v.trim().length > 5; }, phone: function (v) { return v.replace(/\D/g, '').length >= 10; }, email: function (v) { return /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/.test(v.trim()); } };
+var valid = { name: function (v) { return v.trim().length > 1; }, idea: function (v) { return v.trim().length > 5; }, phone: function (v) { return v.replace(/\D/g, '').length >= 10; }, email: function (v) { return /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/.test(v.trim()); }, budget: function (v) { return v !== ''; } };
 /* sends the quote form; the voice agent uses it too. Resolves { ok, why } and never rejects */
 var sendLead = function () { return Promise.resolve({ ok: false, why: 'no form' }); };
 if (form) {
-  $$('input,textarea', form).forEach(function (f) {
+  $$('input,textarea,select', form).forEach(function (f) {
     var fld = f.closest('.fld'), chk = valid[f.name];
     f.addEventListener('input', function () { if (fld && chk) fld.classList.toggle('ok', chk(f.value)); });
   });
@@ -213,13 +213,14 @@ if (form) {
   var say = function (t, bad) { st.classList.remove('on', 'bad'); void st.offsetWidth; st.textContent = t; st.classList.add('on'); if (bad) st.classList.add('bad'); };
   var val = function (n) { var f = form.elements[n]; return f ? f.value.trim() : ''; };
   sendLead = function (source, conv) {
-    var name = val('name'), idea = val('idea'), phone = val('phone'), email = val('email');
-    var miss = [!valid.name(name) && 'your name', !valid.idea(idea) && 'your idea', !(valid.phone(phone) || valid.email(email)) && 'a phone number or an email'].filter(Boolean);
+    var name = val('name'), idea = val('idea'), phone = val('phone'), email = val('email'), budget = val('budget');
+    /* the voice agent does not ask the budget, so only the typed form needs it */
+    var miss = [!valid.name(name) && 'your name', !valid.idea(idea) && 'your idea', source !== 'voice' && !valid.budget(budget) && 'your budget', !(valid.phone(phone) || valid.email(email)) && 'a phone number or an email'].filter(Boolean);
     if (miss.length) { say('Please add ' + miss.join(', ') + '.', true); return Promise.resolve({ ok: false, why: 'missing ' + miss.join(', ') }); }
     if (!PAGE.lead) { say('Thank you. This is a draft page, so the form is not connected yet.'); return Promise.resolve({ ok: true, why: 'draft page' }); }
     if (busy) return Promise.resolve({ ok: false, why: 'already sending' });
     busy = true; btn.disabled = true; say('Sending…');
-    var body = { name: name, idea: idea, phone: phone, email: email, website: val('website'), page: location.pathname, source: source || 'form', conversation: conv || '', origin: ORIGIN };
+    var body = { name: name, idea: idea, budget: budget, phone: phone, email: email, website: val('website'), page: location.pathname, source: source || 'form', conversation: conv || '', origin: ORIGIN };
     return fetch(PAGE.lead, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
       .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); })
       .then(function () {

@@ -30,7 +30,7 @@ const VOICE_AGENT = 'agent_9701m6bb1fwqese82y1t2mjabdv5';
 const PROD = !!process.env.LABS_PROD;
 // Google Tag Manager loads Analytics, Clarity and the Google Ads conversion tags; app.js only pushes events to dataLayer.
 const GTM = 'GTM-T9SDG58F';
-const headExtra = () => (PROD ? `<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s);j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${GTM}');</script>\n` : '');
+const headExtra = () => (PROD ? `<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s);j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${GTM}');</script>\n<script defer src="/_vercel/insights/script.js"></script>\n` : '');
 const labsCfg = (service) => ({ service, agent: VOICE_AGENT, lead: PROD ? '/api/lead' : '', phone: PHONE, email: EMAIL });
 const robots = () => (PROD ? 'index, follow' : 'noindex, nofollow');
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -296,6 +296,8 @@ const titleHTML = (p) => {
   const ws = (s) => s.split(' ').map((w) => `<span class="w">${esc(w)}</span>`).join(' ');
   return `<h1 class="title" data-talk data-verbs='${JSON.stringify(p.verbs).replace(/'/g, '&#39;')}'><span class="sr">${esc(p.line)} ${esc(p.verbs[0])}</span><span class="false" aria-hidden="true">${ws(p.falseStart)}</span><span class="line" aria-hidden="true">${ws(p.line)} <span class="band"><span class="rot"><span class="w">${esc(p.verbs[0])}</span></span></span><span class="pad"></span></span></h1>`;
 };
+// highest range first: it sets the price the buyer expects; the lowest range starts at the lowest project price
+const BUDGETS = ['₹8 lakh+', '₹3–8 lakh', '₹1.5–3 lakh', '₹50,000–1.5 lakh'];
 const quoteCard = (p) => `<form class="card" id="quote-form" novalidate aria-labelledby="qf-t" data-clarity-mask="True">
   <div class="card-h"><h2 class="eyebrow" id="qf-t">Your free quote</h2><span class="state">Talk or type</span></div>
   <div class="va" data-va data-state="idle">
@@ -306,6 +308,7 @@ const quoteCard = (p) => `<form class="card" id="quote-form" novalidate aria-lab
   <p class="or">Or type it</p>
   <div class="fld"><label for="f-name">Your name</label><div class="box"><input id="f-name" name="name" autocomplete="name"></div></div>
   <div class="fld"><label for="f-idea">${esc(p.ideaLabel)}</label><div class="box"><textarea id="f-idea" name="idea" rows="2" placeholder="${esc(p.ideaPh)}"></textarea></div></div>
+  <div class="fld"><label for="f-budget">Your budget</label><div class="box sel"><select id="f-budget" name="budget" required><option value="" selected disabled>Choose a range</option>${BUDGETS.map((b) => `<option>${esc(b)}</option>`).join('')}</select></div></div>
   <div class="two"><div class="fld"><label for="f-phone">Phone</label><div class="box"><input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel"></div></div><div class="fld"><label for="f-email">Email</label><div class="box"><input id="f-email" name="email" type="email" autocomplete="email" inputmode="email"></div></div></div>
   <div class="hp" aria-hidden="true"><label for="f-web">Website</label><input id="f-web" name="website" tabindex="-1" autocomplete="off"></div>
   <button class="btn primary full beam" type="submit">Get my free quote ${I('arrow')}</button>
