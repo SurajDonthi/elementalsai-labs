@@ -308,7 +308,7 @@ const quoteCard = (p) => `<form class="card" id="quote-form" novalidate aria-lab
   <p class="or">Or type it</p>
   <div class="fld"><label for="f-name">Your name</label><div class="box"><input id="f-name" name="name" autocomplete="name"></div></div>
   <div class="fld"><label for="f-idea">${esc(p.ideaLabel)}</label><div class="box"><textarea id="f-idea" name="idea" rows="2" placeholder="${esc(p.ideaPh)}"></textarea></div></div>
-  <div class="fld"><label for="f-budget">Your budget</label><div class="box sel"><select id="f-budget" name="budget" required><option value="" selected disabled>Choose a range</option>${BUDGETS.map((b) => `<option>${esc(b)}</option>`).join('')}</select></div></div>
+  <fieldset class="fld"><legend>Your budget</legend><div class="opts">${BUDGETS.map((b) => `<label class="opt"><input type="radio" name="budget" value="${esc(b)}"><span>${esc(b)}</span></label>`).join('')}</div></fieldset>
   <div class="two"><div class="fld"><label for="f-phone">Phone</label><div class="box"><input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel"></div></div><div class="fld"><label for="f-email">Email</label><div class="box"><input id="f-email" name="email" type="email" autocomplete="email" inputmode="email"></div></div></div>
   <div class="hp" aria-hidden="true"><label for="f-web">Website</label><input id="f-web" name="website" tabindex="-1" autocomplete="off"></div>
   <button class="btn primary full beam" type="submit">Get my free quote ${I('arrow')}</button>

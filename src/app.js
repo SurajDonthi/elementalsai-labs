@@ -205,7 +205,7 @@ var valid = { name: function (v) { return v.trim().length > 1; }, idea: function
 /* sends the quote form; the voice agent uses it too. Resolves { ok, why } and never rejects */
 var sendLead = function () { return Promise.resolve({ ok: false, why: 'no form' }); };
 if (form) {
-  $$('input,textarea,select', form).forEach(function (f) {
+  $$('input,textarea', form).forEach(function (f) {
     var fld = f.closest('.fld'), chk = valid[f.name];
     f.addEventListener('input', function () { if (fld && chk) fld.classList.toggle('ok', chk(f.value)); });
   });
