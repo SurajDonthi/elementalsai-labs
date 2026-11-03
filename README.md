@@ -35,7 +35,8 @@ ElevenLabs agent "Diya" (ID in `src/build.mjs`). With no tap, she asks for the m
 ## Settings for Vercel (at deploy)
 
 - `RESEND_API_KEY`, `LEAD_TO` (hello@elementalsai-labs.com), `LEAD_FROM` (a sender on a domain verified in Resend).
-- Tracking: production pages load Google Tag Manager (GTM-T9SDG58F). Tag Manager holds Analytics (G-C7M17NZPNQ), Microsoft Clarity (z6ygwy0jmz) and the Google Ads conversion tags. The page only pushes 4 events to `dataLayer`: `generate_lead` (a lead was saved, with `lead_source` form or voice), `phone_click`, `email_click` and `voice_call_start`.
+- Tracking: production pages load Google Tag Manager (GTM-T9SDG58F). Tag Manager holds Analytics (G-C7M17NZPNQ), Microsoft Clarity (z6ygwy0jmz) and the Google Ads conversion tags. The page only pushes 4 events to `dataLayer`: `generate_lead` (a lead was saved, with `lead_source` form or voice), `phone_click`, `email_click` and `voice_call_start`. Production pages also load Vercel Web Analytics (`/_vercel/insights/script.js`; turned on in the Vercel project, free Hobby plan): pages, where visitors come from, countries, devices.
+- Quote form budget: the typed form asks "Your budget" with 4 ranges, highest first (`BUDGETS` in `src/build.mjs`): ₹8 lakh+, ₹3–8 lakh, ₹1.5–3 lakh, ₹50,000–1.5 lakh. The voice agent does not ask it, so only the typed form needs it. `api/lead.js` keeps it and puts it in the lead email.
 
 ## Still to do
 
