@@ -227,6 +227,16 @@ fieldset.fld{border:0;margin:0 0 10px;padding:0;min-width:0}
 .status{display:none;margin-top:14px;padding:12px 14px;background:var(--field);box-shadow:inset 6px 0 0 var(--go);font-size:14px;color:var(--ink)}
 .status.on{display:block;animation:pop .35s var(--out)}
 /* home page: What we build */
+.types{list-style:none;margin:40px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media (min-width:720px){.types{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (min-width:1040px){.types{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.types button{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;height:100%;padding:14px 16px;background:var(--field);color:var(--ink-2);font-size:15px;line-height:1.35;text-align:left;transition:background-color var(--t1),color var(--t1),box-shadow var(--t2) var(--ez)}
+.types button::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform var(--t2) var(--ez)}
+.types .i{flex:none;width:16px;height:16px;color:var(--accent);opacity:0;transform:translateX(-4px);transition:opacity var(--t1),transform var(--t2) var(--ez)}
+.types button:hover,.types button:focus-visible{background:var(--field-hi);color:var(--ink);box-shadow:inset 4px 0 0 var(--accent);outline:none}
+.types button:hover::after,.types button:focus-visible::after{transform:scaleX(1)}
+.types button:hover .i,.types button:focus-visible .i{opacity:1;transform:none}
+@media (max-width:420px){.types button{padding:12px 12px;font-size:14px}}
 .svc{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:20px;margin-top:44px}
 .svc-c{grid-column:span 2;display:flex;flex-direction:column;gap:12px;padding:26px 26px 24px;background:var(--panel);border:1px solid var(--line);color:var(--ink);text-decoration:none;transition:transform var(--t2) var(--ez),box-shadow var(--t2) var(--ez),border-color var(--t2) var(--ez)}
 .svc-c:nth-child(-n+2){grid-column:span 3}

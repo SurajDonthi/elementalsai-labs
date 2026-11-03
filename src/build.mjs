@@ -99,6 +99,7 @@ const P = {
     ideaLabel: 'Your app idea', ideaPh: 'A rough idea is enough. For example: a booking app for my salon.',
     try: { h: 'Type your app idea. <em>Watch it take shape.</em>', lede: 'A first sketch, drawn right here on the phone. Your working demo, built by our team, comes in 3 days.',
       ph: 'e.g. A booking app for my salon', chips: ['Booking app for my salon', 'Food delivery for my restaurant', 'Store for my handmade products', 'Attendance app for my field team'], tag: 'Live demo · a booking app' },
+    types: { h: 'Apps we build. <em>Find yours.</em>', noun: 'app', list: ['Booking and appointments', 'Food delivery', 'Online store', 'Grocery delivery', 'Restaurant ordering', 'Salon and spa', 'Doctor consultation', 'Pharmacy orders', 'Fitness and gym', 'Taxi and ride booking', 'Delivery tracking', 'Field team and attendance', 'Home services', 'Service marketplace', 'School and parents', 'Online courses', 'Real estate listings', 'Hotel and travel booking', 'Event tickets', 'Loyalty and rewards', 'Wallet and payments', 'Community and chat', 'Job portal', 'Apartment and society', 'Fleet and vehicle tracking', 'Farm and agriculture', 'Pet care', 'Sales team'] },
     shots: ['volunteeryatra', 'pilarsai', 'toothlens', 'agshift'],
     stats: [['100+', 'apps delivered'], ['10+', 'years building apps'], ['$10M+', 'client revenue enabled'], ['3 days', 'to your working demo']],
     worries: [
@@ -231,6 +232,7 @@ const P = {
     ideaLabel: 'What should the software do?', ideaPh: 'A rough idea is enough. For example: track every job from enquiry to invoice.',
     try: { device: 'webpro', fallback: 'web', demo: 'jobs', h: 'Describe how you work. <em>Watch it take shape.</em>', lede: 'A first sketch of your software, drawn right here. Your working demo, built by our team, comes in 3 days.',
       ph: 'e.g. Track jobs from enquiry to invoice', chips: ['Track jobs from enquiry to invoice', 'Stock and orders for my warehouse', 'Bookings and billing for my clinic', 'Attendance and leave for my staff'], tag: 'Live demo · a job tracker' },
+    types: { h: 'Software we build. <em>Find yours.</em>', noun: 'software', list: ['CRM', 'ERP', 'Job tracking', 'Inventory and stock', 'Billing and invoicing', 'Quotations and estimates', 'Order management', 'Warehouse management', 'HR and payroll', 'Attendance and leave', 'Clinic management', 'Hospital management', 'School management', 'Restaurant billing (POS)', 'Field service management', 'Project management', 'Helpdesk and tickets', 'Dealer and distributor portal', 'Vendor portal', 'Customer portal', 'Production tracking', 'Fleet management', 'Property management', 'Lab reports', 'Document management', 'Approval workflows', 'Reports and dashboards', 'Tally and accounts link'] },
     shots: ['pilarsai', 'volunteeryatra', 'agshift', 'toothlens'],
     stats: [['100+', 'applications delivered'], ['10+', 'years building software'], ['$10M+', 'client revenue enabled'], ['3 days', 'to your working demo']],
     gambleH: 'Building software should not feel like <span class="band">a gamble.</span>',
@@ -354,6 +356,11 @@ const tryIt = (p) => { const dv = deviceOf(p); const builtin = ['phone', 'web', 
  </div>
  <div class="stage${dv !== 'phone' ? ' webst' : ''}">${!builtin ? `<div class="dv-mount dv-${dv}" data-dv="${dv}" aria-hidden="true"></div>` : dv === 'web' ? webDevice() : dv === 'agent' ? agentDevice() : phone()}<p class="sketch-tag"><span class="led"></span><span>${esc(p.try.tag)}</span></p></div>
 </div></section>`; };
+/* the kinds of apps or software a service page builds; a tap puts the kind in the quote form as the idea */
+const types = (p) => !p.types ? '' : `<section class="sec" id="types" aria-labelledby="ty-t"><div class="wrap">
+ <div class="sec-h reveal"><span class="eyebrow">What we build</span><h2 class="h2" id="ty-t">${p.types.h}</h2><p class="lede">Tap one to start your free quote. Not in the list? We build that too.</p></div>
+ <ul class="types reveal">${p.types.list.map((t) => `<li><button type="button" data-quote-idea="${esc(`${t} ${p.types.noun}`)}"><span>${esc(t)}</span>${I('arrow')}</button></li>`).join('')}</ul>
+</div></section>`;
 /* the home page's "What we build": one card for each service page, in the order of the footer */
 const SERVICES = [
   ['01-mobile-app-development', 'bell', 'Mobile apps', 'Apps for iPhone and Android that people open every day.', 'Bookings · delivery · stores · field teams'],
@@ -427,11 +434,12 @@ ${header()}
 ${hero(p)}
 ${marquee()}
 ${p.home ? services() : tryIt(p)}
-${impact(p)}
+${types(p)}
 ${stats(p)}
 ${gamble(p)}
 ${how(p)}
 ${review(p)}
+${impact(p)}
 ${faq(p)}
 ${cta(p)}
 </main>

@@ -194,6 +194,7 @@ function toQuote(idea) {
   setTimeout(function () { var n = $('#f-name'); if (n) n.focus({ preventScroll: true }); card.classList.remove('flash'); void card.offsetWidth; card.classList.add('flash'); }, fully || RM ? 0 : 560);
 }
 $$('a[href="#quote"]').forEach(function (a) { a.addEventListener('click', function (e) { e.preventDefault(); toQuote(); }); });
+$$('[data-quote-idea]').forEach(function (b) { b.addEventListener('click', function () { toQuote(b.getAttribute('data-quote-idea')); }); });
 /* where the visitor came from (ad click IDs and UTM tags), kept for the lead */
 var ORIGIN = (function () {
   var keep = {}, q = {}; try { keep = JSON.parse(sessionStorage.getItem('labs-origin') || '{}'); } catch (e) {}
