@@ -450,12 +450,12 @@ ${hero(p)}
 ${marquee()}
 ${p.home ? services() : tryIt(p)}
 ${types(p)}
+${cases(p)}
 ${stats(p)}
 ${gamble(p)}
 ${how(p)}
 ${review(p)}
 ${impact(p)}
-${cases(p)}
 ${faq(p)}
 ${cta(p)}
 </main>
