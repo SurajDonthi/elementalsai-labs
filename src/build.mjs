@@ -99,7 +99,7 @@ const P = {
     ideaLabel: 'Your app idea', ideaPh: 'A rough idea is enough. For example: a booking app for my salon.',
     try: { h: 'Type your app idea. <em>Watch it take shape.</em>', lede: 'A first sketch, drawn right here on the phone. Your working demo, built by our team, comes in 3 days.',
       ph: 'e.g. A booking app for my salon', chips: ['Booking app for my salon', 'Food delivery for my restaurant', 'Store for my handmade products', 'Attendance app for my field team'], tag: 'Live demo · a booking app' },
-    cases: { h: 'What apps like these <em>do for a business.</em>', list: [
+    cases: { h: 'Case studies', lede: 'What apps like these did for these businesses.', list: [
       ['Domino’s · India', 'Ordering app', '51% → 65%', 'of delivery sales ordered online', 'Customers order delivery in the app. Most online orders now come through it.'],
       ['Borosil · India', 'Field sales app', '+36%', 'new shops in 3 months', 'Sales reps take orders on their phones and add new shops. Managers see every visit live.'],
       ['Libas · India', 'Shopping app', '45%', 'of direct sales through the app', 'A new app replaced a weak one. Its rating went from 3.3 to 4.7.'],
@@ -237,7 +237,7 @@ const P = {
     ideaLabel: 'What should the software do?', ideaPh: 'A rough idea is enough. For example: track every job from enquiry to invoice.',
     try: { device: 'webpro', fallback: 'web', demo: 'jobs', h: 'Describe how you work. <em>Watch it take shape.</em>', lede: 'A first sketch of your software, drawn right here. Your working demo, built by our team, comes in 3 days.',
       ph: 'e.g. Track jobs from enquiry to invoice', chips: ['Track jobs from enquiry to invoice', 'Stock and orders for my warehouse', 'Bookings and billing for my clinic', 'Attendance and leave for my staff'], tag: 'Live demo · a job tracker' },
-    cases: { h: 'What software like this <em>does for a business.</em>', list: [
+    cases: { h: 'Case studies', lede: 'What software like this did for these businesses.', list: [
       ['Ralpro · India', 'Production tracking', '180 → 440 tons', 'dispatched a month, within a year', 'One system runs orders, production, quality checks, packing, dispatch and billing.'],
       ['HCG hospitals · India', 'Patient queue system', '60 → 20 min', 'waiting time for a doctor', 'Patients check in at a kiosk and see their place in the queue on their phones.'],
       ['Air Liquide Medical · India', 'Quotes, orders and billing', '7–10 → 1–3 days', 'to prepare a quote', 'An approved quote becomes an order. Invoices and payment reminders go out by themselves.'],
@@ -373,7 +373,7 @@ const types = (p) => !p.types ? '' : `<section class="sec" id="types" aria-label
 </div></section>`;
 /* results other businesses got from software of the same kind; described by business type only */
 const cases = (p) => !p.cases ? '' : `<section class="sec" id="cases" aria-labelledby="cs-t"><div class="wrap">
- <div class="sec-h reveal"><span class="eyebrow">Case studies</span><h2 class="h2" id="cs-t">${p.cases.h}</h2></div>
+ <div class="sec-h reveal"><h2 class="h2" id="cs-t">${p.cases.h}</h2><p class="lede">${esc(p.cases.lede)}</p></div>
  <div class="cases reveal">${p.cases.list.map(([who, kind, val, lab, t]) => `<article class="case"><p class="cs-who"><b>${esc(who)}</b><span>${esc(kind)}</span></p><p class="val">${esc(val)}</p><p class="lab">${esc(lab)}</p><p class="tx">${esc(t)}</p></article>`).join('')}</div>
 </div></section>`;
 /* the home page's "What we build": one card for each service page, in the order of the footer */
