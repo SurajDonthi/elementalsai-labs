@@ -227,6 +227,15 @@ fieldset.fld{border:0;margin:0 0 10px;padding:0;min-width:0}
 .status{display:none;margin-top:14px;padding:12px 14px;background:var(--field);box-shadow:inset 6px 0 0 var(--go);font-size:14px;color:var(--ink)}
 .status.on{display:block;animation:pop .35s var(--out)}
 /* home page: What we build */
+.cases{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin-top:40px}
+@media (min-width:760px){.cases{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.case{display:flex;flex-direction:column;gap:8px;padding:22px 22px 24px;background:var(--panel);border:1px solid var(--line);box-shadow:inset 4px 0 0 var(--accent)}
+.cs-who{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 12px}
+.cs-who b{font:600 15px/1.4 var(--font-s);color:var(--ink)}
+.cs-who span{font:500 11px/1.5 var(--font-m);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.case .val{margin-top:10px;font:600 clamp(26px,3vw,36px)/1.1 var(--font-d);letter-spacing:-.022em;color:var(--accent);font-variant-numeric:tabular-nums}
+.case .lab{font-size:14px;color:var(--ink-2)}
+.case .tx{margin-top:6px;font-size:15px;line-height:1.55;color:var(--muted);max-width:52ch}
 .types{list-style:none;margin:40px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 @media (min-width:720px){.types{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (min-width:1040px){.types{grid-template-columns:repeat(4,minmax(0,1fr))}}

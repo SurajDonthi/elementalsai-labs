@@ -99,6 +99,11 @@ const P = {
     ideaLabel: 'Your app idea', ideaPh: 'A rough idea is enough. For example: a booking app for my salon.',
     try: { h: 'Type your app idea. <em>Watch it take shape.</em>', lede: 'A first sketch, drawn right here on the phone. Your working demo, built by our team, comes in 3 days.',
       ph: 'e.g. A booking app for my salon', chips: ['Booking app for my salon', 'Food delivery for my restaurant', 'Store for my handmade products', 'Attendance app for my field team'], tag: 'Live demo · a booking app' },
+    cases: { h: 'What apps like these <em>do for a business.</em>', list: [
+      ['Domino’s · India', 'Ordering app', '51% → 65%', 'of delivery sales ordered online', 'Customers order delivery in the app. Most online orders now come through it.'],
+      ['Borosil · India', 'Field sales app', '+36%', 'new shops in 3 months', 'Sales reps take orders on their phones and add new shops. Managers see every visit live.'],
+      ['Libas · India', 'Shopping app', '45%', 'of direct sales through the app', 'A new app replaced a weak one. Its rating went from 3.3 to 4.7.'],
+      ['Oxygen Yoga & Fitness · Canada', 'Booking app', '62%', 'of all bookings in the app', 'Members book classes and manage their membership in the studio’s own app.']] },
     types: { h: 'Apps we build. <em>Find yours.</em>', noun: 'app', list: ['Booking and appointments', 'Food delivery', 'Online store', 'Grocery delivery', 'Restaurant ordering', 'Salon and spa', 'Doctor consultation', 'Pharmacy orders', 'Fitness and gym', 'Taxi and ride booking', 'Delivery tracking', 'Field team and attendance', 'Home services', 'Service marketplace', 'School and parents', 'Online courses', 'Real estate listings', 'Hotel and travel booking', 'Event tickets', 'Loyalty and rewards', 'Wallet and payments', 'Community and chat', 'Job portal', 'Apartment and society', 'Fleet and vehicle tracking', 'Farm and agriculture', 'Pet care', 'Sales team'] },
     shots: ['volunteeryatra', 'pilarsai', 'toothlens', 'agshift'],
     stats: [['100+', 'apps delivered'], ['10+', 'years building apps'], ['$10M+', 'client revenue enabled'], ['3 days', 'to your working demo']],
@@ -232,6 +237,11 @@ const P = {
     ideaLabel: 'What should the software do?', ideaPh: 'A rough idea is enough. For example: track every job from enquiry to invoice.',
     try: { device: 'webpro', fallback: 'web', demo: 'jobs', h: 'Describe how you work. <em>Watch it take shape.</em>', lede: 'A first sketch of your software, drawn right here. Your working demo, built by our team, comes in 3 days.',
       ph: 'e.g. Track jobs from enquiry to invoice', chips: ['Track jobs from enquiry to invoice', 'Stock and orders for my warehouse', 'Bookings and billing for my clinic', 'Attendance and leave for my staff'], tag: 'Live demo · a job tracker' },
+    cases: { h: 'What software like this <em>does for a business.</em>', list: [
+      ['Ralpro · India', 'Production tracking', '180 → 440 tons', 'dispatched a month, within a year', 'One system runs orders, production, quality checks, packing, dispatch and billing.'],
+      ['HCG hospitals · India', 'Patient queue system', '60 → 20 min', 'waiting time for a doctor', 'Patients check in at a kiosk and see their place in the queue on their phones.'],
+      ['Air Liquide Medical · India', 'Quotes, orders and billing', '7–10 → 1–3 days', 'to prepare a quote', 'An approved quote becomes an order. Invoices and payment reminders go out by themselves.'],
+      ['Xtep · sportswear', 'Warehouse and orders', '4 hours → 5 min', 'to process an order', 'One system replaced manual stock and order work, online and in stores.']] },
     types: { h: 'Software we build. <em>Find yours.</em>', noun: 'software', list: ['CRM', 'ERP', 'Job tracking', 'Inventory and stock', 'Billing and invoicing', 'Quotations and estimates', 'Order management', 'Warehouse management', 'HR and payroll', 'Attendance and leave', 'Clinic management', 'Hospital management', 'School management', 'Restaurant billing (POS)', 'Field service management', 'Project management', 'Helpdesk and tickets', 'Dealer and distributor portal', 'Vendor portal', 'Customer portal', 'Production tracking', 'Fleet management', 'Property management', 'Lab reports', 'Document management', 'Approval workflows', 'Reports and dashboards', 'Tally and accounts link'] },
     shots: ['pilarsai', 'volunteeryatra', 'agshift', 'toothlens'],
     stats: [['100+', 'applications delivered'], ['10+', 'years building software'], ['$10M+', 'client revenue enabled'], ['3 days', 'to your working demo']],
@@ -361,6 +371,11 @@ const types = (p) => !p.types ? '' : `<section class="sec" id="types" aria-label
  <div class="sec-h reveal"><span class="eyebrow">What we build</span><h2 class="h2" id="ty-t">${p.types.h}</h2><p class="lede">Tap one to start your free quote. Not in the list? We build that too.</p></div>
  <ul class="types reveal">${p.types.list.map((t) => `<li><button type="button" data-quote-idea="${esc(`${t} ${p.types.noun}`)}"><span>${esc(t)}</span>${I('arrow')}</button></li>`).join('')}</ul>
 </div></section>`;
+/* results other businesses got from software of the same kind; described by business type only */
+const cases = (p) => !p.cases ? '' : `<section class="sec" id="cases" aria-labelledby="cs-t"><div class="wrap">
+ <div class="sec-h reveal"><span class="eyebrow">Case studies</span><h2 class="h2" id="cs-t">${p.cases.h}</h2></div>
+ <div class="cases reveal">${p.cases.list.map(([who, kind, val, lab, t]) => `<article class="case"><p class="cs-who"><b>${esc(who)}</b><span>${esc(kind)}</span></p><p class="val">${esc(val)}</p><p class="lab">${esc(lab)}</p><p class="tx">${esc(t)}</p></article>`).join('')}</div>
+</div></section>`;
 /* the home page's "What we build": one card for each service page, in the order of the footer */
 const SERVICES = [
   ['01-mobile-app-development', 'bell', 'Mobile apps', 'Apps for iPhone and Android that people open every day.', 'Bookings · delivery · stores · field teams'],
@@ -440,6 +455,7 @@ ${gamble(p)}
 ${how(p)}
 ${review(p)}
 ${impact(p)}
+${cases(p)}
 ${faq(p)}
 ${cta(p)}
 </main>
