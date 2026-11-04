@@ -2,7 +2,7 @@
 // It builds every page with LABS_PROD, then moves the inline styles, scripts and images into cached files under public/assets/,
 // gives each page its clean address (/mobile-app-development, /quote …), and writes robots.txt, sitemap.xml and 404.html.
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, readdirSync, readFileSync, writeFileSync, mkdirSync, rmSync, copyFileSync } from 'node:fs';
+import { mkdtempSync, readdirSync, readFileSync, writeFileSync, mkdirSync, rmSync, copyFileSync, existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -65,6 +65,14 @@ ${ICONS}
 ${ICONS}<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Serif:wght@600&display=swap"><link rel="stylesheet" href="${mainCss}"></head>
 <body><main class="wrap" style="min-height:100vh;display:grid;align-content:center;gap:20px"><span class="eyebrow">404</span><h1 class="h2">This page does not exist.</h1><p class="lede">Get a free quote in 12 hours, or see what we build.</p><p><a class="btn primary" href="/quote">Get a free quote</a></p><p><a href="/mobile-app-development">Mobile apps</a> · <a href="/app-development">App development</a> · <a href="/ai-development">AI development</a> · <a href="/ai-agents-and-automation">AI agents</a> · <a href="/custom-software">Custom software</a></p></main></body></html>
 `);
+  /* old style and script files stay online, so Clarity can replay visits recorded on earlier versions of the site.
+     assets-keep/ holds every css/js file a past build made; commit new ones with each change (scripts/keep-assets.mjs fills in past versions). */
+  const KEEP = new URL('assets-keep/', ROOT);
+  mkdirSync(KEEP, { recursive: true });
+  for (const n of saved.keys()) if (/\.(css|js)$/.test(n) && !existsSync(new URL(n, KEEP))) copyFileSync(new URL(n, AS), new URL(n, KEEP));
+  let kept = 0;
+  for (const n of readdirSync(KEEP)) if (!saved.has(n)) { copyFileSync(new URL(n, KEEP), new URL(n, AS)); kept++; }
+  console.log(`kept ${kept} older css/js files for session replays`);
   const kb = [...saved.values()].reduce((a, b) => a + b, 0) / 1024;
   console.log(`assets: ${saved.size} files, ${Math.round(kb)} KB · pages: ${routes.length}`);
 } finally { rmSync(tmp, { recursive: true, force: true }); }
