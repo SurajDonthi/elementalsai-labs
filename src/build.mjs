@@ -104,7 +104,7 @@ const P = {
       ['Borosil · India', 'Field sales app', '+36%', 'new shops in 3 months', 'Sales reps take orders on their phones and add new shops. Managers see every visit live.'],
       ['Libas · India', 'Shopping app', '45%', 'of direct sales through the app', 'A new app replaced a weak one. Its rating went from 3.3 to 4.7.'],
       ['Oxygen Yoga & Fitness · Canada', 'Booking app', '62%', 'of all bookings in the app', 'Members book classes and manage their membership in the studio’s own app.']] },
-    types: { h: 'Apps we build. <em>Find yours.</em>', noun: 'app', list: ['Booking and appointments', 'Food delivery', 'Online store', 'Grocery delivery', 'Restaurant ordering', 'Salon and spa', 'Doctor consultation', 'Pharmacy orders', 'Fitness and gym', 'Taxi and ride booking', 'Delivery tracking', 'Field team and attendance', 'Home services', 'Service marketplace', 'School and parents', 'Online courses', 'Real estate listings', 'Hotel and travel booking', 'Event tickets', 'Loyalty and rewards', 'Wallet and payments', 'Community and chat', 'Job portal', 'Apartment and society', 'Fleet and vehicle tracking', 'Farm and agriculture', 'Pet care', 'Sales team'] },
+    types: { h: 'Pick your app.', noun: 'app', list: ['Booking and appointments', 'Food delivery', 'Online store', 'Grocery delivery', 'Restaurant ordering', 'Salon and spa', 'Doctor consultation', 'Pharmacy orders', 'Fitness and gym', 'Taxi and ride booking', 'Delivery tracking', 'Field team and attendance', 'Home services', 'Service marketplace', 'School and parents', 'Online courses', 'Real estate listings', 'Hotel and travel booking', 'Event tickets', 'Loyalty and rewards', 'Wallet and payments', 'Community and chat', 'Job portal', 'Apartment and society', 'Fleet and vehicle tracking', 'Farm and agriculture', 'Pet care', 'Sales team'] },
     shots: ['volunteeryatra', 'pilarsai', 'toothlens', 'agshift'],
     stats: [['100+', 'apps delivered'], ['10+', 'years building apps'], ['$10M+', 'client revenue enabled'], ['3 days', 'to your working demo']],
     worries: [
@@ -242,7 +242,7 @@ const P = {
       ['HCG hospitals · India', 'Patient queue system', '60 → 20 min', 'waiting time for a doctor', 'Patients check in at a kiosk and see their place in the queue on their phones.'],
       ['Air Liquide Medical · India', 'Quotes, orders and billing', '7–10 → 1–3 days', 'to prepare a quote', 'An approved quote becomes an order. Invoices and payment reminders go out by themselves.'],
       ['Xtep · sportswear', 'Warehouse and orders', '4 hours → 5 min', 'to process an order', 'One system replaced manual stock and order work, online and in stores.']] },
-    types: { h: 'Software we build. <em>Find yours.</em>', noun: 'software', list: ['CRM', 'ERP', 'Job tracking', 'Inventory and stock', 'Billing and invoicing', 'Quotations and estimates', 'Order management', 'Warehouse management', 'HR and payroll', 'Attendance and leave', 'Clinic management', 'Hospital management', 'School management', 'Restaurant billing (POS)', 'Field service management', 'Project management', 'Helpdesk and tickets', 'Dealer and distributor portal', 'Vendor portal', 'Customer portal', 'Production tracking', 'Fleet management', 'Property management', 'Lab reports', 'Document management', 'Approval workflows', 'Reports and dashboards', 'Tally and accounts link'] },
+    types: { h: 'Pick your software.', noun: 'software', list: ['CRM', 'ERP', 'Job tracking', 'Inventory and stock', 'Billing and invoicing', 'Quotations and estimates', 'Order management', 'Warehouse management', 'HR and payroll', 'Attendance and leave', 'Clinic management', 'Hospital management', 'School management', 'Restaurant billing (POS)', 'Field service management', 'Project management', 'Helpdesk and tickets', 'Dealer and distributor portal', 'Vendor portal', 'Customer portal', 'Production tracking', 'Fleet management', 'Property management', 'Lab reports', 'Document management', 'Approval workflows', 'Reports and dashboards', 'Tally and accounts link'] },
     shots: ['pilarsai', 'volunteeryatra', 'agshift', 'toothlens'],
     stats: [['100+', 'applications delivered'], ['10+', 'years building software'], ['$10M+', 'client revenue enabled'], ['3 days', 'to your working demo']],
     gambleH: 'Building software should not feel like <span class="band">a gamble.</span>',
@@ -368,7 +368,7 @@ const tryIt = (p) => { const dv = deviceOf(p); const builtin = ['phone', 'web', 
 </div></section>`; };
 /* the kinds of apps or software a service page builds; a tap puts the kind in the quote form as the idea */
 const types = (p) => !p.types ? '' : `<section class="sec" id="types" aria-labelledby="ty-t"><div class="wrap">
- <div class="sec-h reveal"><span class="eyebrow">What we build</span><h2 class="h2" id="ty-t">${p.types.h}</h2><p class="lede">Tap one to start your free quote. Not in the list? We build that too.</p></div>
+ <div class="sec-h reveal"><h2 class="h2" id="ty-t">${p.types.h}</h2></div>
  <ul class="types reveal">${p.types.list.map((t) => `<li><button type="button" data-quote-idea="${esc(`${t} ${p.types.noun}`)}"><span>${esc(t)}</span>${I('arrow')}</button></li>`).join('')}</ul>
 </div></section>`;
 /* results other businesses got from software of the same kind; described by business type only */
