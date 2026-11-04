@@ -13,7 +13,7 @@ const git = (...a) => execFileSync('git', a, { cwd: ROOT, encoding: 'utf8' });
 for (const commit of process.argv.slice(2)) {
   const dir = mkdtempSync(join(tmpdir(), 'labs-keep-'));
   try {
-    git('worktree', 'add', '--detach', dir, commit);
+    git('-c', 'core.autocrlf=false', 'worktree', 'add', '--detach', dir, commit); // LF, as Vercel builds it, so file names match the live ones
     execFileSync(process.execPath, [join(dir, 'scripts/release.mjs')], { cwd: dir, stdio: 'ignore' });
     let added = 0;
     for (const n of readdirSync(join(dir, 'public/assets'))) if (/\.(css|js)$/.test(n) && !existsSync(join(KEEP, n))) { copyFileSync(join(dir, 'public/assets', n), join(KEEP, n)); added++; }

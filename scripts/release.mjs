@@ -37,8 +37,10 @@ try {
     const name = file.replace(/\.html$/, ''), r = route(name);
     let html = readFileSync(join(tmp, file), 'utf8');
     html = html.replace(/data:(image\/(?:png|jpeg|webp|gif|svg\+xml)|audio\/(?:mpeg|wav));base64,([A-Za-z0-9+/=]+)/g, (_, type, b64) => save(Buffer.from(b64, 'base64'), EXT[type]));
-    html = html.replace(/<style>([\s\S]*?)<\/style>/g, (_, css) => { const u = save(Buffer.from(css), 'css'); if (!mainCss) mainCss = u; return `<link rel="stylesheet" href="${u}">`; });
-    html = html.replace(/<script>([\s\S]*?)<\/script>/g, (all, js) => (js.length > 400 ? `<script src="${save(Buffer.from(js), 'js')}"></script>` : all));
+    /* LF line endings, so a build on Windows names css/js files the same as the Vercel build */
+    const lf = (s) => Buffer.from(s.replace(/\r\n/g, '\n'));
+    html = html.replace(/<style>([\s\S]*?)<\/style>/g, (_, css) => { const u = save(lf(css), 'css'); if (!mainCss) mainCss = u; return `<link rel="stylesheet" href="${u}">`; });
+    html = html.replace(/<script>([\s\S]*?)<\/script>/g, (all, js) => (js.length > 400 ? `<script src="${save(lf(js), 'js')}"></script>` : all));
     html = html.replace(/href="([a-z0-9-]+)\.html(#[^"]*)?"/g, (_, n, hash) => `href="/${route(n)}${hash || ''}"`);
     const title = (html.match(/<title>([^<]*)<\/title>/) || [])[1] || 'ElementalsAI Labs';
     const desc = (html.match(/<meta name="description" content="([^"]*)">/) || [])[1] || '';
