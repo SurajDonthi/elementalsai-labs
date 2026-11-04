@@ -194,7 +194,32 @@ function toQuote(idea) {
   setTimeout(function () { var n = $('#f-name'); if (n) n.focus({ preventScroll: true }); card.classList.remove('flash'); void card.offsetWidth; card.classList.add('flash'); }, fully || RM ? 0 : 560);
 }
 $$('a[href="#quote"]').forEach(function (a) { a.addEventListener('click', function (e) { e.preventDefault(); toQuote(); }); });
-$$('[data-quote-idea]').forEach(function (b) { b.addEventListener('click', function () { toQuote(b.getAttribute('data-quote-idea')); }); });
+d.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('[data-quote-idea]'); if (b) toQuote(b.getAttribute('data-quote-idea')); });
+/* the library rows: each row is a normal swipeable strip that also drifts slowly, in turns left and right; it stops on hover, touch or keyboard focus, and off screen */
+$$('[data-lib]').forEach(function (lib) {
+  var rows = $$('.lib-row', lib); if (RM) return;
+  var items = rows.map(function (row, i) {
+    var track = $('.lib-track', row), half = 0;
+    $$('li', track).forEach(function (li) { var c = li.cloneNode(true); c.setAttribute('aria-hidden', 'true'); $$('button', c).forEach(function (b) { b.tabIndex = -1; }); track.appendChild(c); });
+    var it = { row: row, dir: i % 2 ? -1 : 1, pos: 0, held: false, half: function () { return half || (half = track.scrollWidth / 2); } };
+    ['pointerenter', 'touchstart', 'focusin'].forEach(function (ev) { row.addEventListener(ev, function () { it.held = true; }, { passive: true }); });
+    ['pointerleave', 'touchend', 'focusout'].forEach(function (ev) { row.addEventListener(ev, function () { it.pos = row.scrollLeft; it.held = false; }, { passive: true }); });
+    return it;
+  });
+  var raf = 0, last = 0;
+  function step(t) {
+    var dt = Math.min(50, t - last || 16); last = t;
+    items.forEach(function (it) {
+      if (it.held) return;
+      var h = it.half(); if (!h) return;
+      it.pos += it.dir * dt * .025;
+      if (it.pos >= h) it.pos -= h; else if (it.pos <= 0) it.pos += h;
+      it.row.scrollLeft = it.pos;
+    });
+    raf = requestAnimationFrame(step);
+  }
+  new IntersectionObserver(function (es) { if (es[0].isIntersecting) { if (!raf) { last = 0; raf = requestAnimationFrame(step); } } else { cancelAnimationFrame(raf); raf = 0; } }).observe(lib);
+});
 /* where the visitor came from (ad click IDs and UTM tags), kept for the lead */
 var ORIGIN = (function () {
   var keep = {}, q = {}; try { keep = JSON.parse(sessionStorage.getItem('labs-origin') || '{}'); } catch (e) {}

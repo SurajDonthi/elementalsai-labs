@@ -6,3 +6,4 @@ node_modules/
 leads.local.jsonl
 
 .env*
+/src/assets/types-original/

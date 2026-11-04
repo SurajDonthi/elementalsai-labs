@@ -123,7 +123,7 @@ const P = {
       ['Borosil · India', 'Field sales app', '+36%', 'new shops in 3 months', 'Sales reps take orders on their phones and add new shops. Managers see every visit live.'],
       ['Libas · India', 'Shopping app', '45%', 'of direct sales through the app', 'A new app replaced a weak one. Its rating went from 3.3 to 4.7.'],
       ['Oxygen Yoga & Fitness · Canada', 'Booking app', '62%', 'of all bookings in the app', 'Members book classes and manage their membership in the studio’s own app.']] },
-    types: { h: 'Our app library.', noun: 'app', list: ['Booking and appointments', 'Food delivery', 'Online store', 'Grocery delivery', 'Restaurant ordering', 'Salon and spa', 'Doctor consultation', 'Pharmacy orders', 'Fitness and gym', 'Taxi and ride booking', 'Delivery tracking', 'Field team and attendance', 'Home services', 'Service marketplace', 'School and parents', 'Online courses', 'Real estate listings', 'Hotel and travel booking', 'Event tickets', 'Loyalty and rewards', 'Wallet and payments', 'Community and chat', 'Job portal', 'Apartment and society', 'Fleet and vehicle tracking', 'Farm and agriculture', 'Pet care', 'Sales team'] },
+    types: { h: 'Our app library.', noun: 'app', list: ['Booking and appointments', 'Food delivery', 'Online store', 'Grocery delivery', 'Restaurant ordering', 'Salon and spa', 'Doctor consultation', 'Pharmacy orders', 'Fitness and gym', 'Taxi and ride booking', 'Delivery tracking', 'Field team and attendance', 'Home services', 'Service marketplace', 'School and parents', 'Online courses', 'Real estate listings', 'Hotel and travel booking', 'Event tickets', 'Loyalty and rewards', 'FinTech and payments', 'Loans and lending', 'Investing and savings', 'Community and chat', 'Job portal', 'Apartment and society', 'Fleet and vehicle tracking', 'Farm and agriculture', 'Pet care', 'Sales team'] },
     shots: ['volunteeryatra', 'pilarsai', 'toothlens', 'agshift'],
     stats: [['100+', 'apps delivered'], ['10+', 'years building apps'], ['$10M+', 'client revenue enabled'], ['3 days', 'to your working demo']],
     worries: [
@@ -384,11 +384,24 @@ const tryIt = (p) => { const dv = deviceOf(p); const builtin = ['phone', 'web', 
  </div>
  <div class="stage${dv !== 'phone' ? ' webst' : ''}">${!builtin ? `<div class="dv-mount dv-${dv}" data-dv="${dv}" aria-hidden="true"></div>` : dv === 'web' ? webDevice() : dv === 'agent' ? agentDevice() : phone()}<p class="sketch-tag"><span class="led"></span><span>${esc(p.try.tag)}</span></p></div>
 </div></section>`; };
-/* the kinds of apps or software a service page builds; a tap puts the kind in the quote form as the idea */
-const types = (p) => !p.types ? '' : `<section class="sec" id="types" aria-labelledby="ty-t"><div class="wrap">
+/* the kinds of apps or software a service page builds; a tap puts the kind in the quote form as the idea.
+   With images (assets/types/<slug>.jpg, sized by scripts/shrink-types.ps1) they show as 4 moving rows, only the kinds that have an image; with none, as a plain list. */
+const typeFile = (t) => 'types/' + t.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '.jpg';
+const types = (p) => {
+  if (!p.types) return '';
+  const idea = (t) => esc(`${t} ${p.types.noun}`);
+  const pics = p.types.list.filter((t) => existsSync(new URL('assets/' + typeFile(t), SRC)));
+  const wide = p.types.noun === 'software', [iw, ih] = wide ? [640, 480] : [480, 640];
+  const card = (t) => `<li><button type="button" class="lc" data-quote-idea="${idea(t)}"><img src="${b64(typeFile(t), 'image/jpeg')}" alt="" width="${iw}" height="${ih}" loading="lazy" decoding="async"><span>${esc(t)}</span></button></li>`;
+  const rows = [0, 1, 2, 3].map((r) => pics.filter((_, i) => i % 4 === r));
+  const body = pics.length >= 8
+    ? `</div><div class="lib${wide ? ' wide' : ''}" data-lib>${rows.map((r) => `<div class="lib-row"><ul class="lib-track">${r.map(card).join('')}</ul></div>`).join('')}</div><div>`
+    : `<ul class="types reveal">${p.types.list.map((t) => `<li><button type="button" data-quote-idea="${idea(t)}"><span>${esc(t)}</span>${I('arrow')}</button></li>`).join('')}</ul>`;
+  return `<section class="sec" id="types" aria-labelledby="ty-t"><div class="wrap">
  <div class="sec-h reveal"><h2 class="h2" id="ty-t">${p.types.h}</h2></div>
- <ul class="types reveal">${p.types.list.map((t) => `<li><button type="button" data-quote-idea="${esc(`${t} ${p.types.noun}`)}"><span>${esc(t)}</span>${I('arrow')}</button></li>`).join('')}</ul>
+ ${body}
 </div></section>`;
+};
 /* results other businesses got from software of the same kind; described by business type only */
 const cases = (p) => !p.cases ? '' : `<section class="sec" id="cases" aria-labelledby="cs-t"><div class="wrap">
  <div class="sec-h reveal"><h2 class="h2" id="cs-t">${p.cases.h}</h2><p class="lede">${esc(p.cases.lede)}</p></div>
