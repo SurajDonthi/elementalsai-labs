@@ -17,12 +17,28 @@ function onView(el, fn, th) {
   io.observe(el);
 }
 var PAGE = W.LABS || {};
-/* events for Tag Manager (Analytics, Google Ads conversions): generate_lead, phone_click, email_click, voice_call_start */
+/* events for Tag Manager (Analytics, Google Ads conversions): generate_lead, phone_click, email_click, voice_call_start.
+   Funnel steps, Analytics only: scroll_50, scroll_90, try_it_used, library_click, quote_button_click, internal_link_click, form_start, budget_chosen, form_send_click, form_send_blocked. `detail` carries no personal data. */
 function track(event, data) { (W.dataLayer = W.dataLayer || []).push(Object.assign({ event: event }, data || {})); }
+var once = {};
+function trackOnce(event, data) { if (!once[event]) { once[event] = 1; track(event, data); } }
 d.addEventListener('click', function (e) {
-  var a = e.target.closest && e.target.closest('a[href^="tel:"],a[href^="mailto:"]');
-  if (a) track(a.protocol === 'tel:' ? 'phone_click' : 'email_click', { lead_source: a.protocol === 'tel:' ? 'phone' : 'email' });
+  if (!e.target.closest) return;
+  var a = e.target.closest('a[href^="tel:"],a[href^="mailto:"]');
+  if (a) { track(a.protocol === 'tel:' ? 'phone_click' : 'email_click', { lead_source: a.protocol === 'tel:' ? 'phone' : 'email' }); return; }
+  var lib = e.target.closest('[data-quote-idea]');
+  if (lib) { track('library_click', { detail: lib.getAttribute('data-quote-idea') }); return; }
+  if (e.target.closest('#try .chip, #try .go')) { trackOnce('try_it_used'); return; }
+  var l = e.target.closest('a[href]');
+  if (!l) return;
+  if (l.getAttribute('href') === '#quote' || l.pathname === '/quote') track('quote_button_click', { detail: location.pathname });
+  else if (l.host === location.host && l.pathname !== location.pathname) track('internal_link_click', { detail: l.pathname });
 });
+W.addEventListener('scroll', function () {
+  var max = d.documentElement.scrollHeight - W.innerHeight, p = max > 0 ? W.scrollY / max : 0;
+  if (p >= .5) trackOnce('scroll_50');
+  if (p >= .9) trackOnce('scroll_90');
+}, { passive: true });
 
 /* ---------- speech: words arrive one at a time, as on surajdonthi.com (lib/speech.ts) ---------- */
 function wrapWords(el) {
@@ -190,6 +206,8 @@ var valid = { name: function (v) { return v.trim().length > 1; }, idea: function
 /* sends the quote form; the voice agent uses it too. Resolves { ok, why } and never rejects */
 var sendLead = function () { return Promise.resolve({ ok: false, why: 'no form' }); };
 if (form) {
+  form.addEventListener('focusin', function (e) { if (e.target.name && e.target.name !== 'website') trackOnce('form_start'); });
+  form.addEventListener('change', function (e) { if (e.target.name === 'budget') track('budget_chosen', { detail: e.target.value }); });
   $$('input,textarea', form).forEach(function (f) {
     var fld = f.closest('.fld'), chk = valid[f.name];
     f.addEventListener('input', function () { if (fld && chk) fld.classList.toggle('ok', chk(f.value)); });
@@ -201,6 +219,7 @@ if (form) {
     var name = val('name'), idea = val('idea'), phone = val('phone'), email = val('email'), budget = val('budget');
     /* the voice agent does not ask the budget, so only the typed form needs it */
     var miss = [!valid.name(name) && 'your name', !valid.idea(idea) && 'your idea', source !== 'voice' && !valid.budget(budget) && 'your budget', !(valid.phone(phone) || valid.email(email)) && 'a phone number or an email'].filter(Boolean);
+    if (source !== 'voice') { track('form_send_click'); if (miss.length) track('form_send_blocked', { detail: miss.join(', ') }); }
     if (miss.length) { say('Please add ' + miss.join(', ') + '.', true); return Promise.resolve({ ok: false, why: 'missing ' + miss.join(', ') }); }
     if (!PAGE.lead) { say('Thank you. This is a draft page, so the form is not connected yet.'); return Promise.resolve({ ok: true, why: 'draft page' }); }
     if (busy) return Promise.resolve({ ok: false, why: 'already sending' });
