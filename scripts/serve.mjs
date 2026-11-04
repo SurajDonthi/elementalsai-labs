@@ -5,7 +5,7 @@ import { readFile, appendFile } from 'node:fs/promises';
 import handler from '../api/lead.js';
 
 const PUB = new URL('../public/', import.meta.url), PORT = Number(process.env.PORT) || 4173;
-const TYPE = { html: 'text/html; charset=utf-8', css: 'text/css', js: 'text/javascript', svg: 'image/svg+xml', png: 'image/png', jpg: 'image/jpeg', webp: 'image/webp', xml: 'application/xml', txt: 'text/plain', mp3: 'audio/mpeg', wav: 'audio/wav' };
+const TYPE = { html: 'text/html; charset=utf-8', css: 'text/css', js: 'text/javascript', svg: 'image/svg+xml', png: 'image/png', jpg: 'image/jpeg', webp: 'image/webp', xml: 'application/xml', txt: 'text/plain', mp3: 'audio/mpeg', wav: 'audio/wav', woff2: 'font/woff2' };
 
 createServer(async (req, res) => {
   const path = decodeURIComponent(new URL(req.url, 'http://x').pathname);

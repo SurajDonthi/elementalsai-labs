@@ -3,13 +3,23 @@
   "outputDirectory": "public",
   "cleanUrls": true,
   "trailingSlash": false,
+  "redirects": [
+    { "source": "/:path*", "has": [{ "type": "host", "value": "www.elementalsai-labs.com" }], "destination": "https://elementalsai-labs.com/:path*", "permanent": true }
+  ],
   "headers": [
     { "source": "/assets/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }] },
+    { "source": "/og-image.png", "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }] },
+    { "source": "/favicon(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }] },
+    { "source": "/apple-touch-icon.png", "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }] },
+    { "source": "/icon-(.*).png", "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }] },
+    { "source": "/site.webmanifest", "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }] },
     { "source": "/(.*)", "headers": [
       { "key": "X-Content-Type-Options", "value": "nosniff" },
       { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
       { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
-      { "key": "Permissions-Policy", "value": "microphone=(self), camera=(), geolocation=()" }
+      { "key": "Permissions-Policy", "value": "microphone=(self), camera=(), geolocation=()" },
+      { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains" },
+      { "key": "Content-Security-Policy-Report-Only", "value": "default-src 'self'; script-src 'self' 'unsafe-inline' blob: data: https://www.googletagmanager.com https://*.googletagmanager.com https://*.google-analytics.com https://www.googleadservices.com https://*.doubleclick.net https://www.google.com https://www.gstatic.com https://*.clarity.ms https://c.bing.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://www.googleadservices.com https://*.doubleclick.net https://www.google.com https://www.google.co.in https://www.gstatic.com https://*.clarity.ms https://c.bing.com; font-src 'self' data:; connect-src 'self' https://*.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://www.googleadservices.com https://*.doubleclick.net https://www.google.com https://www.google.co.in https://*.clarity.ms https://c.bing.com https://*.elevenlabs.io wss://*.elevenlabs.io https://cdn.jsdelivr.net; media-src 'self' data: blob:; worker-src 'self' blob:; frame-src https://www.googletagmanager.com https://*.doubleclick.net https://www.google.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'" }
     ] }
   ]
 }

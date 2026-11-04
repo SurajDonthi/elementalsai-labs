@@ -9,7 +9,23 @@ mkdirSync(OUT, { recursive: true });
 const NO_DEV = !!process.env.LABS_NO_DEVICES;
 const read = (f) => readFileSync(new URL(f, SRC), 'utf8');
 const b64 = (f, type) => `data:${type};base64,${readFileSync(new URL('assets/' + f, SRC)).toString('base64')}`;
-const CSS = read('styles.css'), JS = read('app.js');
+/* IBM Plex, served from the site (src/assets/fonts: the Latin files from Google Fonts; Plex Sans is one variable file, plus its
+   latin-ext file for the ₹ sign). The same faces and weights the Google Fonts link gave, so the type looks the same.
+   The review copies carry them as data: URLs; the live build (scripts/release.mjs) turns them into cached /assets/ files. */
+const FONT = (f) => b64('fonts/' + f + '.woff2', 'font/woff2');
+const LATIN = 'U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD';
+const LATIN_EXT = 'U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF';
+const SANS = FONT('plex-sans'), SANS_EXT = FONT('plex-sans-ext');
+const face = (family, weight, style, src, range) => `@font-face{font-family:'${family}';font-style:${style};font-weight:${weight};font-display:swap;src:url(${src}) format('woff2');unicode-range:${range}}`;
+const FONT_CSS = [
+  ...['400', '500', '600'].map((w) => face('IBM Plex Mono', w, 'normal', FONT('plex-mono-' + w), LATIN)),
+  ...['400', '500', '600', '700'].flatMap((w) => [face('IBM Plex Sans', w, 'normal', SANS_EXT, LATIN_EXT), face('IBM Plex Sans', w, 'normal', SANS, LATIN)]),
+  ...['400', '500', '600'].map((w) => face('IBM Plex Serif', w, 'normal', FONT('plex-serif-' + w), LATIN)),
+  face('IBM Plex Serif', '500', 'italic', FONT('plex-serif-500i'), LATIN),
+].join('\n');
+/* the live pages preload the main Plex Sans file (the body text) */
+const fontPreload = () => (PROD ? `<link rel="preload" href="${SANS}" as="font" type="font/woff2" crossorigin>\n` : '');
+const CSS = FONT_CSS + '\n' + read('styles.css'), JS = read('app.js');
 // Devices for "Try it" (D-91): src/devices/<name>.js registers window.LABS_DEVICES[name]; <name>.css is namespaced .dv-<name>.
 const DEV_DIR = new URL('devices/', SRC);
 const hasDev = (n) => !NO_DEV && !!n && existsSync(new URL(n + '.js', DEV_DIR));
@@ -17,11 +33,14 @@ const devFiles = (ext, name) => (!NO_DEV && existsSync(DEV_DIR) ? readdirSync(DE
 // one script block per device, so an error in one device cannot stop the others
 const devScripts = (name) => (!NO_DEV && existsSync(DEV_DIR) ? readdirSync(DEV_DIR).filter((f) => f === name + '.js').sort().map((f) => '<script>' + readFileSync(new URL(f, DEV_DIR), 'utf8') + '</script>').join('\n') : '');
 const deviceOf = (p) => (!p.try ? '' : hasDev(p.try.device) ? p.try.device : (p.try.fallback || p.try.device || 'phone'));
-/* the official single-line logo (Nourd lettering), with white text for the dark site, made from the 2344 px original (D-99) */
-const LOGO = b64('brand/logo-line-white.png', 'image/png');
-const IMG = Object.fromEntries(['toothlens', 'volunteeryatra', 'agshift', 'pilarsai'].map((k) => [k, b64(k + '.jpg', 'image/jpeg')]));
+/* the official single-line logo (Nourd lettering), with white text for the dark site, made from the 2344 px original (D-99).
+   The page uses a 416 × 56 copy (twice its 208 × 28 size); the 960 px file stays as the source */
+const LOGO = b64('brand/logo-line-white-416.png', 'image/png');
+/* the work screenshots, 800 px wide (re-encoded from the 1100 px originals beside them, which the build does not use) */
+const IMG = Object.fromEntries(['toothlens', 'volunteeryatra', 'agshift', 'pilarsai'].map((k) => [k, b64(k + '-800.jpg', 'image/jpeg')]));
 const DEEP = b64('deep-mehta.jpg', 'image/jpeg');
-/* Diya's opening (D-98): her two lines, made in the agent's own voice, and the glass knock (the word times are in app.js) */
+/* Diya's opening (D-98): her two lines, made in the agent's own voice, and the glass knock (the word times are in app.js).
+   preload="none": app.js loads them on the first hover or tap of the orb (play() also loads them) */
 const SND = { hello: b64('diya-hello.mp3', 'audio/mpeg'), knock: b64('knock.wav', 'audio/wav'), name: b64('diya-name.mp3', 'audio/mpeg') };
 const PHONE = '+91 80887 33622', TEL = '+918088733622', EMAIL = 'hello@elementalsai-labs.com';
 /* the ElevenLabs free quote agent (Suraj's script, 29 Oct 2026). The ID is public; the API key never goes in a page */
@@ -304,10 +323,9 @@ const P = {
 const derisk = `<p class="derisk">${I('shield')}<span><b>Pay only when you see it built.</b> <span class="sep">·</span> Full money back if we don’t deliver.</span></p>`;
 const strip = () => { const it = (f) => `<span class="it"${f ? '' : ' aria-hidden="true"'}>${I('phone')}Call <a href="tel:${TEL}"${f ? '' : ' tabindex="-1"'}>${PHONE}</a> or email <a href="mailto:${EMAIL}"${f ? '' : ' tabindex="-1"'}>${EMAIL}</a></span>`; return `<div class="strip" role="note" aria-label="Call or email us"><div class="trk">${Array.from({ length: 12 }, (_, i) => it(i === 0)).join('')}</div></div>`; };
 const header = () => `<header class="top"><div class="wrap"><a class="brand" href="index.html" aria-label="ElementalsAI Labs home"><img src="${LOGO}" alt="ElementalsAI Labs" width="208" height="28"></a><nav aria-label="Free quote"><a class="btn primary sm" href="#quote">Get a free quote</a></nav></div><span class="prog" aria-hidden="true"></span></header>`;
-const titleHTML = (p) => {
-  const ws = (s) => s.split(' ').map((w) => `<span class="w">${esc(w)}</span>`).join(' ');
-  return `<h1 class="title" data-talk data-verbs='${JSON.stringify(p.verbs).replace(/'/g, '&#39;')}'><span class="sr">${esc(p.line)} ${esc(p.verbs[0])}</span><span class="false" aria-hidden="true">${ws(p.falseStart)}</span><span class="line" aria-hidden="true">${ws(p.line)} <span class="band"><span class="rot"><span class="w">${esc(p.verbs[0])}</span></span></span><span class="pad"></span></span></h1>`;
-};
+/* the hero line, in the page once and shown at first paint; the last word rolls (app.js). The false start is kept in data-false */
+const attr = (s) => esc(s).replace(/"/g, '&quot;');
+const titleHTML = (p) => `<h1 class="title" data-talk data-verbs='${JSON.stringify(p.verbs).replace(/'/g, '&#39;')}' data-false="${attr(p.falseStart)}"><span class="line">${esc(p.line)} <span class="band"><span class="rot"><span class="w">${esc(p.verbs[0])}</span></span></span><span class="pad"></span></span></h1>`;
 // highest range first: it sets the price the buyer expects; the lowest range starts at the lowest project price
 const BUDGETS = ['₹8 lakh+', '₹3–8 lakh', '₹1.5–3 lakh', '₹50,000–1.5 lakh'];
 const quoteCard = (p) => `<form class="card" id="quote-form" novalidate aria-labelledby="qf-t" data-clarity-mask="True">
@@ -315,7 +333,7 @@ const quoteCard = (p) => `<form class="card" id="quote-form" novalidate aria-lab
   <div class="va" data-va data-state="idle">
    <button type="button" class="orb" aria-label="Talk to Diya, our voice agent"><canvas width="236" height="236"></canvas><span class="orb-css"></span></button>
    <div><p class="state" aria-hidden="true"><span class="led"></span><i class="eq"><b></b><b></b><b></b></i><span data-st>Diya</span></p><p class="va-cap" data-cap aria-hidden="true">Hello? Anybody there?</p><button type="button" class="talk" data-talk-btn>${I('stop')}Stop</button><p class="sr" role="status" data-va-live></p></div>
-   ${Object.entries(SND).map(([k, src]) => `<audio data-snd="${k}" preload="auto" src="${src}"></audio>`).join('')}
+   ${Object.entries(SND).map(([k, src]) => `<audio data-snd="${k}" preload="none" src="${src}"></audio>`).join('')}
   </div>
   <p class="or">Or type it</p>
   <div class="fld"><label for="f-name">Your name</label><div class="box"><input id="f-name" name="name" autocomplete="name"></div></div>
@@ -391,7 +409,7 @@ const services = () => `<section class="sec" id="services" aria-labelledby="sv-t
 const numParts = (v) => v.split(/(\d[\d,]*(?:\.\d+)?)/).filter(Boolean).map((t) => /^\d/.test(t) ? `<span class="num" data-to="${t.replace(/,/g, '')}"${t.includes(',') ? ' data-grp' : ''} style="--w:${t.length}ch">${t}</span>` : esc(t)).join('');
 const impact = (p) => `<section class="sec" id="impact" aria-labelledby="imp-t"><div class="wrap">
  <div class="sec-h reveal"><span class="eyebrow">Impact</span><h2 class="h2" id="imp-t">Real products. <em>Real numbers.</em></h2><p class="lede">Each one is a live product that our team helped build. One number from each.</p></div>
- <div class="shots">${p.shots.map((k) => { const s = SHOTS[k]; return `<article class="shot"><div class="frame"><img src="${IMG[k]}" alt="The ${esc(s.site)} website" width="1100" height="825" loading="lazy" decoding="async"><p class="site"><span>${s.site}</span><span>${s.period}</span></p></div><div class="row"><p class="val">${numParts(s.val)}</p><p class="lab">${esc(s.lab)}</p></div></article>`; }).join('')}</div>
+ <div class="shots">${p.shots.map((k) => { const s = SHOTS[k]; return `<article class="shot"><div class="frame"><img src="${IMG[k]}" alt="The ${esc(s.site)} website" width="800" height="600" loading="lazy" decoding="async"><p class="site"><span>${s.site}</span><span>${s.period}</span></p></div><div class="row"><p class="val">${numParts(s.val)}</p><p class="lab">${esc(s.lab)}</p></div></article>`; }).join('')}</div>
 </div></section>`;
 const stats = (p) => `<div class="stats" role="region" aria-label="Our track record"><dl>${p.stats.map(([v, l]) => `<div class="cell"><dt><span class="pn" data-pn><span class="pn-text">${esc(v)}</span><canvas class="pn-canvas" aria-hidden="true"></canvas></span></dt><dd>${esc(l)}</dd></div>`).join('')}</dl></div>`;
 const gamble = (p) => `<section class="sec" id="worries" aria-labelledby="gb-t"><div class="wrap gamble">
@@ -418,7 +436,7 @@ const cta = (p) => `<section class="cta" aria-labelledby="cta-t"><div class="wra
 const footer = (slug) => `<footer class="foot"><div class="wrap">
  <div><a class="brand" href="index.html" aria-label="ElementalsAI Labs home"><img src="${LOGO}" alt="ElementalsAI Labs" width="194" height="26"></a><p>Apps your users will love. Built with passion for great products.</p></div>
  <nav aria-label="Services">${PAGES_ORDER.map(([s, n]) => `<a href="${s}.html"${s === slug ? ' aria-current="page"' : ''}>${n}</a>`).join('')}</nav>
- <p class="fine">© 2026 ElementalsAI Labs · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="contact.html">Contact</a>${PROD ? '' : ' · Draft for review, not the live site'}</p>
+ <p class="fine">© 2026 ElementalsAI Labs · <a href="how-it-works.html">How it works</a> · <a href="work.html">Our work</a> · <a href="quote.html">Get a quote</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="contact.html">Contact</a>${PROD ? '' : ' · Draft for review, not the live site'}</p>
 </div></footer>`;
 
 function page(slug) {
@@ -435,9 +453,7 @@ function page(slug) {
 <!-- ElementalsAI Labs landing page (D-91 design). Built by src/build.mjs; edit the source, not this file. -->
 ${headExtra()}
 <script>document.documentElement.classList.add('js')</script>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
-<style>${CSS}
+${fontPreload()}<style>${CSS}
 ${devFiles('.css', deviceOf(p))}</style>
 </head>
 <body>
@@ -468,7 +484,7 @@ ${devScripts(deviceOf(p))}
 }
 
 // The shared parts, for the site pages (src/site.mjs: privacy, terms, contact and the sitelink pages).
-export { CSS, JS, SPRITE, LOGO, IMG, DEEP, PAGES_ORDER, CLIENTS, SHOTS, REVIEWS, P, PHONE, TEL, EMAIL, VOICE_AGENT, PROD, headExtra, labsCfg, robots, esc, I, derisk, strip, header, footer, quoteCard, marquee, impact, stats, how, review, faq, cta, OUT };
+export { CSS, JS, SPRITE, LOGO, attr, fontPreload, IMG, DEEP, PAGES_ORDER, CLIENTS, SHOTS, REVIEWS, P, PHONE, TEL, EMAIL, VOICE_AGENT, PROD, headExtra, labsCfg, robots, esc, I, derisk, strip, header, footer, quoteCard, marquee, impact, stats, how, review, faq, cta, OUT };
 
 // Build only when run directly (node build.mjs), not when another script imports the shared parts.
 if (/build\.mjs$/.test(process.argv[1] || '')) {

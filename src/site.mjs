@@ -3,7 +3,7 @@
 // Run: node site.mjs   → writes ../review/privacy.html, terms, contact, how-it-works, quote and work (npm run build makes the live copies).
 // It imports the shared parts from build.mjs (importing does not rebuild the service pages). Extra CSS is prefixed .sp-.
 import { writeFileSync } from 'node:fs';
-import { CSS, JS, SPRITE, LOGO, DEEP, REVIEWS, PHONE, TEL, EMAIL, VOICE_AGENT, PROD, headExtra, labsCfg, robots, esc, I, derisk, strip, header, footer, quoteCard, marquee, impact, stats, how, cta, OUT } from './build.mjs';
+import { CSS, JS, SPRITE, LOGO, attr, fontPreload, DEEP, REVIEWS, PHONE, TEL, EMAIL, VOICE_AGENT, PROD, headExtra, labsCfg, robots, esc, I, derisk, strip, header, footer, quoteCard, marquee, impact, stats, how, cta, OUT } from './build.mjs';
 
 const UPDATED = '1 November 2026';
 const SLUG = 'site'; // matches no service page, so the footer marks none of them as current
@@ -126,12 +126,13 @@ addEventListener('scroll',function(){if(!q)q=requestAnimationFrame(upd);},{passi
 
 // ---- parts ----
 const toQuotePage = (html) => html.replace(/href="#quote"/g, 'href="quote.html"');
-// the spoken headline of the landing pages: a plain first line, struck, then the real line (app.js runs it); " / " in the line breaks it there
+// the headline of the landing pages: the real line, in the page once and shown at first paint; its last word rolls (app.js).
+// The false start is kept in data-false. " / " in the line breaks it there
 const talkTitle = (id, falseStart, line, verbs) => {
-  const ws = (s) => s.split(' ').map((w) => (w === '/' ? '<br>' : `<span class="w">${esc(w)}</span>`)).join(' ');
-  return `<h1 class="title" id="${id}" data-talk data-verbs='${JSON.stringify(verbs).replace(/'/g, '&#39;')}'><span class="sr">${esc(line.replace(' / ', ' '))} ${esc(verbs[0])}</span><span class="false" aria-hidden="true">${ws(falseStart)}</span><span class="line" aria-hidden="true">${ws(line)} <span class="band"><span class="rot"><span class="w">${esc(verbs[0])}</span></span></span><span class="pad"></span></span></h1>`;
+  const ws = (s) => s.split(' / ').map(esc).join(' <br>');
+  return `<h1 class="title" id="${id}" data-talk data-verbs='${JSON.stringify(verbs).replace(/'/g, '&#39;')}' data-false="${attr(falseStart)}"><span class="line">${ws(line)} <span class="band"><span class="rot"><span class="w">${esc(verbs[0])}</span></span></span><span class="pad"></span></span></h1>`;
 };
-// a page head with the particle field; "rise" items appear with the spoken title, "reveal" items on their own
+// a page head with the particle field; "rise" items show at once with the title, "reveal" items rise in on their own
 const pageHead = ({ id, eyebrow, h1, lede, after = '', talk = false }) => {
   const m = talk ? 'rise' : 'reveal';
   return `<section class="hero sp-head" aria-labelledby="${id}"><canvas class="field" aria-hidden="true"></canvas><div class="wrap">
@@ -168,9 +169,7 @@ function shell({ file, title, desc, main, quote = false, scripts = '' }) {
 <!-- ElementalsAI Labs site page (D-91 design). Built by src/site.mjs; edit the source, not this file. -->
 ${headExtra()}
 <script>document.documentElement.classList.add('js')</script>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
-<style>${CSS}
+${fontPreload()}<style>${CSS}
 ${SP_CSS}</style>
 </head>
 <body class="sp-page">

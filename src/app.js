@@ -64,12 +64,11 @@ function speak(words, o) {
   });
 }
 
-/* ---------- the hero line: a false start, struck, then the real line; the highlight wipes in and its last word rolls ---------- */
+/* ---------- the hero line: in the page and shown at first paint (the false start waits in data-false); the last word rolls ---------- */
 (function hero() {
   var h = $('.title[data-talk]'); if (!h) return;
-  var fs = $('.false', h), line = $('.line', h), band = $('.band', h), rot = $('.rot', h), pad = $('.pad', h);
+  var rot = $('.rot', h), pad = $('.pad', h);
   var verbs = []; try { verbs = JSON.parse(h.getAttribute('data-verbs') || '[]'); } catch (e) {}
-  $$('.hero .rise').forEach(function (el, k) { setTimeout(function () { el.classList.add('on'); }, 120 + k * 110); });
   var widths = [], widest = 0, vi = 0, timer = 0, seen = true, armed = false;
   function setW(k) { if (!rot || !pad || !widths.length) return; rot.style.width = widths[k] + 'px'; pad.style.width = Math.max(0, widest - widths[k]) + 'px'; }
   function measure() {
@@ -82,33 +81,18 @@ function speak(words, o) {
     vi = (vi + 1) % verbs.length;
     var old = rot.firstElementChild, nw = d.createElement('span');
     nw.textContent = verbs[vi]; nw.style.transform = 'translateY(100%)'; nw.style.opacity = '0'; rot.appendChild(nw);
-    requestAnimationFrame(function () { requestAnimationFrame(function () {
-      old.style.transform = 'translateY(-100%)'; old.style.opacity = '0'; nw.style.transform = 'none'; nw.style.opacity = '1'; setW(vi);
-    }); });
+    /* a forced layout instead of animation frames: frames pause in a hidden or covered window, and the band would stay empty */
+    void nw.offsetWidth;
+    old.style.transform = 'translateY(-100%)'; old.style.opacity = '0'; nw.style.transform = 'none'; nw.style.opacity = '1'; setW(vi);
     setTimeout(function () { if (old.parentNode) old.remove(); }, 650);
   }
   function start() { if (armed && seen && !d.hidden && !timer && verbs.length > 1) timer = setInterval(tick, 2800); }
   function stop() { clearInterval(timer); timer = 0; }
-  function fin() { h.classList.add('done'); if (fs && fs.parentNode) fs.remove(); if (band) band.classList.add('on'); }
-  if (RM) { fin(); return; }
-  if (rot && verbs.length > 1) {
-    fontsReady.then(measure);
-    W.addEventListener('resize', measure, { passive: true });
-    if (hasIO) new IntersectionObserver(function (es) { seen = es[0].isIntersecting; seen ? start() : stop(); }).observe(h);
-    d.addEventListener('visibilitychange', function () { d.hidden ? stop() : start(); });
-  }
-  var guard = setTimeout(fin, 16000);
-  (async function () {
-    await fontsReady; await sleep(300);
-    if (fs) {
-      await speak($$('.w', fs), { tail: 840 });
-      await sleep(650); fs.classList.add('strike'); await sleep(900); fs.classList.add('out'); await sleep(360); fs.remove();
-    }
-    await speak($$('.w', line), { tail: 840, after: function (w) { return w.closest('.rot') || w; } });
-    if (band) { await sleep(80); band.classList.add('on'); await sleep(900); band.style.transition = 'none'; }
-    clearTimeout(guard); h.classList.add('done');
-    await sleep(1400); armed = true; start();
-  })().catch(fin);
+  if (RM || !rot || verbs.length < 2) return;
+  fontsReady.then(function () { measure(); setTimeout(function () { armed = true; start(); }, 1400); });
+  W.addEventListener('resize', measure, { passive: true });
+  if (hasIO) new IntersectionObserver(function (es) { seen = es[0].isIntersecting; seen ? start() : stop(); }).observe(h);
+  d.addEventListener('visibilitychange', function () { d.hidden ? stop() : start(); });
 })();
 
 /* ---------- the particle stream behind the hero: amber near the cursor, grey elsewhere (HeroField) ---------- */
@@ -344,6 +328,12 @@ function listenLv(t) { var a = Math.abs(Math.sin(t * 5.3 + Math.sin(t * 1.1) * 3
     var rp = d.createElement('span'); rp.className = 'rip'; orbBtn.appendChild(rp); setTimeout(function () { rp.remove(); }, 900);
   }
   function clip(k) { return $('audio[data-snd="' + k + '"]', va); }
+  /* the clips have preload="none"; the first hover, focus or tap of the orb loads them (play() loads one too, if it comes first) */
+  var warm = function () {
+    warm = function () {};
+    $$('audio[data-snd]', va).forEach(function (a) { if (a.readyState === 0 && a.networkState !== 2) { a.preload = 'auto'; try { a.load(); } catch (e) {} } });
+  };
+  ['pointerenter', 'pointerdown', 'focus'].forEach(function (t) { orbBtn.addEventListener(t, function () { warm(); }, { passive: true }); });
   /* plays one part (its sound, if allowed) and runs its words or knocks on the clip's own clock */
   function part(k, sound) {
     return new Promise(function (res) {
