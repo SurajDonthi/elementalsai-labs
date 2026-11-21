@@ -18,7 +18,7 @@ function onView(el, fn, th) {
 }
 var PAGE = W.LABS || {};
 /* events for Tag Manager (Analytics, Google Ads conversions): generate_lead, phone_click, email_click, voice_call_start.
-   Funnel steps, Analytics only: scroll_50, scroll_90, try_it_used, library_click, quote_button_click, internal_link_click, form_start, budget_chosen, form_send_click, form_send_blocked. `detail` carries no personal data. */
+   Funnel steps, Analytics only: scroll_50, scroll_90, try_it_used, library_click, quote_button_click, internal_link_click, form_start, budget_chosen, form_send_click, form_send_blocked, voice_responded. `detail` carries no personal data. */
 function track(event, data) { (W.dataLayer = W.dataLayer || []).push(Object.assign({ event: event }, data || {})); }
 var once = {};
 function trackOnce(event, data) { if (!once[event]) { once[event] = 1; track(event, data); } }
@@ -356,6 +356,13 @@ function listenLv(t) { var a = Math.abs(Math.sin(t * 5.3 + Math.sin(t * 1.1) * 3
   /* once a tab: 'met' after her opening, 'done' after the lead is sent or the visitor stops her (then she waits for a tap) */
   var MEM = 'labs-diya', mem = ''; try { mem = sessionStorage.getItem(MEM) || ''; } catch (e) {}
   function remember(v) { mem = v; try { sessionStorage.setItem(MEM, v); } catch (e) {} }
+  /* voice_responded: once a tab, the first time the visitor says real words (a letter or digit; not the "..." silence marker). The words are never sent. */
+  var SAID = 'labs-diya-said', said = false; try { said = sessionStorage.getItem(SAID) === '1'; } catch (e) {}
+  function spoke(t) {
+    if (said || !(/[0-9A-Za-z]/.test(t) || /[^\s!-~…]/.test(t))) return;
+    said = true; try { sessionStorage.setItem(SAID, '1'); } catch (e) {}
+    track('voice_responded', { lead_source: 'voice' });
+  }
   function fit() { var keep = cap.innerHTML; cap.style.minHeight = ''; cap.textContent = 'Okay, great. I have captured this information. Can you tell me how our team can get back to you?'; cap.style.minHeight = cap.offsetHeight + 'px'; cap.innerHTML = keep; }
   cap.textContent = RM ? GREET : ''; fit();
   var fz = 0; W.addEventListener('resize', function () { clearTimeout(fz); fz = setTimeout(fit, 150); }, { passive: true });
@@ -462,7 +469,7 @@ function listenLv(t) { var a = Math.abs(Math.sin(t * 5.3 + Math.sin(t * 1.1) * 3
         onMessage: function (m) {
           var t = m && m.message ? String(m.message).replace(/\[[^\]]*\]\s*/g, '').trim() : ''; if (!t) return; /* drop the voice's mood tags, e.g. [warm] */
           if (m.source === 'ai') { lastAi = t; show(t); live.textContent = t; if (++aiRun >= 3) winding = true; }
-          else if (t !== '...') { aiRun = 0; idleWatch(); show(lastAi, 'You: ' + t); }
+          else if (t !== '...') { aiRun = 0; idleWatch(); spoke(t); show(lastAi, 'You: ' + t); }
         },
         onDisconnect: function () { if (conv) stop(); },
         onError: function (msg) { if (W.console) console.warn('Voice agent:', msg); }
