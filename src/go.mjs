@@ -531,7 +531,7 @@ const FOOT_LINE = S.footer.line1.split(' · ').map((part) => {
 /* the live footer's last line (copyright, extra links, draft note) is replaced by one line: the copyright, then the company line (Suraj, 23 Nov 2026) */
 const FOOT_RAW = footer('build').replace(/<nav aria-label="[^"]*">[\s\S]*?<\/nav>/, ''), FOOT_C = (FOOT_RAW.match(/<p class="fine">(© [^<·]*?)(?: · |<\/p>)/) || [])[1];
 if (!FOOT_C) fail('the footer has no "© ..." line');
-const FOOTER = mustRe(FOOT_RAW, /<p class="fine">[^]*?<\/p>(?:\s*<p class="fine">[^]*?<\/p>)*/, `<p class="go-ln">${FOOT_C} <span class="sep">·</span> ${FOOT_LINE} <span class="sep">·</span> <a href="#" data-cookie>Cookie settings</a></p>`);
+const FOOTER = mustRe(FOOT_RAW, /<p class="fine">[^]*?<\/p>(?:\s*<p class="fine">[^]*?<\/p>)*/, `<p class="go-ln">${FOOT_C} <span class="sep">·</span> ${FOOT_LINE}</p>`);
 /* the form drawer on phones (under 768 px; Suraj, 22 Nov 2026, 13:45), a copy of the bottom sheet of surajdonthi.com (BookingWidget.astro) with its grip, close button and keys.
    Closed, it is a card fixed at the bottom of the screen: Deepak's orb on the left, at the size of the desktop orb (104 px), so it has the same soft glow (Suraj, 22 Nov 2026, 15:18 and 15:19),
    and the form's title beside it. A pull up or a tap opens the whole form.

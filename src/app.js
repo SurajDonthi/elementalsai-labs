@@ -880,31 +880,5 @@ function agentRun(root) {
     });
   });
 })();
-/* cookie banner: the choice is kept in this browser; Google Consent Mode v2 starts denied for India (build.mjs head) */
-(function () {
-  var KEY = 'cc-v1', gpc = !!navigator.globalPrivacyControl, bar, saved = null;
-  try { saved = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) {}
-  function tell(fn, an, ad) {
-    ad = ad && !gpc; var g = function (v) { return v ? 'granted' : 'denied'; };
-    if (W.gtag) W.gtag('consent', 'update', { functionality_storage: g(fn), personalization_storage: g(fn), analytics_storage: g(an), ad_storage: g(ad), ad_user_data: g(ad), ad_personalization: g(ad) });
-  }
-  function save(fn, an, ad) { saved = { fn: !!fn, an: !!an, ad: !!ad && !gpc }; try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {} tell(saved.fn, saved.an, saved.ad); bar.hidden = true; }
-  function fill() { $('[data-k=fn]', bar).checked = !!(saved && saved.fn); $('[data-k=an]', bar).checked = !!(saved && saved.an); $('[data-k=ad]', bar).checked = !!(saved && saved.ad); }
-  function build() {
-    bar = d.createElement('div'); bar.className = 'cc'; bar.setAttribute('role', 'dialog'); bar.setAttribute('aria-label', 'Cookies'); bar.hidden = true;
-    bar.innerHTML = '<p><b>We use cookies</b><br>We use cookies to see how our site is used and to measure our ads. You can accept all, reject all, or choose. Read our <a href="privacy.html">privacy policy</a>.</p>' +
-      '<div class="cc-b"><button type="button" class="cc-y" data-a="all">Accept all</button><button type="button" data-a="none">Reject all</button><button type="button" data-a="choose">Choose</button></div>' +
-      '<div class="cc-c" hidden><label><input type="checkbox" checked disabled> Necessary (always on)</label><label><input type="checkbox" data-k="fn"> Functional / Performance</label><label><input type="checkbox" data-k="an"> Analytical</label><label><input type="checkbox" data-k="ad"' + (gpc ? ' disabled' : '') + '> Advertising</label><button type="button" data-a="save">Save</button></div>';
-    d.body.appendChild(bar);
-    bar.addEventListener('click', function (e) {
-      var a = e.target.getAttribute && e.target.getAttribute('data-a'); if (!a) return;
-      if (a === 'all') save(true, true, true); else if (a === 'none') save(false, false, false);
-      else if (a === 'choose') { $('.cc-c', bar).hidden = false; fill(); }
-      else if (a === 'save') save($('[data-k=fn]', bar).checked, $('[data-k=an]', bar).checked, $('[data-k=ad]', bar).checked);
-    });
-  }
-  build();
-  if (saved) tell(saved.fn, saved.an, saved.ad); else { if (gpc) tell(false, false, false); bar.hidden = false; }
-  $$('[data-cookie]').forEach(function (l) { l.addEventListener('click', function (e) { e.preventDefault(); bar.hidden = false; $('.cc-c', bar).hidden = false; fill(); }); });
-})();
+
 })();

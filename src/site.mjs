@@ -316,7 +316,6 @@ ${reach()}` },
 </ul>
 <h3>Withdraw your consent</h3>
 <p>You can withdraw your consent at any time. It is as easy as giving it: email us at <a href="mailto:${EMAIL}">${EMAIL}</a>, or call us. After that, we stop using your data for that purpose, and we delete it, unless a law requires us to keep it.</p>
-<p>For cookies, you choose in the banner at the bottom of the page. You can change your choice at any time with “Cookie settings” in the footer. If your browser sends the Global Privacy Control signal, we treat it as a “no” for ads.</p>
 <p>Withdrawing does not change what we did before. If you withdraw, we may not be able to send your quote or continue your project.</p>` },
   { id: 'share', t: 'Who we share it with', html: `<p><b>We never sell your data.</b> We do not rent it or trade it. We share it only with:</p>
 <ul>
