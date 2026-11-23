@@ -326,7 +326,7 @@ test('d3. SILENT call (T-5): no saves, silence timeout, only "..." from the visi
   const raw = hookBody(id, {
     metadata: { termination_reason: 'Silence timeout', call_duration_secs: 150, start_time_unix_secs: D3_START },
     transcript: [
-      agentSays('TEST: Hi! I am Diya. What should I call you? (FIG)', 0),
+      agentSays('TEST: Hi, I am Deepak, your helpful AI assistant. (FIG)', 0),
       visitorSays('...', 20),
       agentSays('TEST: Are you still there? (FIG)', 21),
       visitorSays('...', 60),
@@ -360,7 +360,7 @@ test('d4. HANG-UP before a word (T-5): no saves, no visitor turn: visitor_respon
   const id = conv('d4');
   const raw = hookBody(id, {
     metadata: { termination_reason: 'Client disconnected', call_duration_secs: 6 },
-    transcript: [agentSays('TEST: Hi! I am Diya. What should I call you? (LIME)', 0)],
+    transcript: [agentSays('TEST: Hi, I am Deepak, your helpful AI assistant. (LIME)', 0)],
     analysis: { call_successful: 'failure', transcript_summary: 'TEST: the caller left at once.', data_collection_results: {} },
   });
   const r = await hook(raw);

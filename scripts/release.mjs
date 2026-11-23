@@ -12,6 +12,8 @@ const ROOT = new URL('../', import.meta.url), PUB = new URL('public/', ROOT), AS
 const SITE = 'https://elementalsai-labs.com';
 /* the review files keep their numbers; the live addresses match the Google Ads final URLs and sitelinks */
 const ROUTE = { '01-mobile-app-development': 'mobile-app-development', '02-app-development': 'app-development', '06-ai-development': 'ai-development', '08-ai-agents-and-automation': 'ai-agents-and-automation', '11-custom-software': 'custom-software' };
+/* the ads funnel page (/build): noindex, and not in the sitemap, header or footer (Suraj, 21 and 22 Nov 2026) */
+const UNLISTED = new Set(['build']);
 /* the icons (from the official Elementals.ai-icons folder) and the sharing image, served from the site root */
 const BRAND = ['favicon.ico', 'favicon-16x16.png', 'favicon-32x32.png', 'favicon-96x96.png', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png', 'icon-512-maskable.png', 'og-image.png'];
 const ICONS = `<link rel="icon" href="/favicon.ico" sizes="48x48">
@@ -31,19 +33,19 @@ const serviceLd = (name, description, url) => ld({ '@context': 'https://schema.o
 const tmp = mkdtempSync(join(tmpdir(), 'labs-release-'));
 try {
   const env = { ...process.env, LABS_PROD: '1', LABS_OUT: tmp };
-  for (const f of ['build.mjs', 'site.mjs']) execFileSync(process.execPath, [fileURLToPath(new URL('src/' + f, ROOT))], { env, stdio: 'inherit' });
+  for (const f of ['build.mjs', 'site.mjs', 'go.mjs']) execFileSync(process.execPath, [fileURLToPath(new URL('src/' + f, ROOT))], { env, stdio: 'inherit' });
 
   rmSync(PUB, { recursive: true, force: true }); mkdirSync(AS, { recursive: true });
   const saved = new Map();
   const save = (buf, ext) => { const h = createHash('sha1').update(buf).digest('hex').slice(0, 12), name = h + '.' + ext; if (!saved.has(name)) { writeFileSync(new URL(name, AS), buf); saved.set(name, buf.length); } return '/assets/' + name; };
-  const EXT = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp', 'image/gif': 'gif', 'image/svg+xml': 'svg', 'audio/mpeg': 'mp3', 'audio/wav': 'wav', 'font/woff2': 'woff2' };
+  const EXT = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp', 'image/gif': 'gif', 'image/svg+xml': 'svg', 'audio/mpeg': 'mp3', 'audio/wav': 'wav', 'video/mp4': 'mp4', 'font/woff2': 'woff2' };
   const routes = [];
   let mainCss = '';
 
   for (const file of readdirSync(tmp).filter((f) => f.endsWith('.html'))) {
     const name = file.replace(/\.html$/, ''), r = route(name);
     let html = readFileSync(join(tmp, file), 'utf8');
-    html = html.replace(/data:(image\/(?:png|jpeg|webp|gif|svg\+xml)|audio\/(?:mpeg|wav)|font\/woff2);base64,([A-Za-z0-9+/=]+)/g, (_, type, b64) => save(Buffer.from(b64, 'base64'), EXT[type]));
+    html = html.replace(/data:(image\/(?:png|jpeg|webp|gif|svg\+xml)|audio\/(?:mpeg|wav)|video\/mp4|font\/woff2);base64,([A-Za-z0-9+/=]+)/g, (_, type, b64) => save(Buffer.from(b64, 'base64'), EXT[type]));
     /* LF line endings, so a build on Windows names css/js files the same as the Vercel build */
     const lf = (s) => Buffer.from(s.replace(/\r\n/g, '\n'));
     html = html.replace(/<style>([\s\S]*?)<\/style>/g, (_, css) => { const u = save(lf(css), 'css'); if (!mainCss) mainCss = u; return `<link rel="stylesheet" href="${u}">`; });
@@ -68,7 +70,7 @@ ${ICONS}
   writeFileSync(new URL('site.webmanifest', PUB), JSON.stringify({ name: 'ElementalsAI Labs', short_name: 'ElementalsAI', start_url: '/', display: 'browser', background_color: '#0A0A0B', theme_color: '#0A0A0B',
     icons: [{ src: '/icon-192.png', sizes: '192x192', type: 'image/png' }, { src: '/icon-512.png', sizes: '512x512', type: 'image/png' }, { src: '/icon-512-maskable.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }] }, null, 1) + '\n');
   writeFileSync(new URL('robots.txt', PUB), `User-agent: *\nAllow: /\nSitemap: ${SITE}/sitemap.xml\n`);
-  writeFileSync(new URL('sitemap.xml', PUB), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${routes.sort().map((r) => `  <url><loc>${SITE}/${r}</loc></url>`).join('\n')}\n</urlset>\n`);
+  writeFileSync(new URL('sitemap.xml', PUB), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${routes.filter((r) => !UNLISTED.has(r)).sort().map((r) => `  <url><loc>${SITE}/${r}</loc></url>`).join('\n')}\n</urlset>\n`);
   writeFileSync(new URL('404.html', PUB), `<!doctype html>
 <html lang="en-IN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Page not found · ElementalsAI Labs</title><meta name="robots" content="noindex">
 ${ICONS}<link rel="stylesheet" href="${mainCss}"></head>

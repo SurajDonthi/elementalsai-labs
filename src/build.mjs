@@ -24,7 +24,7 @@ const FONT_CSS = [
   face('IBM Plex Serif', '500', 'italic', FONT('plex-serif-500i'), LATIN),
 ].join('\n');
 /* the live pages preload the main Plex Sans file (the body text) */
-const fontPreload = () => (PROD ? `<link rel="preload" href="${SANS}" as="font" type="font/woff2" crossorigin>\n` : '');
+const fontPreload = () => (PROD ? `<link rel="preload" href="${SANS}" as="font" type="font/woff2" crossorigin>\n<link rel="preload" href="${FONT('plex-serif-600')}" as="font" type="font/woff2" crossorigin>\n` : '');
 const CSS = FONT_CSS + '\n' + read('styles.css'), JS = read('app.js');
 // Devices for "Try it" (D-91): src/devices/<name>.js registers window.LABS_DEVICES[name]; <name>.css is namespaced .dv-<name>.
 const DEV_DIR = new URL('devices/', SRC);
@@ -39,12 +39,14 @@ const LOGO = b64('brand/logo-line-white-416.png', 'image/png');
 /* the work screenshots, 800 px wide (re-encoded from the 1100 px originals beside them, which the build does not use) */
 const IMG = Object.fromEntries(['toothlens', 'volunteeryatra', 'agshift', 'pilarsai'].map((k) => [k, b64(k + '-800.jpg', 'image/jpeg')]));
 const DEEP = b64('deep-mehta.jpg', 'image/jpeg');
-/* Diya's opening (D-98): her two lines, made in the agent's own voice, and the glass knock (the word times are in app.js).
-   preload="none": app.js loads them on the first hover or tap of the orb (play() also loads them) */
-const SND = { hello: b64('diya-hello.mp3', 'audio/mpeg'), knock: b64('knock.wav', 'audio/wav'), name: b64('diya-name.mp3', 'audio/mpeg') };
+/* Sachin Shet's photo: 112 px square like Deep's, face and shoulders, cropped from sachin-shet-800.png (his photo, 22 Nov 2026) */
+const SACHIN = b64('sachin-shet.jpg', 'image/jpeg');
+/* the glass knock before the live call (its times are in app.js). Deepak says his first message live, so there are no voice clips (22 Nov 2026).
+   preload="none": app.js loads it on the first hover or tap of the orb (play() also loads it) */
+const SND = { knock: b64('knock.wav', 'audio/wav') };
 const PHONE = '+91 80887 33622', TEL = '+918088733622', EMAIL = 'hello@elementalsai-labs.com';
-/* the ElevenLabs free quote agent (Suraj's script, 29 Oct 2026). The ID is public; the API key never goes in a page */
-const VOICE_AGENT = 'agent_9701m6bb1fwqese82y1t2mjabdv5';
+/* the ElevenLabs free quote agent "Deepak" (prompt v2, 22 Nov 2026). The ID is public; the API key never goes in a page */
+const VOICE_AGENT = 'agent_6801m7wfrfzte35rgxvf7dh6hnta';
 /* the live build: no draft notes, the form sends leads to /api/lead, search engines may index the pages, and the Google tag counts leads when its ID is set */
 const PROD = !!process.env.LABS_PROD;
 // Google Tag Manager loads Analytics, Clarity and the Google Ads conversion tags; app.js only pushes events to dataLayer.
@@ -94,12 +96,12 @@ const SHOTS = {
   agshift: { site: 'agshift.com', period: '2021 — 2024', val: '$3M', lab: 'customer revenue' },
 };
 const REVIEWS = {
-  sachin: { who: 'Sachin Shet', role: 'Founder, building for Indian causes', ini: 'SS', paras: [
+  sachin: { who: 'Sachin Shet', role: 'Founder, building for Indian causes', ini: 'SS', photo: SACHIN, paras: [
     'For two years I tried agency after agency, and <mark>my app never got off the ground</mark>. The idea stayed blurry, and what they built did not feel right to use.',
     'Suraj’s team was different. I did not have to sit with them and explain every workflow. They studied the market, learned who my users were and what problems they had, and built for those users, not only for my list of features. <mark>In 5 days, my blurry idea was clear.</mark> <mark>Within the first month, we launched.</mark>',
     'They did not leave us midway after the launch. <mark>They stayed with us through the early growth, and made sure people adopted the app and it grew.</mark> They helped us get our first users, check that people really wanted the app, plan how to take it to market, and improve it from user feedback.',
     'Their experience stood out most. They have built and launched apps that real users adopt. <mark>They owned the problem as if it was theirs.</mark>'] },
-  deep: { who: 'Deep Mehta', role: 'Co-founder, Toothlens', photo: true, paras: [
+  deep: { who: 'Deep Mehta', role: 'Co-founder, Toothlens', photo: DEEP, paras: [
     'Our accuracy had been stuck for months. We had the data, we had a model, and <mark>no idea what to try next</mark>.',
     'Suraj did not hand us a roadmap. He sat with the team and <mark>made us systematic</mark>: how to define a dataset, when to retrain, how to choose a model and why. Three months later the module went from <mark>43% to 93%</mark>.',
     'Then the calls started coming in: <mark>enterprise deals</mark> we could not have had before.'] },
@@ -320,43 +322,64 @@ const P = {
 };
 
 // ---- sections ----
-const derisk = `<p class="derisk">${I('shield')}<span><b>Pay only when you see it built.</b> <span class="sep">·</span> Full money back if we don’t deliver.</span></p>`;
-const strip = () => { const it = (f) => `<span class="it"${f ? '' : ' aria-hidden="true"'}>${I('phone')}Call <a href="tel:${TEL}"${f ? '' : ' tabindex="-1"'}>${PHONE}</a> or email <a href="mailto:${EMAIL}"${f ? '' : ' tabindex="-1"'}>${EMAIL}</a></span>`; return `<div class="strip" role="note" aria-label="Call or email us"><div class="trk">${Array.from({ length: 12 }, (_, i) => it(i === 0)).join('')}</div></div>`; };
-const header = () => `<header class="top"><div class="wrap"><a class="brand" href="index.html" aria-label="ElementalsAI Labs home"><img src="${LOGO}" alt="ElementalsAI Labs" width="208" height="28"></a><nav aria-label="Free quote"><a class="btn primary sm" href="#quote">Get a free quote</a></nav></div><span class="prog" aria-hidden="true"></span></header>`;
+/* The words of the shared parts below. The service pages use TX. src/go.mjs swaps in its own words (from src/go-content.json)
+   with useText(): a table with the same keys. Slots hold HTML-safe text; card.budgets is plain text (escaped where it is used). */
+const BUDGETS = ['₹8 lakh+', '₹3–8 lakh', '₹1.5–3 lakh', '₹50,000–1.5 lakh'];
+const TX = {
+  derisk: { b: 'Pay only when you see it built.', t: 'Full money back if we don’t deliver.' },
+  strip: { aria: 'Call or email us', call: 'Call', or: 'or email', phone: PHONE, tel: TEL, email: EMAIL },
+  header: { home: 'ElementalsAI Labs home', logo: 'ElementalsAI Labs', nav: 'Free quote', button: 'Get a free quote' },
+  offer: { aria: 'Our offer', items: [['Free quote', 'in', '12 hours'], ['Working demo', 'in', '3 days']] },
+  card: { title: 'Your free quote', mode: 'Talk or type', orb: 'Talk to Deepak, our voice agent', agent: 'Deepak', hello: 'Hello? Anybody there?', stop: 'Stop', or: 'Or type it', name: 'Your name', budget: 'Your budget', budgets: BUDGETS, phone: 'Phone', email: 'Email', web: 'Website', submit: 'Get my free quote', note: 'We reply within 1 hour. Your free quote comes in 12 hours.' },
+  clients: { aria: 'Clients', list: CLIENTS },
+  worries: { eyebrow: 'Sound familiar?', h: 'Building an app should not feel like <span class="band">a gamble.</span>', lede: 'Three worries we hear from almost every founder. Here is what changes with us.', lab: 'What we hear' },
+  how: { eyebrow: 'How it works', h: 'From rough idea to <em>working demo in 3 days.</em>', button: 'Get my free quote' },
+  impact: { eyebrow: 'Impact', h: 'Real products. <em>Real numbers.</em>', lede: 'Each one is a live product that our team helped build. One number from each.', alt: 'The {site} website', shots: SHOTS },
+  stats: { aria: 'Our track record' },
+  review: { id: 'review', hid: 'rv-t', eyebrow: 'What founders say', h: 'What founders say about <em>working with us.</em>' },
+  faq: { eyebrow: 'Questions', h: 'Your questions, <em>answered.</em>', lede: 'Still unsure? Ask in the form. We reply within 1 hour.' },
+  cta: { eyebrow: 'Next step', button: 'Get my free quote' },
+  footer: { home: 'ElementalsAI Labs home', logo: 'ElementalsAI Labs', tagline: 'Apps your users will love. Built with passion for great products.', nav: 'Services', pages: PAGES_ORDER, fine: '© 2026 ElementalsAI Labs', links: [['how-it-works.html', 'How it works'], ['work.html', 'Our work'], ['quote.html', 'Get a quote'], ['privacy.html', 'Privacy'], ['terms.html', 'Terms'], ['contact.html', 'Contact']], draft: 'Draft for review, not the live site', extra: '' },
+};
+let T = TX;
+const useText = (t) => { T = t; };
+const deriskOf = (d) => `<p class="derisk">${I('shield')}<span><b>${d.b}</b> <span class="sep">·</span> ${d.t}</span></p>`;
+const derisk = deriskOf(TX.derisk);
+const strip = () => { const s = T.strip, it = (f) => `<span class="it"${f ? '' : ' aria-hidden="true"'}>${I('phone')}${s.call} <a href="tel:${s.tel}"${f ? '' : ' tabindex="-1"'}>${s.phone}</a> ${s.or} <a href="mailto:${s.email}"${f ? '' : ' tabindex="-1"'}>${s.email}</a></span>`; return `<div class="strip" role="note" aria-label="${s.aria}"><div class="trk">${Array.from({ length: 12 }, (_, i) => it(i === 0)).join('')}</div></div>`; };
+const header = () => { const h = T.header; return `<header class="top"><div class="wrap"><a class="brand" href="index.html" aria-label="${h.home}"><img src="${LOGO}" alt="${h.logo}" width="208" height="28"></a>${h.button ? `<nav aria-label="${h.nav}"><a class="btn primary sm" href="#quote">${h.button}</a></nav>` : ''}</div><span class="prog" aria-hidden="true"></span></header>`; };
 /* the hero line, in the page once and shown at first paint; the last word rolls (app.js). The false start is kept in data-false */
 const attr = (s) => esc(s).replace(/"/g, '&quot;');
 const titleHTML = (p) => `<h1 class="title" data-talk data-verbs='${JSON.stringify(p.verbs).replace(/'/g, '&#39;')}' data-false="${attr(p.falseStart)}"><span class="line">${esc(p.line)} <span class="band"><span class="rot"><span class="w">${esc(p.verbs[0])}</span></span></span><span class="pad"></span></span></h1>`;
 // highest range first: it sets the price the buyer expects; the lowest range starts at the lowest project price
-const BUDGETS = ['₹8 lakh+', '₹3–8 lakh', '₹1.5–3 lakh', '₹50,000–1.5 lakh'];
 const quoteCard = (p) => `<form class="card" id="quote-form" novalidate aria-labelledby="qf-t" data-clarity-mask="True">
-  <div class="card-h"><h2 class="eyebrow" id="qf-t">Your free quote</h2><span class="state">Talk or type</span></div>
+  <div class="card-h"><h2 class="eyebrow" id="qf-t">${T.card.title}</h2><span class="state">${T.card.mode}</span></div>
   <div class="va" data-va data-state="idle">
-   <button type="button" class="orb" aria-label="Talk to Diya, our voice agent"><canvas width="236" height="236"></canvas><span class="orb-css"></span></button>
-   <div><p class="state" aria-hidden="true"><span class="led"></span><i class="eq"><b></b><b></b><b></b></i><span data-st>Diya</span></p><p class="va-cap" data-cap aria-hidden="true">Hello? Anybody there?</p><button type="button" class="talk" data-talk-btn>${I('stop')}Stop</button><p class="sr" role="status" data-va-live></p></div>
+   <button type="button" class="orb" aria-label="${T.card.orb}"><canvas width="236" height="236"></canvas><span class="orb-css"></span></button>
+   <div><p class="state" aria-hidden="true"><span class="led"></span><i class="eq"><b></b><b></b><b></b></i><span data-st>${T.card.agent}</span></p><p class="va-cap" data-cap aria-hidden="true">${T.card.hello}</p><button type="button" class="talk" data-talk-btn>${I('stop')}${T.card.stop}</button><p class="sr" role="status" data-va-live></p></div>
    ${Object.entries(SND).map(([k, src]) => `<audio data-snd="${k}" preload="none" src="${src}"></audio>`).join('')}
   </div>
-  <p class="or">Or type it</p>
-  <div class="fld"><label for="f-name">Your name</label><div class="box"><input id="f-name" name="name" autocomplete="name"></div></div>
+  <p class="or">${T.card.or}</p>
+  <div class="fld"><label for="f-name">${T.card.name}</label><div class="box"><input id="f-name" name="name" autocomplete="name"></div></div>
   <div class="fld"><label for="f-idea">${esc(p.ideaLabel)}</label><div class="box"><textarea id="f-idea" name="idea" rows="2" placeholder="${esc(p.ideaPh)}"></textarea></div></div>
-  <fieldset class="fld"><legend>Your budget</legend><div class="opts">${BUDGETS.map((b) => `<label class="opt"><input type="radio" name="budget" value="${esc(b)}"><span>${esc(b)}</span></label>`).join('')}</div></fieldset>
-  <div class="two"><div class="fld"><label for="f-phone">Phone</label><div class="box"><input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel"></div></div><div class="fld"><label for="f-email">Email</label><div class="box"><input id="f-email" name="email" type="email" autocomplete="email" inputmode="email"></div></div></div>
-  <div class="hp" aria-hidden="true"><label for="f-web">Website</label><input id="f-web" name="website" tabindex="-1" autocomplete="off"></div>
-  <button class="btn primary full beam" type="submit">Get my free quote ${I('arrow')}</button>
-  <p class="fnote">${I('clock')}We reply within 1 hour. Your free quote comes in 12 hours.</p>
-  ${derisk}
+  <fieldset class="fld"><legend>${T.card.budget}</legend><div class="opts">${T.card.budgets.map((b) => `<label class="opt"><input type="radio" name="budget" value="${esc(b)}"><span>${esc(b)}</span></label>`).join('')}</div></fieldset>
+  <div class="two"><div class="fld"><label for="f-phone">${T.card.phone}</label><div class="box"><input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel"></div></div><div class="fld"><label for="f-email">${T.card.email}</label><div class="box"><input id="f-email" name="email" type="email" autocomplete="email" inputmode="email"></div></div></div>
+  <div class="hp" aria-hidden="true"><label for="f-web">${T.card.web}</label><input id="f-web" name="website" tabindex="-1" autocomplete="off"></div>
+  <button class="btn primary full beam" type="submit">${T.card.submit} ${I('arrow')}</button>
+  <p class="fnote">${I('clock')}${T.card.note}</p>
+  ${deriskOf(T.derisk)}
   <p class="status" role="status"></p>
  </form>`;
 const hero = (p) => `<section class="hero" id="quote" aria-labelledby="hero-t"><canvas class="field" aria-hidden="true"></canvas><div class="wrap hero-grid">
  <div class="copy">
   <span class="eyebrow rise">${esc(p.eyebrow)}</span>
   ${titleHTML(p).replace('<h1 class="title"', '<h1 class="title" id="hero-t"')}
-  <dl class="offer rise" aria-label="Our offer"><div><dt>Free quote</dt><dd><small>in</small>12 hours</dd></div><div><dt>Working demo</dt><dd><small>in</small>3 days</dd></div></dl>
+  <dl class="offer rise" aria-label="${T.offer.aria}">${T.offer.items.map(([a, b, c]) => `<div><dt>${a}</dt><dd><small>${b}</small>${c}</dd></div>`).join('')}</dl>
   <p class="offer-sub rise">${esc(p.offerSub)}</p>
   <p class="proofline rise">${p.proof.map((x, i) => (i ? '<span class="dot" aria-hidden="true"></span>' : '') + `<span>${esc(x)}</span>`).join('')}</p>
  </div>
  ${quoteCard(p)}
 </div></section>`;
-const marquee = () => { const ul = (h) => `<ul${h ? ' aria-hidden="true"' : ''}>${CLIENTS.map((c) => `<li>${c}</li>`).join('')}</ul>`; return `<div class="mq" role="region" aria-label="Clients"><div class="trk">${ul(0)}${ul(1)}${ul(1)}${ul(1)}</div></div>`; };
+const marquee = () => { const ul = (h) => `<ul${h ? ' aria-hidden="true"' : ''}>${T.clients.list.map((c) => `<li>${c}</li>`).join('')}</ul>`; return `<div class="mq" role="region" aria-label="${T.clients.aria}"><div class="trk">${ul(0)}${ul(1)}${ul(1)}${ul(1)}</div></div>`; };
 const DEMO_APP = `<div class="a-hd"><div><small>Good evening</small><strong>Your bookings</strong></div><span class="a-ic">${I('calendar')}</span></div>
  <div class="hc"><div class="hc-t"><small>Next visit</small>${I('calendar')}</div><strong>Today, 6:30 pm</strong><div class="hc-r"><span class="okp">${I('check')}Confirmed</span><span class="rem">${I('bell')}Reminder on</span></div></div>
  <div class="tiles"><span><i>${I('calendar')}</i>Book</span><span class="tp"><i><b class="rs">₹</b></i>Pay<b class="tap"></b></span><span><i>${I('clock')}</i>History</span><span><i>${I('chat')}</i>Help</span></div>
@@ -421,36 +444,39 @@ const services = () => `<section class="sec" id="services" aria-labelledby="sv-t
 </div></section>`;
 const numParts = (v) => v.split(/(\d[\d,]*(?:\.\d+)?)/).filter(Boolean).map((t) => /^\d/.test(t) ? `<span class="num" data-to="${t.replace(/,/g, '')}"${t.includes(',') ? ' data-grp' : ''} style="--w:${t.length}ch">${t}</span>` : esc(t)).join('');
 const impact = (p) => `<section class="sec" id="impact" aria-labelledby="imp-t"><div class="wrap">
- <div class="sec-h reveal"><span class="eyebrow">Impact</span><h2 class="h2" id="imp-t">Real products. <em>Real numbers.</em></h2><p class="lede">Each one is a live product that our team helped build. One number from each.</p></div>
- <div class="shots">${p.shots.map((k) => { const s = SHOTS[k]; return `<article class="shot"><div class="frame"><img src="${IMG[k]}" alt="The ${esc(s.site)} website" width="800" height="600" loading="lazy" decoding="async"><p class="site"><span>${s.site}</span><span>${s.period}</span></p></div><div class="row"><p class="val">${numParts(s.val)}</p><p class="lab">${esc(s.lab)}</p></div></article>`; }).join('')}</div>
+ <div class="sec-h reveal"><span class="eyebrow">${T.impact.eyebrow}</span><h2 class="h2" id="imp-t">${T.impact.h}</h2><p class="lede">${T.impact.lede}</p></div>
+ <div class="shots">${p.shots.map((k) => { const s = T.impact.shots[k]; return `<article class="shot"><div class="frame"><img src="${IMG[k]}" alt="${T.impact.alt.replace('{site}', () => esc(s.site))}" width="800" height="600" loading="lazy" decoding="async"><p class="site"><span>${s.site}</span><span>${s.period}</span></p></div><div class="row"><p class="val">${numParts(s.val)}</p><p class="lab">${esc(s.lab)}</p></div></article>`; }).join('')}</div>
 </div></section>`;
-const stats = (p) => `<div class="stats" role="region" aria-label="Our track record"><dl>${p.stats.map(([v, l]) => `<div class="cell"><dt><span class="pn" data-pn><span class="pn-text">${esc(v)}</span><canvas class="pn-canvas" aria-hidden="true"></canvas></span></dt><dd>${esc(l)}</dd></div>`).join('')}</dl></div>`;
+const stats = (p) => `<div class="stats" role="region" aria-label="${T.stats.aria}"><dl>${p.stats.map(([v, l]) => `<div class="cell"><dt><span class="pn" data-pn><span class="pn-text">${esc(v)}</span><canvas class="pn-canvas" aria-hidden="true"></canvas></span></dt><dd>${esc(l)}</dd></div>`).join('')}</dl></div>`;
 const gamble = (p) => `<section class="sec" id="worries" aria-labelledby="gb-t"><div class="wrap gamble">
- <div class="sec-h reveal"><span class="eyebrow">Sound familiar?</span><h2 class="h2" id="gb-t">${p.gambleH || 'Building an app should not feel like <span class="band">a gamble.</span>'}</h2><p class="lede">${p.worriesLede || 'Three worries we hear from almost every founder. Here is what changes with us.'}</p></div>
- <div class="worries">${p.worries.map(([q, a]) => `<div class="wr"><span class="lab">What we hear</span><q>${esc(q)}</q><p class="ans"><span class="ok">${I('check')}</span><span>${a}</span></p></div>`).join('')}</div>
+ <div class="sec-h reveal"><span class="eyebrow">${T.worries.eyebrow}</span><h2 class="h2" id="gb-t">${p.gambleH || T.worries.h}</h2><p class="lede">${p.worriesLede || T.worries.lede}</p></div>
+ <div class="worries">${p.worries.map(([q, a]) => `<div class="wr"><span class="lab">${T.worries.lab}</span><q>${esc(q)}</q><p class="ans"><span class="ok">${I('check')}</span><span>${a}</span></p></div>`).join('')}</div>
 </div></section>`;
 const how = (p) => `<section class="sec" id="how" aria-labelledby="how-t"><div class="wrap">
- <div class="sec-h reveal"><span class="eyebrow">How it works</span><h2 class="h2" id="how-t">From rough idea to <em>working demo in 3 days.</em></h2></div>
- <ol class="tl">${p.steps.map(([h, t, tag], i) => `<li class="st${i === 2 ? ' big' : ''}"><span class="node">0${i + 1}</span><h3>${esc(h)}</h3><p>${esc(t)}</p><span class="tag">${esc(tag)}</span></li>`).join('')}</ol>
- <div class="how-cta reveal"><a class="btn primary" href="#quote">Get my free quote ${I('arrow')}</a>${derisk}</div>
+ <div class="sec-h reveal"><span class="eyebrow">${T.how.eyebrow}</span><h2 class="h2" id="how-t">${T.how.h}</h2></div>
+ <ol class="tl">${p.steps.map(([h, t, tag], i) => `<li class="st${i === (p.big ?? 2) ? ' big' : ''}"><span class="node">0${i + 1}</span><h3>${esc(h)}</h3>${t ? `<p>${esc(t)}</p>` : ''}${tag ? `<span class="tag">${esc(tag)}</span>` : ''}</li>`).join('')}</ol>${p.terms ? `<p class="how-terms reveal">${p.terms}</p>` : ''}
+ <div class="how-cta reveal"><a class="btn primary" href="#quote">${T.how.button} ${I('arrow')}</a>${deriskOf(T.derisk)}</div>
 </div></section>`;
-const review = (p) => { const r = REVIEWS[p.review]; return `<section class="sec" id="review" aria-labelledby="rv-t"><div class="wrap">
- <div class="sec-h reveal"><span class="eyebrow">What founders say</span><h2 class="h2" id="rv-t">What founders say about <em>working with us.</em></h2></div>
- <figure class="quote reveal"><blockquote>${r.paras.map((x) => `<p>${x}</p>`).join('')}</blockquote><figcaption class="who">${r.photo ? `<img src="${DEEP}" alt="" width="56" height="56">` : `<span class="ini" aria-hidden="true">${r.ini}</span>`}<span><b>${r.who}</b><small>${r.role}</small></span></figcaption></figure>
+/* r.photo: the photo's data URI (true = Deep's, for older callers) */
+const revFig = (r) => `<figure class="quote reveal"><blockquote>${r.paras.map((x) => `<p>${x}</p>`).join('')}</blockquote><figcaption class="who">${r.photo ? `<img src="${r.photo === true ? DEEP : r.photo}" alt="" width="56" height="56">` : `<span class="ini" aria-hidden="true">${r.ini}</span>`}<span><b>${r.who}</b><small>${r.role}</small></span></figcaption></figure>`;
+/* p.reviews: a list of reviews (src/go.mjs); two or more sit side by side in .revs */
+const review = (p) => { const R = T.review, list = p.reviews || [REVIEWS[p.review]]; return `<section class="sec" id="${R.id}" aria-labelledby="${R.hid}"><div class="wrap">
+ <div class="sec-h reveal"><span class="eyebrow">${R.eyebrow}</span><h2 class="h2" id="${R.hid}">${R.h}</h2></div>
+ ${list.length > 1 ? `<div class="revs">${list.map(revFig).join('')}</div>` : revFig(list[0])}
 </div></section>`; };
 const faq = (p) => `<section class="sec" id="faq" aria-labelledby="faq-t"><div class="wrap faq">
- <div class="sec-h reveal"><span class="eyebrow">Questions</span><h2 class="h2" id="faq-t">Your questions, <em>answered.</em></h2><p class="lede">Still unsure? Ask in the form. We reply within 1 hour.</p></div>
+ <div class="sec-h reveal"><span class="eyebrow">${T.faq.eyebrow}</span><h2 class="h2" id="faq-t">${T.faq.h}</h2><p class="lede">${T.faq.lede}</p></div>
  <div class="qa">${p.faq.map(([q, a], i) => `<details${i === 0 ? ' open' : ''}><summary>${esc(q)}<span class="pm" aria-hidden="true"></span></summary><div class="ans"><p>${esc(a)}</p></div></details>`).join('')}</div>
 </div></section>`;
 const cta = (p) => `<section class="cta" aria-labelledby="cta-t"><div class="wrap cta-grid">
- <div class="reveal"><span class="eyebrow">Next step</span><h2 class="h2" id="cta-t">${p.cta.h}</h2><p>${esc(p.cta.p)}</p></div>
- <div class="act reveal"><a class="btn primary" href="#quote">Get my free quote ${I('arrow')}</a>${derisk}</div>
+ <div class="reveal"><span class="eyebrow">${T.cta.eyebrow}</span><h2 class="h2" id="cta-t">${p.cta.h}</h2><p>${esc(p.cta.p)}</p></div>
+ <div class="act reveal"><a class="btn primary" href="#quote">${T.cta.button} ${I('arrow')}</a>${deriskOf(T.derisk)}</div>
 </div></section>`;
-const footer = (slug) => `<footer class="foot"><div class="wrap">
- <div><a class="brand" href="index.html" aria-label="ElementalsAI Labs home"><img src="${LOGO}" alt="ElementalsAI Labs" width="194" height="26"></a><p>Apps your users will love. Built with passion for great products.</p></div>
- <nav aria-label="Services">${PAGES_ORDER.map(([s, n]) => `<a href="${s}.html"${s === slug ? ' aria-current="page"' : ''}>${n}</a>`).join('')}</nav>
- <p class="fine">© 2026 ElementalsAI Labs · <a href="how-it-works.html">How it works</a> · <a href="work.html">Our work</a> · <a href="quote.html">Get a quote</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="contact.html">Contact</a>${PROD ? '' : ' · Draft for review, not the live site'}</p>
-</div></footer>`;
+const footer = (slug) => { const F = T.footer; return `<footer class="foot"><div class="wrap">
+ <div><a class="brand" href="index.html" aria-label="${F.home}"><img src="${LOGO}" alt="${F.logo}" width="194" height="26"></a><p>${F.tagline}</p></div>
+ ${F.nav ? `<nav aria-label="${F.nav}">${F.pages.map(([s, n]) => `<a href="${s}.html"${s === slug ? ' aria-current="page"' : ''}>${n}</a>`).join('')}</nav>` : ''}
+ <p class="fine">${F.fine}${F.links.map(([h, n]) => ` · <a href="${h}">${n}</a>`).join('')}${PROD ? '' : ' · ' + F.draft}</p>${F.extra}
+</div></footer>`; };
 
 function page(slug) {
   const p = P[slug];
@@ -497,7 +523,7 @@ ${devScripts(deviceOf(p))}
 }
 
 // The shared parts, for the site pages (src/site.mjs: privacy, terms, contact and the sitelink pages).
-export { CSS, JS, SPRITE, LOGO, attr, fontPreload, IMG, DEEP, PAGES_ORDER, CLIENTS, SHOTS, REVIEWS, P, PHONE, TEL, EMAIL, VOICE_AGENT, PROD, headExtra, labsCfg, robots, esc, I, derisk, strip, header, footer, quoteCard, marquee, impact, stats, how, review, faq, cta, OUT };
+export { CSS, JS, SPRITE, LOGO, attr, fontPreload, IMG, DEEP, SACHIN, PAGES_ORDER, CLIENTS, SHOTS, REVIEWS, P, PHONE, TEL, EMAIL, VOICE_AGENT, PROD, headExtra, labsCfg, robots, esc, I, derisk, strip, header, footer, quoteCard, marquee, impact, stats, how, review, faq, cta, OUT, tryIt, types, cases, gamble, hero, deviceOf, devScripts, devFiles, TX, BUDGETS, useText, deriskOf };
 
 // Build only when run directly (node build.mjs), not when another script imports the shared parts.
 if (/build\.mjs$/.test(process.argv[1] || '')) {

@@ -13,6 +13,12 @@ The website for the Google Ads campaign: the home page, 5 service landing pages 
 - `/`: the home page. The same sections as a service page, with "What we build" (all 5 services) in place of "Try it".
 - Every page uses the same header (`header()`) and footer (`footer()`) from `src/build.mjs`. On pages with the quote form, "Get a free quote" jumps to the form; on the others, it opens /quote.
 
+## The ads funnel page (/build)
+
+- `src/go.mjs` builds `build.html` (the address /build) from `src/go-content.json` (Jane's words); only that file changes when the content changes.
+- The version: `?s=` (slug or ad group number) or `?service_line=`; else the ad keyword (`?kw=`, `?keyword=`, `utm_term`); else the general version.
+- Not in the header, footer or sitemap; noindex; the logo links home; the buttons scroll to its quote form, which sends to `/api/lead`.
+
 ## Commands
 
 - `npm run build`: builds the live site into `public/`. Styles, scripts, images, sounds and fonts become cached files in `public/assets/`; each page gets its clean address, a canonical link and share tags (the home page also an Organization block; each service page a Service and a breadcrumb block); `robots.txt`, `sitemap.xml` and `404.html` are made.
@@ -27,12 +33,12 @@ The website for the Google Ads campaign: the home page, 5 service landing pages 
 - `src/assets/brand/`: the official icons (from the company OneDrive folder Elementals.ai-icons), the one-line white logo built from the official 2000 px artwork, and the sharing image.
 - `src/assets/fonts/`: IBM Plex, served from the site, not from Google Fonts: the Latin woff2 files of the faces the CSS uses (Mono 400–600, Sans 400–700 as one variable file plus its latin-ext file for the ₹ sign, Serif 400–600 and 500 italic). `build.mjs` writes their `@font-face` rules (font-display: swap); the live pages preload the Plex Sans file.
 - Images: the page uses `brand/logo-line-white-416.png` (416 × 56) and the 800 px work screenshots (`src/assets/<name>-800.jpg`, JPEG quality 78). The larger originals stay beside them and are not in the build.
-- `agent/`: the ElevenLabs voice agent. `update-prompt.mjs` holds its instructions; `tests.mjs` runs its 8 visitor tests in ElevenLabs.
+- `agent/`: the tests of the voice agent's server tools (`/api/voice/*`): `voice-unit.test.mjs` (no network) and `voice-live.test.mjs` (the voice test address only, never production).
 - `scripts/`: `release.mjs` (the live build), `serve.mjs` (the local server), `review.mjs` (the review copies).
 
 ## The voice agent
 
-ElevenLabs agent "Diya" (ID in `src/build.mjs`). With no tap, she asks for the microphone when the quote card is in view; once it is allowed, the browser lets her speak, so she plays her opening ("Hello? Hi… anybody there?", three knocks on the glass, "Oh, hi! I'm Diya. What should I call you?") from clips in her voice (`src/assets/diya-*.mp3`, `knock.wav`) and starts the live call by herself. If the microphone is blocked, the opening plays without sound and the visitor types. It says Suraj's script, reads the phone number and email back, fills the form, sends it through `/api/lead`, and waits for the result before it says thank you. The API key stays in the credentials folder; the pages hold only the public agent ID. Details: `ai-services-gtm/lead-capture/voice-lead-form-v1.md`.
+ElevenLabs agent "Deepak" (ID in `src/build.mjs`; his script: `ai-services-gtm/lead-capture/voice-agent-prompt-v2.md`). With no tap, the page asks for the microphone when the quote card is in view; once it is allowed, the page knocks three times on the glass (`src/assets/knock.wav`) and starts the live call by itself, and Deepak says his first message live, in his own voice. If the microphone is blocked, the knock shows without sound and the visitor types. He takes the details and books the call through his server tools (`/api/voice/*`). The API key stays in the credentials folder; the pages hold only the public agent ID.
 
 ## Settings for Vercel (at deploy)
 

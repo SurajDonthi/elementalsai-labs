@@ -144,7 +144,7 @@ const pageHead = ({ id, eyebrow, h1, lede, after = '', talk = false }) => {
 };
 const staticH1 = (id, html) => `<h1 class="sp-h1 reveal" id="${id}">${html}</h1>`;
 const reach = () => `<div class="sp-reach"><a href="mailto:${EMAIL}">${I('mail')}<span>${EMAIL}</span></a><a href="tel:${TEL}">${I('phone')}<span>${PHONE}</span></a><p>${I('clock')}<span>Calls: 10 am to 8 pm, India time, every day. We reply within 1 hour.</span></p></div>`;
-const figure = (key) => { const r = REVIEWS[key]; return `<figure class="quote reveal"><blockquote>${r.paras.map((x) => `<p>${x}</p>`).join('')}</blockquote><figcaption class="who">${r.photo ? `<img src="${DEEP}" alt="" width="56" height="56">` : `<span class="ini" aria-hidden="true">${r.ini}</span>`}<span><b>${r.who}</b><small>${r.role}</small></span></figcaption></figure>`; };
+const figure = (key) => { const r = REVIEWS[key]; return `<figure class="quote reveal"><blockquote>${r.paras.map((x) => `<p>${x}</p>`).join('')}</blockquote><figcaption class="who">${r.photo ? `<img src="${r.photo === true ? DEEP : r.photo}" alt="" width="56" height="56">` : `<span class="ini" aria-hidden="true">${r.ini}</span>`}<span><b>${r.who}</b><small>${r.role}</small></span></figcaption></figure>`; };
 
 // a legal page: the short version, numbered sections, and a contents list on wide screens
 const legal = ({ short, sections }) => `<section class="sec sp-legal-sec" aria-label="The full text"><div class="wrap sp-legal">

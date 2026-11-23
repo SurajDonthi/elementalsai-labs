@@ -1,0 +1,347 @@
+{
+  "_note": "Parked 23 Nov 2026 (Suraj: keep the 5 versions as alternatives). Word for word copy of services.* from src/go-content.json. Not read by the build. The default page is unchanged.",
+  "versions": {
+    "mobile-app-development": {
+      "label": "Mobile app development",
+      "ad_group": "01",
+      "service_name": "mobile app",
+      "callout": "Mobile app development for founders and Indian businesses",
+      "modules": "sign-up and login · payments · notifications · admin panel",
+      "stack_line": "Any stack your project needs: React, Next.js, Node.js, Python, C, C++, Rust, Go, PostgreSQL, AWS, Azure, GCP, Docker and Kubernetes.",
+      "headline": "Your mobile app, live in 2 to 8 weeks. See a free working proof first.",
+      "problems": [
+        "It took months, and the launch date kept moving.",
+        "It is slow, and it crashes on my customers' phones.",
+        "We launched it, and nobody uses it."
+      ],
+      "mirror_more": [
+        {
+          "line": "It is slow, and it crashes on my customers' phones.",
+          "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md, 6.1 Mobile app development (also in problems above)"
+        },
+        {
+          "line": "I paid a big advance before I saw anything work.",
+          "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md, 2 The pains, Money"
+        }
+      ],
+      "before_after": "C",
+      "faq": [
+        "Android and iPhone?",
+        "Both. We use Flutter or React Native, and native code when the app needs it."
+      ]
+    },
+    "app-development": {
+      "label": "App development",
+      "ad_group": "02",
+      "service_name": "app",
+      "callout": "App development for founders and Indian businesses",
+      "modules": "user accounts · core workflow · reports · admin panel",
+      "stack_line": "Any stack your project needs: React, Next.js, Node.js, Python, C, C++, Rust, Go, PostgreSQL, AWS, Azure, GCP, Docker and Kubernetes.",
+      "headline": "Get the app you need, live in 2 to 8 weeks. See a free working proof first.",
+      "problems": [
+        "They built what I said, not what I needed.",
+        "Every new feature costs more and takes longer.",
+        "I paid a big advance before I saw anything work."
+      ],
+      "mirror_more": [
+        {
+          "line": "They said 3 months. It has been 9.",
+          "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md, 2 The pains, Time"
+        },
+        {
+          "line": "I do not know what is happening with my project.",
+          "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md, 2 The pains, Not knowing"
+        }
+      ],
+      "before_after": "A",
+      "faq": [
+        "Which tech do you use?",
+        "Any stack your project needs, such as React, Next.js and Node.js."
+      ]
+    },
+    "ai-development": {
+      "label": "AI development",
+      "ad_group": "06",
+      "service_name": "AI solution",
+      "callout": "AI development for Indian businesses",
+      "modules": "the one task AI improves first · your data connection · a review step · a report",
+      "stack_line": "Any stack your project needs: React, Next.js, Node.js, Python, C, C++, Rust, Go, PostgreSQL, AWS, Azure, GCP, Docker and Kubernetes.",
+      "headline": "Put AI to real work in 2 to 8 weeks. See a free working proof first.",
+      "problems": [
+        "We tried AI. The demo looked good, but nothing changed in our work.",
+        "We do not know where AI will really help us."
+      ],
+      "mirror_more": [
+        {
+          "line": "The app stops when the AI service is slow.",
+          "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md, 6.7 AI apps"
+        },
+        {
+          "line": "Every change to the AI part breaks something else.",
+          "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md, 6.7 AI apps"
+        }
+      ],
+      "before_after": "B",
+      "faq": [
+        "How do we know where AI helps us?",
+        "We find the one task where AI proves its value, in the session."
+      ]
+    },
+    "ai-agents-and-automation": {
+      "label": "AI agents and automation",
+      "ad_group": "08",
+      "service_name": "AI agent",
+      "callout": "AI agents and automation for Indian businesses",
+      "modules": "the work the agent does · the apps it connects to · a human check · a log of every action",
+      "stack_line": "Any stack your project needs: React, Next.js, Node.js, Python, C, C++, Rust, Go, PostgreSQL, AWS, Azure, GCP, Docker and Kubernetes.",
+      "headline": "An AI agent that does real work for your team in 2 to 8 weeks. See a free working proof first.",
+      "problems": [
+        "The agent worked in the demo, but not on our real work.",
+        "Our best people spend hours on data entry.",
+        "It can see data that it should not see."
+      ],
+      "mirror_more": [
+        {
+          "line": "It can see data that it should not see.",
+          "source": "problems above; also ai-services-gtm/elementalsai-labs-offer/content-v1.md, 6.8 AI agents"
+        },
+        {
+          "line": "Our best people spend hours on data entry.",
+          "source": "problems above; ai-services-gtm/elementalsai-labs-offer/content-v1.md, 6.10 Automation, has \"My best people spend hours on data entry.\""
+        }
+      ],
+      "before_after": "B",
+      "faq": [
+        "What if the AI service is slow or down?",
+        "We build the agent to keep working."
+      ]
+    },
+    "custom-software": {
+      "label": "Custom software",
+      "ad_group": "11",
+      "service_name": "software",
+      "callout": "Custom software for Indian businesses",
+      "modules": "the workflow your team runs · roles and access · reports · integrations",
+      "stack_line": "Any stack your project needs: React, Next.js, Node.js, Python, C, C++, Rust, Go, PostgreSQL, AWS, Azure, GCP, Docker and Kubernetes.",
+      "headline": "Software built around how you work. Live in 2 to 8 weeks. See a free working proof first.",
+      "problems": [
+        "Ready-made software does not fit the way we work.",
+        "The project is months late, and the price keeps going up.",
+        "Every change breaks something else."
+      ],
+      "mirror_more": [
+        {
+          "line": "Our work moves by hand between apps, sheets, email and chats.",
+          "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md, 6.10 Automation"
+        },
+        {
+          "line": "Everyone is afraid to touch the old system.",
+          "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md, 6.13 Modernization"
+        }
+      ],
+      "before_after": "A",
+      "faq": [
+        "Why not buy ready-made software?",
+        "Ready-made software often does not fit your work. We build around how you work."
+      ]
+    }
+  },
+  "before_after_texts": {
+    "A": {
+      "headline": "Your customers. Your revenue. Sooner.",
+      "rows": [
+        [
+          "Your customers wait, and the *moment passes*.",
+          "Your app is live and *earning* in _2 to 8 weeks_."
+        ],
+        [
+          "You built it, and _nobody uses it_.",
+          "Your customers *use it every day*."
+        ],
+        [
+          "Your launch date keeps moving.",
+          "You *launch on the day* you planned."
+        ]
+      ]
+    },
+    "B": {
+      "headline": "Your business. Running without you.",
+      "rows": [
+        [
+          "Your best people spend hours on *data entry*.",
+          "An agent does the routine work. Your team does the work that _grows the business_."
+        ],
+        [
+          "AI is a demo that _changes nothing_.",
+          "AI works on *one real task* in your business."
+        ],
+        [
+          "Your work moves by hand between apps, sheets and chats.",
+          "Software built *around how you work*. Live in _2 to 8 weeks_."
+        ]
+      ]
+    },
+    "C": {
+      "headline": "The app you pictured. Live.",
+      "rows": [
+        [
+          "You get what you said, *not what you needed*.",
+          "An app that fits _your work_."
+        ],
+        [
+          "Every new feature costs more and takes longer.",
+          "Your app *grows with you*. The next feature is _fast and cheap_."
+        ],
+        [
+          "Your app is slow and crashes on your customers' phones.",
+          "An app your users *love*, on _every phone_."
+        ]
+      ]
+    }
+  },
+  "work_apps_by_version": {
+    "Divine Blossoms": [
+      "app-development",
+      "custom-software",
+      "default"
+    ],
+    "After Party": [
+      "mobile-app-development",
+      "app-development",
+      "default"
+    ],
+    "Concrete Gang": [
+      "mobile-app-development",
+      "app-development",
+      "custom-software",
+      "default"
+    ],
+    "Tracto": [
+      "mobile-app-development",
+      "app-development",
+      "default"
+    ],
+    "Signal Clarity": [
+      "ai-agents-and-automation",
+      "ai-development",
+      "app-development",
+      "default"
+    ],
+    "AgShift": [
+      "ai-development",
+      "default"
+    ],
+    "Volunteer Yatra": [
+      "app-development",
+      "default"
+    ]
+  },
+  "keyword_rules": [
+    {
+      "service": "ai-agents-and-automation",
+      "words": [
+        "agent",
+        "agents",
+        "agentic",
+        "automation",
+        "automate",
+        "rpa",
+        "n8n",
+        "workflow",
+        "workflows"
+      ]
+    },
+    {
+      "service": "ai-development",
+      "words": [
+        "ai",
+        "genai",
+        "generative",
+        "ml",
+        "machine learning",
+        "artificial intelligence"
+      ]
+    },
+    {
+      "service": "mobile-app-development",
+      "words": [
+        "mobile",
+        "android",
+        "ios",
+        "iphone",
+        "flutter",
+        "hybrid",
+        "native"
+      ]
+    },
+    {
+      "service": "app-development",
+      "words": [
+        "app",
+        "apps"
+      ]
+    },
+    {
+      "service": "custom-software",
+      "words": [
+        "custom",
+        "bespoke",
+        "software",
+        "application",
+        "applications"
+      ]
+    }
+  ],
+  "faq_add": {
+    "mobile-app-development": [
+      "Is the session really free?",
+      "What do I get from it?",
+      "What is the free working proof of concept?",
+      "How long does a full build take?",
+      "How does the refund work?"
+    ],
+    "app-development": [
+      "Is the session really free?",
+      "What do I get from it?",
+      "What is the free working proof of concept?",
+      "How long does a full build take?",
+      "How does the refund work?",
+      "Which tech do you use?"
+    ],
+    "ai-development": [
+      "Is the session really free?",
+      "What do I get from it?",
+      "What is the free working proof of concept?",
+      "How long does a full build take?",
+      "How does the refund work?"
+    ],
+    "ai-agents-and-automation": [
+      "Is the session really free?",
+      "What do I get from it?",
+      "What is the free working proof of concept?",
+      "How long does a full build take?",
+      "How does the refund work?",
+      "What if the AI service is slow or down?"
+    ],
+    "custom-software": [
+      "Is the session really free?",
+      "What do I get from it?",
+      "What is the free working proof of concept?",
+      "How long does a full build take?",
+      "How does the refund work?",
+      "Why not buy ready-made software?"
+    ],
+    "default": [
+      "Is the session really free?",
+      "What do I get from it?",
+      "What is the free working proof of concept?",
+      "How long does a full build take?",
+      "How does the refund work?",
+      "Why not buy ready-made software?"
+    ]
+  },
+  "other_per_version": [
+    "work",
+    "faq"
+  ]
+}

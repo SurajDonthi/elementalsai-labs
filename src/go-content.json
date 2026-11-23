@@ -1,0 +1,610 @@
+{
+  "_about": [
+    "The words and settings of the ads funnel page /build: one page template, filled for each click by its service (Suraj, 21 Nov 2026).",
+    "src/go.mjs reads this file at build time (npm run build). When the words change, only this file changes.",
+    "Words: Jane's content draft v1 (funnel-page-content-draft-v1.md, 21 Nov 2026), word for word. Her source notes, such as (KB 2) or (ASSUMED), are left out.",
+    "{service_name} and {modules example} fill in from the service; {slots_left} from config. Text in [REPLACE ...] shows on the page as a placeholder until it is filled.",
+    "form: the words of the site's existing quote form, except card_title (new, a guess). pick: which service version a click gets (a guess; see the build notes).",
+    "The page of 22 Nov 2026 is the live service page plus the /build parts. It uses: config (contact, brand, privacy_url, terms_url, tracking, and the head script's booking_link, slots_left), header (the header button, hidden on phones; nav is its screen-reader name), quote_form (the form's title and send button; open and close name the buttons of the form drawer on phones, for screen readers), pick, services (ad_group, callout, service_name, stack_line, before_after, faq), sections.fit, sections.before_after, sections.process, sections.call, sections.keep, sections.compare, sections.stats, sections.founder, sections.testimonials, sections.work, sections.guarantee, sections.limit, sections.faq (items, add) and sections.footer. The other keys are not on the page."
+  ],
+  "status": "Draft. Waiting for Suraj's review. Last change: 22 Nov 2026.",
+
+  "config": {
+    "booking_link": null,
+    "slots_left": null,
+    "contact": { "phone": "+91 80887 33622", "tel": "+918088733622", "hours": "10 am to 8 pm, every day", "email": "hello@elementalsai-labs.com" },
+    "brand": { "name": "ElementalsAI Labs", "legal": "ELMNTALSAI PRIVATE LIMITED" },
+    "privacy_url": "privacy.html",
+    "terms_url": "terms.html",
+    "tracking": {
+      "events": ["quote_button_click", "form_start", "budget_chosen", "form_send_click", "form_send_blocked", "generate_lead", "phone_click", "email_click", "scroll_50", "scroll_90"]
+    }
+  },
+
+  "cta": {
+    "button": "Get my free strategy session",
+    "line": "Free. 45 minutes."
+  },
+
+  "header": {
+    "button": "Get my free strategy session",
+    "nav": "Free strategy session",
+    "poc": "Free Working Proof of Concept worth ₹50,000"
+  },
+
+  "quote_form": {
+    "title": "Get my free strategy session",
+    "button": "Get my free strategy session",
+    "open": "Open the form",
+    "close": "Close the form",
+    "idea_label_old": "What should the software do?",
+    "idea_label": "What is your app requirement?"
+  },
+
+  "services": {
+    "custom-software": {
+      "label": "Fix or replace what you have",
+    "eyebrow": "Custom software development",
+    "gamble_heading": "Your system should not depend on *people who have left.*",
+      "ad_groups": ["11", "12", "13"],
+      "service_name": "software",
+      "callout": "Free Strategy Session",
+      "modules": "the workflow your team runs · roles and access · reports · integrations",
+      "stack_line": "Any stack your project needs: React, Next.js, Node.js, Python, C, C++, Rust, Go, PostgreSQL, AWS, Azure, GCP, Docker and Kubernetes.",
+      "headline": "Software built around how you work. Live in 2 to 8 weeks. See a free working proof first.",
+      "problems": [
+      {
+        "line": "Ready-made software does not fit the way we work.",
+        "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.11. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+      },
+      {
+        "line": "Everyone is afraid to touch the old system.",
+        "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.13. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+      },
+      {
+        "line": "The people who built it have left.",
+        "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.13. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+      },
+      {
+        "line": "Leads get lost in sheets and WhatsApp.",
+        "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.12. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+      },
+      {
+        "line": "We paid for a CRM, and the team does not use it.",
+        "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.12. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+      }
+    ],
+      "before_after": "A",
+      "faq": ["Why not buy ready-made software?", "Ready-made software often does not fit your work. We build around how you work."]
+    },
+    "build-an-app": {
+      "label": "Build an app",
+    "eyebrow": "App development",
+    "hero_headline": { "line": "We build apps your users will", "end": "use every day." },
+    "gamble_heading": "An app you paid for should not *sit unused.*",
+      "ad_groups": [
+        "01",
+        "02",
+        "03"
+      ],
+      "service_name": "an app",
+      "callout": "Free Strategy Session",
+      "modules": "user accounts · core workflow · reports · admin panel",
+      "headline": "Get the app you need, live in 2 to 8 weeks. See a free working proof first.",
+      "before_after": "C",
+      "lines_from": "custom-software",
+      "problems": [
+        {
+          "line": "It took months, and the launch date kept moving.",
+          "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.1. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        },
+        {
+          "line": "It is slow, and it crashes on my customers' phones.",
+          "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.1. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        },
+        {
+          "line": "We launched it, and nobody uses it.",
+          "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.1. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        },
+        {
+          "line": "They built what I said, not what I needed.",
+          "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.2. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        },
+        {
+          "line": "I paid a big advance before I saw anything work.",
+          "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.2. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        }
+      ]
+    },
+    "ecommerce-apps": {
+      "label": "E-commerce apps",
+    "eyebrow": "Ecommerce app",
+    "hero_headline": { "line": "We build online stores that", "end": "turn visitors into orders." },
+    "gamble_heading": "Your online store should not feel like *a gamble.*",
+      "ad_groups": [
+        "18"
+      ],
+      "service_name": "an online store",
+      "callout": "Free Strategy Session",
+      "modules": "checkout and payments · delivery partner links · coupons and offers · admin panel",
+      "headline": "Your online store, live in 2 to 8 weeks. See a free working proof first.",
+      "before_after": "E",
+      "lines_from": "custom-software",
+      "problems": [
+        {
+          "line": "Shoppers fill the cart and leave at checkout.",
+          "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.18, ecommerce-research-v1.md section 5; Suraj's own words, 23 Nov 2026 (conversion rate). Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        },
+        {
+          "line": "Our delivery partners do not connect to the app. We track orders by hand.",
+          "source": "Suraj's own words, 23 Nov 2026 (delivery partners). Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        },
+        {
+          "line": "Customers want quick delivery, and we cannot promise it.",
+          "source": "Suraj's own words, 23 Nov 2026 (quick delivery). Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        },
+        {
+          "line": "Payments fail at checkout, and we lose the order.",
+          "source": "Suraj's own words, 23 Nov 2026 (payment gateway). Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        },
+        {
+          "line": "Shoppers do not trust a new store enough to pay.",
+          "source": "Suraj's own words, 23 Nov 2026 (trust). Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        },
+        {
+          "line": "Everyone sees the same products. Nothing feels made for them.",
+          "source": "Suraj's own words, 23 Nov 2026 (personalization). Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        },
+        {
+          "line": "We cannot run coupons, urgency timers or auctions like the big marketplaces.",
+          "source": "Suraj's own words, 23 Nov 2026 (advanced coupons, urgency, auctions). Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        }
+      ]
+    },
+    "build-with-ai": {
+      "label": "Build with AI",
+    "eyebrow": "AI development",
+    "gamble_heading": "Your AI bill should not rise with *nothing to show for it.*",
+      "ad_groups": [
+        "06",
+        "07"
+      ],
+      "service_name": "AI",
+      "callout": "Free Strategy Session",
+      "modules": "the one task AI improves first · your data connection · a review step · a report",
+      "headline": "Put AI to real work in 2 to 8 weeks. See a free working proof first.",
+      "before_after": "B",
+      "lines_from": "custom-software",
+      "problems": [
+        {
+          "line": "We tried AI. The demo looked good, but nothing changed in our work.",
+          "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.6. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        },
+        {
+          "line": "We do not know where AI will really help us.",
+          "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.6. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        },
+        {
+          "line": "The AI feature looked good, but our users do not use it.",
+          "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.7. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        },
+        {
+          "line": "The app stops when the AI service is slow.",
+          "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.7. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        },
+        {
+          "line": "The AI cost keeps going up, and we cannot show the value.",
+          "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.6. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        }
+      ]
+    },
+    "automate-work": {
+      "label": "Automate work",
+    "eyebrow": "AI agents and automation",
+    "gamble_heading": "An agent should not work in the demo and *fail on your real work.*",
+      "ad_groups": [
+        "08",
+        "10",
+        "17"
+      ],
+      "service_name": "automation",
+      "callout": "Free Strategy Session",
+      "modules": "the work the agent does · the apps it connects to · a human check · a log of every action",
+      "headline": "An AI agent that does real work for your team in 2 to 8 weeks. See a free working proof first.",
+      "before_after": "B",
+      "lines_from": "custom-software",
+      "problems": [
+        {
+          "line": "Our work moves by hand between apps, sheets, email and chats.",
+          "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.10. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        },
+        {
+          "line": "My best people spend hours on data entry.",
+          "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.10. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        },
+        {
+          "line": "Leads go cold before anyone replies.",
+          "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.17. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        },
+        {
+          "line": "The agent worked in the demo, but not on our real work.",
+          "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.8. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        },
+        {
+          "line": "We pay for HubSpot or Zoho, and it does only half of what we hoped.",
+          "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.17. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        }
+      ]
+    },
+    "healthcare-apps": {
+      "label": "Healthcare apps",
+    "eyebrow": "Healthcare app",
+    "hero_headline": { "line": "We build healthcare apps your clinic will", "end": "run on." },
+    "gamble_heading": "Your clinic should not wait on *an app that falls short.*",
+      "ad_groups": [
+        "04"
+      ],
+      "service_name": "a healthcare app",
+      "callout": "Free Strategy Session",
+      "modules": "patient booking · doctor video consults · patient records · reminders and follow-ups",
+      "headline": "Your healthcare app, live in 2 to 8 weeks. See a free working proof first.",
+      "before_after": "H",
+      "lines_from": "custom-software",
+      "problems": [
+        {
+          "line": "Patients wait too long to reach a doctor, and many give up.",
+          "source": "The News Minute, \"Where India's rural telemedicine stands today\" (eSanjeevani waits of 15 to 20 minutes), web search 23 Nov 2026. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        },
+        {
+          "line": "Patients book by phone and then do not come. Our clinic loses hours.",
+          "source": "Hyperleap blog, WhatsApp for clinics in India (vendor blog, no number used), web search 23 Nov 2026. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        },
+        {
+          "line": "Our clinic keeps patient records on paper or in chats. Nothing connects.",
+          "source": "Slashdr on Medium, \"Who makes health-tech for who, for what?\" (2018 opinion piece), web search 23 Nov 2026. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        },
+        {
+          "line": "Patient data must stay safe. One leak can end us.",
+          "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.4. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        },
+        {
+          "line": "India's new data law applies to us, and I am not sure that our app follows it.",
+          "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.4 (DPDP Rules notified 14 Nov 2025; YourStory, PIB). Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        },
+        {
+          "line": "Our app does not connect to ABDM, so records do not move.",
+          "source": "ABDM Building Blocks v8.3 (abdm.gov.in), web search 23 Nov 2026. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        }
+      ]
+    },
+    "fintech-apps": {
+      "label": "Fintech apps",
+    "eyebrow": "Fintech app",
+    "hero_headline": { "line": "We build fintech apps your customers will", "end": "trust with their money." },
+    "gamble_heading": "A fintech app should not put *your licence at risk.*",
+      "ad_groups": [
+        "05"
+      ],
+      "service_name": "a fintech app",
+      "callout": "Free Strategy Session",
+      "modules": "easy sign-up and KYC · payments · loan or account flow · support and admin panel",
+      "headline": "Your fintech app, live in 2 to 8 weeks. See a free working proof first.",
+      "before_after": "F",
+      "lines_from": "custom-software",
+      "problems": [
+        {
+          "line": "Payments fail at checkout, and users leave.",
+          "source": "RBI study of 5.69 million fintech app reviews, via Business Standard, 25 Sep 2025 (app crashes, login failures, downtime), web search 23 Nov 2026. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        },
+        {
+          "line": "Sign-up takes too long, and people quit before the end.",
+          "source": "FinBox blog, \"Catch drop-offs before they happen\" (vendor blog, no number used), web search 23 Nov 2026. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        },
+        {
+          "line": "Digital lending rules keep changing, and our app falls behind.",
+          "source": "YourStory, \"A year of reckoning for Indian fintech startups as RBI tightens the rules\", Dec 2024; Suraj: \"Love this one\", 23 Nov 2026. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        },
+        {
+          "line": "One wrong transaction, and customers stop trusting us.",
+          "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.5. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        },
+        {
+          "line": "Fraud and fake accounts cost us money.",
+          "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.5. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        },
+        {
+          "line": "Weak KYC brings fines and a stopped product.",
+          "source": "Inc42 and PYMNTS (RBI fined Paytm Rs 5.4 crore for KYC lapses in 2023), web search 23 Nov 2026. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+        }
+      ]
+    },
+    "default": {
+      "problems": [
+      {
+        "line": "Ready-made software does not fit the way we work.",
+        "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.11. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+      },
+      {
+        "line": "The project is months late, and the price keeps going up.",
+        "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.11. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+      },
+      {
+        "line": "They built what I said, not what I needed.",
+        "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.2. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+      },
+      {
+        "line": "I paid a big advance before I saw anything work.",
+        "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.2. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+      },
+      {
+        "line": "We launched it, and nobody uses it.",
+        "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.1. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+      },
+      {
+        "line": "Our work moves by hand between apps, sheets, email and chats.",
+        "source": "ai-services-gtm/elementalsai-labs-offer/content-v1.md 6.10. Approved by Suraj, 23 Nov 2026, 09:5x (problems list, \"Ok. I approve all.\")"
+      }
+    ],
+      "label": "any other",
+    "eyebrow": "Custom software development",
+      "service_name": "software",
+      "callout": "Free Strategy Session",
+      "lines_from": "custom-software"
+    }
+  },
+
+  "pick": {
+    "service_params": ["s", "service_line"],
+    "keyword_params": ["kw", "keyword", "utm_term"],
+    "keyword_rules": []
+  },
+
+  "sections": {
+    "hero": {
+      "sub": "In a free 45-minute session, our team gives you 7 assets, yours to keep, including your project cost estimate, sent to you within 24 hours of the call.",
+      "video": "[REPLACE: founder video]",
+      "video_note": "Placeholder: founder image until the video exists."
+    },
+    "proof": ["120+ applications delivered", "10+ years of experience building software", "From founders to enterprises"],
+    "problem": {
+      "heading": "You have been here.",
+      "closing": "Our team fixes this before you spend on the full build."
+    },
+    "fit": {
+      "source": "Approved by Suraj, 22 Nov 2026, 18:07 (F-390). App types and industries: his own lists (F-76, F-223).",
+      "for_label": "This is for you",
+      "for": [
+        "You are a founder, a startup, a business, an agency or an enterprise.",
+        "You need {service_name} built, and a rough idea is enough to start.",
+        "You want to see it work before you commit to the full build."
+      ],
+      "apps_label": "Apps we build",
+      "apps": ["Mobile apps", "Software", "Enterprise software", "AI agents", "AI software", "QA inspection software"],
+      "industries_label": "Industries",
+      "industries": ["E-commerce", "Fintech", "Healthcare", "BFSI", "Construction", "CPG and retail", "Manufacturing", "GTM solutions"],
+      "not_label": "Not for you if:",
+      "not": [
+        "You need a static website, WordPress, Shopify or hardware.",
+        "You only want the lowest quote and nothing else."
+      ]
+    },
+    "before_after": {
+      "heading": "Before and after",
+      "source": "Versions A, B and C, approved by Suraj, 22 Nov 2026, 18:13 (F-393): \"You can use them for the relevant pages.\" Each service picks its version in services.<slug>.before_after. *words* show in the brand highlight, _words_ are underlined, as in the approved proposal.",
+      "before_label": "Before",
+      "after_label": "After",
+      "versions": {
+        "A": { "headline": "Your customers. Your revenue. Sooner.", "rows": [
+          ["Your customers wait, and the *moment passes*.", "Your app is live and *earning* in _2 to 8 weeks_."],
+          ["You built it, and _nobody uses it_.", "Your customers *use it every day*."],
+          ["Your launch date keeps moving.", "You *launch on the day* you planned."]
+        ] },
+        "B": { "headline": "Your business. Running without you.", "rows": [
+          ["Your best people spend hours on *data entry*.", "An agent does the routine work. Your team does the work that _grows the business_."],
+          ["AI is a demo that _changes nothing_.", "AI works on *one real task* in your business."],
+          ["Your work moves by hand between apps, sheets and chats.", "Software built *around how you work*. Live in _2 to 8 weeks_."]
+        ] },
+        "C": { "headline": "The app you pictured. Live.", "rows": [
+          ["You get what you said, *not what you needed*.", "An app that fits _your work_."],
+          ["Every new feature costs more and takes longer.", "Your app *grows with you*. The next feature is _fast and cheap_."],
+          ["Your app is slow and crashes on your customers' phones.", "An app your users *love*, on _every phone_."]
+        ] },
+        "E": { "headline": "Your store. Selling more.", "rows": [
+          ["Shoppers fill the cart and *leave*.", "Checkout that *converts*."],
+          ["You track deliveries by hand.", "Orders move to the *delivery partner on their own*."],
+          ["Shoppers do not trust a new store.", "A store that *earns trust* on the first visit."]
+        ] },
+        "H": { "headline": "Your clinic. Running smoothly.", "rows": [
+          ["Patients wait, and *give up*.", "Patients see a doctor *fast*."],
+          ["Patients book by phone, then do not come.", "Booking with *reminders*, so seats fill."],
+          ["Records sit on paper and in chats.", "One record, *always there*."]
+        ] },
+        "F": { "headline": "Your fintech app. Trusted.", "rows": [
+          ["Payments fail, and users leave.", "Payments that *work every time*."],
+          ["Sign-up takes long, and people quit.", "Sign-up in *minutes*."],
+          ["Rules change, and your app falls behind.", "An app that *keeps up* with the rules."]
+        ] }
+      }
+    },
+    "process": {
+      "heading": "How it works",
+      "steps": [
+        "Book your free strategy session with our team.",
+        "Pass a quick eligibility check.",
+        "Get free UI design mockups, product specs, architecture, modules, tech stack & implementation plan.",
+        "Want more? Request your free working proof of concept worth ₹50,000.*",
+        "Commence your project.",
+        "Delivered in 2 to 8 weeks. Either you love what we built or you get a full refund. Pay only when you see it built."
+      ],
+      "terms": "* Terms & Conditions of Eligibility Apply"
+    },
+    "keep": {
+      "heading": "Book your free strategy session, and you keep",
+      "source": "Approved by Suraj, 22 Nov 2026, 17:54 (F-388), with \"Free premium quality app UI mockups.\". The first row is the strongest.",
+      "lead": "Leave now and you miss out. Book your free strategy session and you get:",
+      "items": [
+        "Premium App UI Mockups: free premium screens of app.",
+        "Product Requirements Dossier: personas, feature list, criteria.",
+        "System Architecture Plan: diagram, data model, APIs, security.",
+        "Module and Technology Stack Specification: map, frontend, backend, database, cloud.",
+        "Implementation Schedule: milestones, sprints, timelines, release dates.",
+        "User Adoption Plan: onboarding, acceptance tests, metrics.",
+        "Project Cost Estimate: pricing, payment, delivery, sent to you within 24 hours of the call.",
+        "Proof of Work Build: 3 days, free, worth ₹50,000."
+      ]
+    },
+    "compliance": {
+      "source": "Suraj, 22 Nov 2026, 16:01 (F-370): we follow the international data and software standards and processes; GDPR compliant and SOC 2 compliant; never \"certified\".",
+      "eyebrow": "Compliance",
+      "heading": "We follow international data and software standards and processes.",
+      "badges": ["GDPR compliant", "SOC 2 compliant"]
+    },
+    "compare": {
+      "heading": "Alone vs with us",
+      "source": "Suraj, 22 Nov 2026: the scoreboard (option 2 of prototypes/alone-vs-with-us.html), these 6 rows word for word, the two column headings only (no label on each row), never \"certified\".",
+      "left_label": "Alone or with a usual agency",
+      "right_label": "With us",
+      "rows": [
+        ["You write long specs first.", "Bring a rough idea. We do the research and the requirements."],
+        ["You see the first result after weeks.", "You see a free working proof of concept first."],
+        ["Nobody checks each release for security or reliability.", "Our engineers review every release for security, privacy and reliability."],
+        ["Nobody plans how your data stays private and secure.", "Your data stays private and secure, to GDPR and SOC 2 standards."],
+        ["It is unclear who owns the code.", "You own the code when the build is complete."],
+        ["Support ends at launch.", "You get 6 months of support after launch."]
+      ]
+    },
+    "numbers": ["120+ applications delivered", "2 to 8 weeks for a full build", "45 minutes, free"],
+    "stats": [["120+", "applications delivered"], ["10+", "years building products"], ["$10M+", "in client revenue enabled"], ["Free", "working proof of concept worth Rs. 50,000"]],
+    "founder": {
+      "heading": "Built by people who ship.",
+      "text": "Our founder has 10+ years of experience building software. Our first customers came in 2017. We registered the company in 2020. Today our team builds with engineers and AI agents, and an engineer reviews every step.",
+      "photo": "suraj-approved-720.jpg",
+      "name": "Suraj Donthi"
+    },
+    "testimonials": {
+      "eyebrow": "Testimonials",
+      "source": "client-reviews-v1.md (approved by Suraj, 21 Nov 2026), word for word, with \"— and no reliable partner\" from surajdonthi.com (Suraj, 22 Nov 2026, 15:49).",
+      "marks": "The highlights of surajdonthi.com (Suraj, 22 Nov 2026, 16:01): *words* show in bold, __words__ are underlined, both in the Labs amber, never blue (Suraj, 16:17 and 16:20).",
+      "items": [
+        {
+          "who": "Deep Mehta",
+          "role": "Co-founder, Toothlens",
+          "photo": true,
+          "paras": [
+            "Our accuracy had been stuck for months. We had the data, we had a model, and __no idea what to try next__.",
+            "Suraj did not hand us a roadmap. He sat with the team and *made us systematic* — how to define a dataset, when to retrain, how to choose a model and why. Three months later the module went from *43% to 93%*.",
+            "Then the calls started coming in: *enterprise deals* we could not have had before."
+          ]
+        },
+        {
+          "who": "Sachin Shet",
+          "role": "Founder, building for Indian causes",
+          "photo": "sachin-shet.jpg",
+          "paras": [
+            "I had spent two years building something I believed in, and __I could not get it to move__. Not for lack of effort. For *lack of clarity* — and *no reliable partner*.",
+            "One month with Suraj and I could finally see it — who my users were, what they actually needed, and *what to build first*.",
+            "Two months later I was ready for market. In the third month I launched. *Users came.* And revenue, which until then I had only imagined, started showing up."
+          ]
+        }
+      ]
+    },
+    "work": {
+      "heading": "See our work",
+      "note": "App map from local project files, 22 Nov 2026 (Mason). Tracto has weak evidence. Order (Suraj, 22 Nov 2026): Divine Blossoms, After Party, Concrete Gang, Tracto, Signal Clarity, then any other card, then AgShift, then Volunteer Yatra last. Divine Blossoms: its video is a YouTube unlisted video, not a local mp4 (Suraj, 22 Nov 2026, 17:56). youtube_id is its 11-letter YouTube video id: empty until Ivy uploads Tess’s blurred recording. While it is empty, the card shows only its poster, divine-blossoms-01-dashboard.png (the first image). With an id, the poster has a play button; a tap loads the youtube-nocookie.com player (muted, it loops, inline), never on page load. The label \"CRM / e-commerce admin panel\"; never the word Dukan or Dukaan. Tess’s 8 blurred still images stay in its viewer: a tap on the image (with a video, on the count) opens them, with the words in viewer (Mason’s labels, for Jane). The card stays hidden until all its images are there.",
+      "viewer": { "open": "{name}: see all {count} screens", "close": "Close", "prev": "Previous screen", "next": "Next screen", "play": "Play the {name} video" },
+      "carousel": { "prev": "Previous app", "next": "Next app" },
+      "apps": [
+        { "name": "Divine Blossoms", "kind": "CRM / e-commerce admin panel", "services": ["build-an-app", "ecommerce-apps", "build-with-ai", "automate-work", "custom-software", "healthcare-apps", "fintech-apps", "default"], "youtube_id": "", "video_file": "divine-blossoms-admin.mp4", "images": [
+          { "file": "divine-blossoms-01-dashboard.png", "name": "Dashboard" },
+          { "file": "divine-blossoms-02-orders.png", "name": "Orders" },
+          { "file": "divine-blossoms-03-abandoned-carts.png", "name": "Abandoned carts" },
+          { "file": "divine-blossoms-04-delivery.png", "name": "Delivery" },
+          { "file": "divine-blossoms-05-products.png", "name": "Products" },
+          { "file": "divine-blossoms-06-analytics.png", "name": "Analytics" },
+          { "file": "divine-blossoms-07-customers.png", "name": "Customers" },
+          { "file": "divine-blossoms-08-coupons.png", "name": "Coupons" }
+        ] },
+        { "name": "After Party", "services": ["build-an-app", "ecommerce-apps", "build-with-ai", "automate-work", "custom-software", "healthcare-apps", "fintech-apps", "default"], "media_source": "dev.after-party.in has no video (read 22 Nov 2026). The image is its home page, as it is.", "images": [
+          { "file": "after-party-01-home.png", "name": "Home page" }
+        ] },
+        { "name": "Concrete Gang", "services": ["build-an-app", "ecommerce-apps", "build-with-ai", "automate-work", "custom-software", "healthcare-apps", "fintech-apps", "default"] },
+        { "name": "Tracto", "services": ["build-an-app", "ecommerce-apps", "build-with-ai", "automate-work", "custom-software", "healthcare-apps", "fintech-apps", "default"] },
+        { "name": "Signal Clarity", "services": ["build-an-app", "ecommerce-apps", "build-with-ai", "automate-work", "custom-software", "healthcare-apps", "fintech-apps", "default"] },
+        { "name": "AgShift", "services": ["build-an-app", "ecommerce-apps", "build-with-ai", "automate-work", "custom-software", "healthcare-apps", "fintech-apps", "default"], "video_url": "https://video.wixstatic.com/video/c644c1_a91e626027304e99aed00e39ab8a2671/720p/mp4/file.mp4", "video_source": "the video already on agshift.com (its one Wix video, c644c1_a91e626027304e99aed00e39ab8a2671), read 22 Nov 2026", "images": [
+          { "file": "agshift-01-poster.png", "name": "AgShift" }
+        ] },
+        { "name": "Volunteer Yatra", "services": ["build-an-app", "ecommerce-apps", "build-with-ai", "automate-work", "custom-software", "healthcare-apps", "fintech-apps", "default"] }
+      ]
+    },
+    "review": {
+      "quote": "For two years I tried agency after agency, and my app never got off the ground… In 5 days, my blurry idea was clear. Within the first month, we launched.",
+      "by": "Sachin S., founder, After Party app.",
+      "initials": "SS",
+      "note": "Results vary by project."
+    },
+    "how": {
+      "heading": "How it works",
+      "steps": [
+        "Leave your phone number and your email.",
+        "Our team confirms your time.",
+        "Join the free 45-minute session."
+      ]
+    },
+    "guarantee": {
+      "text": "Either you love what we built or you get a full refund. Pay only when you see it built.",
+      "source": "Suraj, 22 Nov 2026, 18:25 (F-398), word for word.",
+      "form_line": "Either you love what we built or you get a full refund. Pay only when you see it built."
+    },
+    "final": {
+      "heading": "Get your clear plan in 45 minutes.",
+      "booking_notice": "[REPLACE: booking link]"
+    },
+    "faq": {
+      "heading": "FAQ",
+      "items": [
+        ["Is the session really free?", "Yes. It is free, and it lasts 45 minutes."],
+        ["What do I get from it?", "7 assets, yours to keep: Premium App UI Mockups, Product Requirements Dossier, System Architecture Plan, Module and Technology Stack Specification, Implementation Schedule, User Adoption Plan, Project Cost Estimate (sent to you within 24 hours of the call). Then, if you are eligible: a free Proof of Work Build, worth ₹50,000."],
+        ["What is the free working proof of concept?", "A working version of the one core feature that proves your idea. You use it yourself. It is worth Rs. 50,000."],
+        ["How long does a full build take?", "2 to 8 weeks, based on what you need."],
+        ["What does it cost?", "Your project cost estimate is sent to you within 24 hours of the call. It covers pricing, payment and delivery."],
+        ["Who owns the code?", "You own it when the build is complete."],
+        ["How does the refund work?", "We process a full refund of your advance. It reaches your original payment source in 5 to 7 working days in total."]
+      ],
+      "add_note": "add: the questions each version shows after the live page's own questions, in this order. The answer comes from items, else from the faq line of the version's own service.",
+      "add": {
+        "default": ["Is the session really free?", "What do I get from it?", "What is the free working proof of concept?", "How long does a full build take?", "How does the refund work?", "Why not buy ready-made software?"],
+        "build-an-app": ["Is the session really free?", "What do I get from it?", "What is the free working proof of concept?", "How long does a full build take?", "How does the refund work?", "Why not buy ready-made software?"],
+        "ecommerce-apps": ["Is the session really free?", "What do I get from it?", "What is the free working proof of concept?", "How long does a full build take?", "How does the refund work?", "Why not buy ready-made software?"],
+        "build-with-ai": ["Is the session really free?", "What do I get from it?", "What is the free working proof of concept?", "How long does a full build take?", "How does the refund work?", "Why not buy ready-made software?"],
+        "automate-work": ["Is the session really free?", "What do I get from it?", "What is the free working proof of concept?", "How long does a full build take?", "How does the refund work?", "Why not buy ready-made software?"],
+        "custom-software": ["Is the session really free?", "What do I get from it?", "What is the free working proof of concept?", "How long does a full build take?", "How does the refund work?", "Why not buy ready-made software?"],
+        "healthcare-apps": ["Is the session really free?", "What do I get from it?", "What is the free working proof of concept?", "How long does a full build take?", "How does the refund work?", "Why not buy ready-made software?"],
+        "fintech-apps": ["Is the session really free?", "What do I get from it?", "What is the free working proof of concept?", "How long does a full build take?", "How does the refund work?", "Why not buy ready-made software?"]
+      }
+    },
+    "footer": {
+      "line1": "ELMNTALSAI PRIVATE LIMITED · 18/2, E.A.T Street, Basavanagudi, Bengaluru - 560004 · +91 80887 33622 (10 am to 8 pm, every day) · hello@elementalsai-labs.com · Privacy · Terms"
+    }
+  },
+
+  "form": {
+    "card_title": "Free strategy session",
+    "idea_label": "Your idea",
+    "idea_placeholder": "A rough idea is enough. For example: a booking app for my clinic."
+  },
+
+  "variants": {
+    "headlines": [
+      "Your {service_name}, live in 2 to 8 weeks. See a free working proof first.",
+      "Free working proof of concept, worth Rs. 50,000.",
+      "Months late and still nothing that works? Get a clear plan in 45 minutes."
+    ],
+    "buttons": ["Get my free strategy session", "Get my clear plan in 45 minutes", "Get my free working proof"],
+    "button_line": "Free. 45 minutes."
+  },
+
+  "placeholders": [
+    "Booking link (Cal.com not connected).",
+    "The founder video itself."
+  ]
+}
