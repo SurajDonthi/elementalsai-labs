@@ -3,10 +3,21 @@
 // 2. When an email sender is set up (RESEND_API_KEY, LEAD_TO, LEAD_FROM), it also emails the lead.
 import { put } from '@vercel/blob';
 
+// Best-effort limit per server instance: 5 leads per 10 minutes for each IP address.
+const hits = new Map();
+function tooMany(ip) {
+  const now = Date.now(), recent = (hits.get(ip) || []).filter((t) => now - t < 600000);
+  recent.push(now); hits.set(ip, recent);
+  if (hits.size > 5000) for (const [k, v] of hits) if (now - v[v.length - 1] > 600000) hits.delete(k);
+  return recent.length > 5;
+}
+
 const clip = (v, n) => String(v == null ? '' : v).trim().slice(0, n);
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') { res.setHeader('Allow', 'POST'); return res.status(405).json({ ok: false }); }
+  const ip = String(req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'x').split(',')[0].trim();
+  if (tooMany(ip)) { res.setHeader('Retry-After', '600'); return res.status(429).json({ ok: false, error: 'too_many' }); }
   let b = req.body;
   if (typeof b === 'string') { try { b = JSON.parse(b); } catch { b = null; } }
   if (!b || typeof b !== 'object') return res.status(400).json({ ok: false, error: 'bad_request' });

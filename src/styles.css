@@ -117,6 +117,13 @@ input,textarea{font:inherit;color:inherit;border-radius:0}
 .brand img{height:28px;width:auto}
 .prog{position:absolute;left:0;bottom:-1px;height:2px;width:100%;background:var(--accent);transform:scaleX(var(--p,0));transform-origin:left;opacity:.9}
 @media (max-width:600px){.brand img{height:22px}:root{--hh:64px}}
+/* cookie banner and call note */
+.cc{position:fixed;left:0;right:0;bottom:0;z-index:90;background:var(--panel);border-top:var(--heavy);padding:16px var(--gutter);display:flex;flex-wrap:wrap;gap:14px 24px;align-items:center;justify-content:space-between;font:400 14px/1.5 var(--font-s);color:var(--ink)}
+.cc[hidden]{display:none}.cc p{margin:0;max-width:62ch}.cc a{color:var(--accent)}
+.cc-b{display:flex;flex-wrap:wrap;gap:10px}.cc-b button{font:600 14px var(--font-s);padding:10px 18px;border:var(--heavy);background:transparent;color:var(--ink);cursor:pointer}
+.cc-b .cc-y{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.cc-c{flex-basis:100%;display:flex;flex-wrap:wrap;gap:8px 24px;align-items:center}.cc-c[hidden]{display:none}.cc-c label{display:flex;gap:8px;align-items:center}
+.va-note{font:400 12px/1.4 var(--font-s);color:var(--muted);margin:8px 0 0;text-align:center}.va-note a{color:inherit;text-decoration:underline}
 
 /* ---- hero ------------------------------------------------------------ */
 .hero{position:relative;isolation:isolate;padding:clamp(28px,3.6vw,52px) 0 clamp(56px,6vw,88px)}

@@ -1,5 +1,8 @@
 // GET /api/leads: Suraj's private list of every lead, newest first. The browser asks for a password (LEADS_KEY); any user name works.
 import { list, get } from '@vercel/blob';
+import { createHash, timingSafeEqual } from 'node:crypto';
+
+const same = (a, b) => timingSafeEqual(createHash('sha256').update(String(a)).digest(), createHash('sha256').update(String(b)).digest());
 
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const ist = (iso) => new Date(iso).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });
@@ -9,7 +12,7 @@ export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
   const want = process.env.LEADS_KEY, auth = String(req.headers.authorization || '');
   const pass = auth.startsWith('Basic ') ? Buffer.from(auth.slice(6), 'base64').toString().split(':').slice(1).join(':') : '';
-  if (!want || pass !== want) { res.setHeader('WWW-Authenticate', 'Basic realm="ElementalsAI Labs leads"'); return res.status(401).send('Password needed.'); }
+  if (!want || !same(pass, want)) { res.setHeader('WWW-Authenticate', 'Basic realm="ElementalsAI Labs leads"'); return res.status(401).send('Password needed.'); }
 
   const blobs = [];
   let cursor;

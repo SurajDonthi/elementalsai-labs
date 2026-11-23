@@ -51,7 +51,8 @@ const VOICE_AGENT = 'agent_6801m7wfrfzte35rgxvf7dh6hnta';
 const PROD = !!process.env.LABS_PROD;
 // Google Tag Manager loads Analytics, Clarity and the Google Ads conversion tags; app.js only pushes events to dataLayer.
 const GTM = 'GTM-T9SDG58F';
-const headExtra = () => (PROD ? `<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s);j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${GTM}');</script>\n<script defer src="/_vercel/insights/script.js"></script>\n` : '');
+const headExtra = () => (PROD ? `<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',region:['IN'],wait_for_update:500});if(navigator.globalPrivacyControl)gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});gtag('set','ads_data_redaction',true);</script>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s);j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${GTM}');</script>\n<script defer src="/_vercel/insights/script.js"></script>\n` : '');
 const labsCfg = (service) => ({ service, agent: VOICE_AGENT, lead: PROD ? '/api/lead' : '', phone: PHONE, email: EMAIL });
 const robots = () => (PROD ? 'index, follow' : 'noindex, nofollow');
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -339,7 +340,7 @@ const TX = {
   review: { id: 'review', hid: 'rv-t', eyebrow: 'What founders say', h: 'What founders say about <em>working with us.</em>' },
   faq: { eyebrow: 'Questions', h: 'Your questions, <em>answered.</em>', lede: 'Still unsure? Ask in the form. We reply within 1 hour.' },
   cta: { eyebrow: 'Next step', button: 'Get my free quote' },
-  footer: { home: 'ElementalsAI Labs home', logo: 'ElementalsAI Labs', tagline: 'Apps your users will love. Built with passion for great products.', nav: 'Services', pages: PAGES_ORDER, fine: '© 2026 ElementalsAI Labs', links: [['how-it-works.html', 'How it works'], ['work.html', 'Our work'], ['quote.html', 'Get a quote'], ['privacy.html', 'Privacy'], ['terms.html', 'Terms'], ['contact.html', 'Contact']], draft: 'Draft for review, not the live site', extra: '' },
+  footer: { home: 'ElementalsAI Labs home', logo: 'ElementalsAI Labs', tagline: 'Apps your users will love. Built with passion for great products.', nav: 'Services', pages: PAGES_ORDER, fine: '© 2026 ElementalsAI Labs', links: [['how-it-works.html', 'How it works'], ['work.html', 'Our work'], ['quote.html', 'Get a quote'], ['privacy.html', 'Privacy'], ['terms.html', 'Terms'], ['contact.html', 'Contact']], draft: 'Draft for review, not the live site', extra: '<p class="fine"><a href="#" data-cookie>Cookie settings</a></p>' },
 };
 let T = TX;
 const useText = (t) => { T = t; };
@@ -354,7 +355,7 @@ const titleHTML = (p) => `<h1 class="title" data-talk data-verbs='${JSON.stringi
 const quoteCard = (p) => `<form class="card" id="quote-form" novalidate aria-labelledby="qf-t" data-clarity-mask="True">
   <div class="card-h"><h2 class="eyebrow" id="qf-t">${T.card.title}</h2><span class="state">${T.card.mode}</span></div>
   <div class="va" data-va data-state="idle">
-   <button type="button" class="orb" aria-label="${T.card.orb}"><canvas width="236" height="236"></canvas><span class="orb-css"></span></button>
+   <button type="button" class="orb" aria-label="${T.card.orb}"><canvas width="236" height="236"></canvas><span class="orb-css"></span></button><p class="va-note">By tapping, you agree that this call is recorded. <a href="privacy.html">Privacy policy</a></p>
    <div><p class="state" aria-hidden="true"><span class="led"></span><i class="eq"><b></b><b></b><b></b></i><span data-st>${T.card.agent}</span></p><p class="va-cap" data-cap aria-hidden="true">${T.card.hello}</p><button type="button" class="talk" data-talk-btn>${I('stop')}${T.card.stop}</button><p class="sr" role="status" data-va-live></p></div>
    ${Object.entries(SND).map(([k, src]) => `<audio data-snd="${k}" preload="none" src="${src}"></audio>`).join('')}
   </div>

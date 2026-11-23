@@ -6,6 +6,7 @@ import { writeFileSync } from 'node:fs';
 import { CSS, JS, SPRITE, LOGO, attr, fontPreload, DEEP, REVIEWS, PHONE, TEL, EMAIL, VOICE_AGENT, PROD, headExtra, labsCfg, robots, esc, I, derisk, strip, header, footer, quoteCard, marquee, impact, stats, how, cta, OUT } from './build.mjs';
 
 const UPDATED = '1 November 2026';
+const PRIVACY_UPDATED = '23 November 2026'; // the privacy page only; the Terms page keeps UPDATED
 const SLUG = 'site'; // matches no service page, so the footer marks none of them as current
 
 // ---- the words that fit every service ----
@@ -277,6 +278,7 @@ ${reach()}` },
   { id: 'collect', t: 'What we collect, and how', html: `<h3>When you ask for a quote on this site</h3>
 <p>You can type in the form, or talk to our voice agent. We collect your name, phone number, email address and your idea. We also collect anything else that you choose to tell us, for example the name of your company.</p>
 <p>The voice agent uses your microphone only if you allow it in your browser. We use what you say only to fill in your request, in the same way as what you type.</p>
+<p>When you tap the talk button, you agree that the call is recorded. We keep the audio and the transcript for 12 months.</p>
 <h3>When you send the Google lead form</h3>
 <p>Some of our Google ads have a form that opens inside Google. Google fills in your name, email address, phone number and company name from your Google account. You check them before you send the form. The form also asks what you want to build and when you want to start. When you send it, Google gives your answers to us.</p>
 <h3>When you call us</h3>
@@ -314,19 +316,27 @@ ${reach()}` },
 </ul>
 <h3>Withdraw your consent</h3>
 <p>You can withdraw your consent at any time. It is as easy as giving it: email us at <a href="mailto:${EMAIL}">${EMAIL}</a>, or call us. After that, we stop using your data for that purpose, and we delete it, unless a law requires us to keep it.</p>
+<p>For cookies, you choose in the banner at the bottom of the page. You can change your choice at any time with “Cookie settings” in the footer. If your browser sends the Global Privacy Control signal, we treat it as a “no” for ads.</p>
 <p>Withdrawing does not change what we did before. If you withdraw, we may not be able to send your quote or continue your project.</p>` },
   { id: 'share', t: 'Who we share it with', html: `<p><b>We never sell your data.</b> We do not rent it or trade it. We share it only with:</p>
 <ul>
 <li><b>Google</b>, for our ads, the Google lead form, call reporting, the Google tag and Google Analytics. Google also uses data under its own <a href="https://policies.google.com/privacy" rel="noopener">privacy policy</a>.</li>
 <li><b>Microsoft</b>, for Clarity. Microsoft also uses data under its own <a href="https://privacy.microsoft.com/privacystatement" rel="noopener">privacy statement</a>.</li>
-<li><b>Our service providers</b>, for example the companies that host this site, run the voice agent, and carry our email and calls. They use your data only to do that work for us, and they must keep it safe.</li>
+<li><b>Vercel</b>, which hosts this site and stores the quote requests.</li>
+<li><b>ElevenLabs</b>, which runs our voice agent and keeps the call audio and transcript.</li>
+<li><b>Resend</b>, which sends us the email about your request.</li>
+<li><b>Our other service providers</b>, for example the companies that carry our email and calls. They use your data only to do that work for us, and they must keep it safe.</li>
 <li><b>The people on our team</b> who work on your request or your project.</li>
 <li><b>Government bodies and courts</b>, only when a law requires it.</li>
 </ul>` },
   { id: 'keep', t: 'How long we keep it', html: `<p>We keep your data only for as long as we need it for the purpose. Then we delete it, or our service providers delete it for us.</p>
 <ul>
 <li>If you ask us to delete your data, we delete it, unless a law requires us to keep it.</li>
-<li>If a law requires us to keep a record, for example for tax and accounts, we keep it only for that time.</li>
+<li>Call audio and transcripts: 12 months.</li>
+<li>Quote requests that do not become a project: 12 months.</li>
+<li>Client project and account records: 8 years.</li>
+<li>Analytics data: 14 months.</li>
+<li>If a law requires us to keep a record for longer, for example for tax and accounts, we keep it only for that time.</li>
 <li>Our visitor lists keep a browser only for the time that we set in Google Ads. Then Google removes it.</li>
 </ul>` },
   { id: 'safe', t: 'How we keep it safe', html: `<p>We take reasonable security steps to protect your data from loss, misuse and access by people who must not see it.</p>
@@ -350,15 +360,15 @@ ${reach()}` },
   { id: 'children', t: 'Children', html: `<p>Our services are for businesses and adults. We do not knowingly collect data from anyone under 18. If you think that a child sent us data, tell us, and we delete it.</p>` },
   { id: 'outside', t: 'Data outside India', html: `<p>Some of our service providers, such as Google, can store or process data on servers outside India. We allow this only where Indian law permits it. Our providers must protect your data wherever they keep it.</p>` },
   { id: 'changes', t: 'Changes to this policy', html: `<p>We may change this policy when our services or the law change. The date at the top of this page shows the last change. If a change affects how we use data that you already gave us, we tell you before it applies.</p>` },
-  { id: 'grievances', t: 'Questions and complaints', html: `<p>For a question or a complaint about your data, contact us. We answer for ElementalsAI Labs:</p>
+  { id: 'grievances', t: 'Questions and complaints', html: `<p>Grievance Officer: Suraj Donthi, Founder, ElementalsAI Labs. Contact us here:</p>
 ${reach()}
-<p>We answer as soon as we can, and within the time that the law sets. If you are not happy with our answer, you can complain to the Data Protection Board of India.</p>` },
+<p>We answer within 30 days. If you are not happy with our answer, you can complain to the Data Protection Board of India.</p>` },
 ];
 shell({
   file: 'privacy.html',
   title: 'Privacy Policy | ElementalsAI Labs',
   desc: 'How ElementalsAI Labs collects, uses and protects your data, and your rights under India’s data protection law.',
-  main: `${pageHead({ id: 'pg-t', eyebrow: 'Privacy policy', h1: staticH1('pg-t', 'How we use <span class="band">your data.</span>'), lede: 'What we collect, why we collect it, and what you can do about it. In plain words.', after: `<p class="sp-meta">${I('calendar')}Last updated: ${UPDATED}</p>` })}
+  main: `${pageHead({ id: 'pg-t', eyebrow: 'Privacy policy', h1: staticH1('pg-t', 'How we use <span class="band">your data.</span>'), lede: 'What we collect, why we collect it, and what you can do about it. In plain words.', after: `<p class="sp-meta">${I('calendar')}Last updated: ${PRIVACY_UPDATED}</p>` })}
 ${legal({
   short: ['We collect only what you give us for a quote, and what the Google tag counts on this site.', 'We use it to reply to you, to make your quote and your project, and to run and measure our Google ads.', 'We never sell your data.', 'We keep it only for as long as we need it. Then we delete it.', 'You can see, correct or delete your data, or withdraw your consent, at any time.'],
   sections: P_SECTIONS,
