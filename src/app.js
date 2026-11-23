@@ -419,13 +419,13 @@ function listenLv(t) { var a = Math.abs(Math.sin(t * 5.3 + Math.sin(t * 1.1) * 3
     if (OFF || greeted || state !== 'idle') return; greeted = true;
     if (mem === 'done') { setState('ready', NAME); show(GREET, TAP); return; }
     setState('greet', NAME); show('Hello? Anybody there?', 'Allow the microphone, and I will talk to you.');
-    orb.setLevel(RM ? null : introLv); if (!RM) INTRO.knock.hits.forEach(function (t) { setTimeout(knockFx, 400 + t * 1000); });
+    orb.setLevel(null);
     askMic().then(function () {
       if (state !== 'greet') { dropMic(); return; }
-      intro(true).then(function () { start(); }, function () {});
+      start();
     }, function () {
       if (state !== 'greet') return;
-      intro(false).then(function () { setState('ready', NAME); show(GREET, 'Type your details below, or allow the microphone and tap me.'); }, function () {});
+      setState('ready', NAME); show(GREET, 'Type your details below, or allow the microphone and tap me.');
     });
   }
 
