@@ -13,6 +13,7 @@
 // No "Real products. Real numbers." (the live impact section): Suraj removed it (22 Nov 2026, 15:13 and 15:14). The approved Impact is the case studies part.
 // The strip and the header both stay at the top while the page scrolls (13:26). On phones the header shows only the logo and the form is a drawer from the bottom (13:45).
 import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
+import { hasShowcase, showcase, SHOWCASE_CSS, SHOWCASE_JS } from './showcase.mjs';
 import { pathToFileURL } from 'node:url';
 import { CSS, JS, SPRITE, REVIEWS, P, fontPreload, headExtra, labsCfg, esc, attr, I, strip, header, footer, hero, marquee, gamble, how, stats, review, types, cases, cta, faq, OUT, TX, useText, deriskOf } from './build.mjs';
 
@@ -492,7 +493,7 @@ for (const s of WITH_H) for (const [key, f] of [['types', TYPES_OF], ['cases', C
   const [id, text] = GO_H[key], h = f(P[KEY[s]]);
   if (h.split(`<h2 class="h2" id="${id}">${esc(text)}</h2>`).length !== 2) fail(key + ': the version ' + s + ' must have the one h2 "' + text + '"');
 }
-const TYPES = byVersion('types', () => TYPES_OF(P[KEY['custom-software']]).trim());
+const TYPES = byVersion('types', (_, s) => hasShowcase(s) ? showcase(s, GO_H.types[1]) : TYPES_OF(P[KEY['custom-software']]).trim());
 const CASES = byVersion('cases', () => CASES_OF(P[KEY['custom-software']]).trim());
 
 /* the live questions of the version first, then the /build questions (sections.faq.add); an answer comes from faq.items, else from the version's own faq line */
@@ -883,6 +884,7 @@ html:has(.go-gal[open]){overflow:hidden}
 @media (min-width:760px){.go .stats .cell{padding:36px 28px}}
 .go .how-cta{margin-top:clamp(18px,2vw,28px);display:flex;flex-direction:column;align-items:flex-end;text-align:right}
 .go .cases,.go .types{margin-top:24px}
+${SHOWCASE_CSS}
 @media (max-width:999px){.go .st:not(:last-child){padding-bottom:28px}.go .gamble{gap:28px}}
 /* the form's text box: pulled down only, to 240px (200px on phones); then the text scrolls inside it; never wider than the form (Suraj, 22 Nov 2026) */
 .go .fld textarea{resize:vertical;min-height:72px;max-height:240px;max-width:100%;overflow-y:auto;box-sizing:border-box}
@@ -923,6 +925,7 @@ ${SHOW_WORK ? GALLERIES : ''}
 <script data-go>${DRAWER_JS}</script>
 <script data-go>${GALLERY_JS}</script>
 ${HAS_YT ? `<script data-go>${YT_JS}</script>\n` : ''}<script data-go>${CAROUSEL_JS}</script>
+<script data-go>${SHOWCASE_JS}</script>
 <script>${GO_JS}</script>
 </body>
 </html>
