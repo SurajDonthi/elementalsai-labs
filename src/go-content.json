@@ -356,7 +356,10 @@
   "pick": {
     "service_params": ["s", "service_line"],
     "keyword_params": ["kw", "keyword", "utm_term"],
-    "keyword_rules": []
+    "keyword_rules": [
+      { "service": "build-an-app", "words": ["app development", "app developer", "app developers", "iroid technologies", "mtoag technologies", "parkhya solutions", "richestsoft", "singsys"] },
+      { "service": "custom-software", "words": ["custom software", "software development", "crm development", "saas development", "web application development", "web development services"] }
+    ]
   },
 
   "sections": {
