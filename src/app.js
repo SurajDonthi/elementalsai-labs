@@ -361,6 +361,9 @@ function listenLv(t) { var a = Math.abs(Math.sin(t * 5.3 + Math.sin(t * 1.1) * 3
   /* once a tab: 'done' after the lead is sent or the visitor stops him (then he waits for a tap) */
   var MEM = 'labs-voice', mem = ''; try { mem = sessionStorage.getItem(MEM) || ''; } catch (e) {}
   function remember(v) { mem = v; try { sessionStorage.setItem(MEM, v); } catch (e) {} }
+  /* what the visitor told him, kept so his next call can say "Welcome back" (prompt v2) instead of his fixed opening */
+  var SUM = 'labs-voice-summary', summary = ''; try { summary = sessionStorage.getItem(SUM) || ''; } catch (e) {}
+  function saveSummary() { var nm = ($('#f-name') || {}).value || '', idea = ($('#f-idea') || {}).value || ''; summary = ((nm ? nm + ': ' : '') + idea).trim(); try { if (summary) sessionStorage.setItem(SUM, summary); } catch (e) {} }
   /* voice_responded: once a tab, the first time the visitor says real words (a letter or digit; not the "..." silence marker). The words are never sent. */
   var SAID = 'labs-voice-said', said = false; try { said = sessionStorage.getItem(SAID) === '1'; } catch (e) {}
   function spoke(t) {
@@ -444,7 +447,7 @@ function listenLv(t) { var a = Math.abs(Math.sin(t * 5.3 + Math.sin(t * 1.1) * 3
     var fl = f.closest('.fld'); if (fl) { fl.classList.remove('filled'); void fl.offsetWidth; fl.classList.add('filled'); }
   }
   function idle(text, extra) { conv = null; ending = false; orb.setLevel(null); setState('ready', NAME); show(text || GREET, extra === undefined ? TAP : extra); }
-  function stop() { clearTimeout(idleT); clearTimeout(engagedT); var c = conv; conv = null; if (c) { try { c.endSession(); } catch (e) {} } idle(sent ? 'Thank you. Our team will get back to you in the next hour.' : lastAi, sent ? '' : 'Tap me to talk again.'); live.textContent = 'The call ended.'; }
+  function stop() { clearTimeout(idleT); clearTimeout(engagedT); var c = conv; conv = null; if (c) { try { c.endSession(); } catch (e) {} } if (sent) { summary = ''; try { sessionStorage.removeItem(SUM); } catch (e) {} } else saveSummary(); idle(sent ? 'Thank you. Our team will get back to you in the next hour.' : lastAi, sent ? '' : 'Tap me to talk again.'); live.textContent = 'The call ended.'; }
   /* the live call: Deepak opens with his own first message (prompt v2) */
   function start() {
     if (OFF) { offNote(); return; }
@@ -455,7 +458,7 @@ function listenLv(t) { var a = Math.abs(Math.sin(t * 5.3 + Math.sin(t * 1.1) * 3
       if (state !== 'connecting') return null;
       return EL.Conversation.startSession({
         agentId: PAGE.agent,
-        dynamicVariables: { time_of_day: TOD, service: PAGE.service || 'apps, software and AI' },
+        dynamicVariables: { time_of_day: TOD, service: PAGE.service || 'apps, software and AI', previous_summary: summary },
         clientTools: {
           fill_field: function (p) { fill(p && p.field, p && p.value); },
           submit_quote: function () { return sendLead('voice', conv && conv.getId ? conv.getId() : '').then(function (r) { if (r.ok) { sent = true; remember('done'); } return r.ok ? 'Sent.' : 'Not sent: ' + r.why + '.'; }); }
