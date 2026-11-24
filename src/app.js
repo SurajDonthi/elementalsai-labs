@@ -17,7 +17,7 @@ function onView(el, fn, th) {
   io.observe(el);
 }
 var PAGE = W.LABS || {};
-/* events for Tag Manager (Analytics, Google Ads conversions): generate_lead, phone_click, email_click, voice_call_start.
+/* events for Tag Manager (Analytics, Google Ads conversions): generate_lead, phone_click, email_click, voice_call_start, voice_engaged.
    Funnel steps, Analytics only: scroll_50, scroll_90, try_it_used, library_click, quote_button_click, internal_link_click, form_start, budget_chosen, form_send_click, form_send_blocked, voice_responded. `detail` carries no personal data. */
 function track(event, data) { (W.dataLayer = W.dataLayer || []).push(Object.assign({ event: event }, data || {})); }
 var once = {};
@@ -355,6 +355,9 @@ function listenLv(t) { var a = Math.abs(Math.sin(t * 5.3 + Math.sin(t * 1.1) * 3
      his silence lines (prompt v2) are up to 7 turns, and his own silence limit is 150 s */
   var aiRun = 0, winding = false, idleT = 0;
   function idleWatch() { clearTimeout(idleT); idleT = setTimeout(function () { if (conv) stop(); }, 160000); }
+  /* voice_engaged: once per call, only if the call is still live at ENGAGED_S seconds (Suraj, 24 Nov 2026, F-605). Single constant so he can move it to 3 minutes later. */
+  var ENGAGED_S = 120, engagedT = 0;
+  function engagedWatch() { clearTimeout(engagedT); engagedT = setTimeout(function () { if (conv) track('voice_engaged', { lead_source: 'voice' }); }, ENGAGED_S * 1000); }
   /* once a tab: 'done' after the lead is sent or the visitor stops him (then he waits for a tap) */
   var MEM = 'labs-voice', mem = ''; try { mem = sessionStorage.getItem(MEM) || ''; } catch (e) {}
   function remember(v) { mem = v; try { sessionStorage.setItem(MEM, v); } catch (e) {} }
@@ -441,7 +444,7 @@ function listenLv(t) { var a = Math.abs(Math.sin(t * 5.3 + Math.sin(t * 1.1) * 3
     var fl = f.closest('.fld'); if (fl) { fl.classList.remove('filled'); void fl.offsetWidth; fl.classList.add('filled'); }
   }
   function idle(text, extra) { conv = null; ending = false; orb.setLevel(null); setState('ready', NAME); show(text || GREET, extra === undefined ? TAP : extra); }
-  function stop() { clearTimeout(idleT); var c = conv; conv = null; if (c) { try { c.endSession(); } catch (e) {} } idle(sent ? 'Thank you. Our team will get back to you in the next hour.' : lastAi, sent ? '' : 'Tap me to talk again.'); live.textContent = 'The call ended.'; }
+  function stop() { clearTimeout(idleT); clearTimeout(engagedT); var c = conv; conv = null; if (c) { try { c.endSession(); } catch (e) {} } idle(sent ? 'Thank you. Our team will get back to you in the next hour.' : lastAi, sent ? '' : 'Tap me to talk again.'); live.textContent = 'The call ended.'; }
   /* the live call: Deepak opens with his own first message (prompt v2) */
   function start() {
     if (OFF) { offNote(); return; }
@@ -457,7 +460,7 @@ function listenLv(t) { var a = Math.abs(Math.sin(t * 5.3 + Math.sin(t * 1.1) * 3
           fill_field: function (p) { fill(p && p.field, p && p.value); },
           submit_quote: function () { return sendLead('voice', conv && conv.getId ? conv.getId() : '').then(function (r) { if (r.ok) { sent = true; remember('done'); } return r.ok ? 'Sent.' : 'Not sent: ' + r.why + '.'; }); }
         },
-        onConnect: function () { track('voice_call_start', { lead_source: 'voice' }); setTimeout(dropMic, 1500); idleWatch(); },
+        onConnect: function () { track('voice_call_start', { lead_source: 'voice' }); setTimeout(dropMic, 1500); idleWatch(); engagedWatch(); },
         onModeChange: function (m) {
           if (state === 'ready') return;
           var sp = m && m.mode === 'speaking'; setState(sp ? 'speaking' : 'listening', sp ? 'Speaking' : 'Listening');
