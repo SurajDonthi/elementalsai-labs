@@ -349,15 +349,14 @@ function listenLv(t) { var a = Math.abs(Math.sin(t * 5.3 + Math.sin(t * 1.1) * 3
      connect, or send a voice event. No parameter, or ?voice=on, leaves it on. Nothing is saved in the browser. */
   var OFF = false; try { OFF = (new URLSearchParams(location.search).get('voice') || '').toLowerCase() === 'off'; } catch (e) {}
   function offNote() { setState('ready', NAME); show('The voice agent is off on this page.', 'Please type your details below.'); }
-  var state = 'idle', greeted = false, conv = null, sent = false, ending = false, lastAi = GREET;
+  var state = 'idle', greeted = false, conv = null, sent = false, ending = false, lastAi = GREET, engagedSent = false;
   var run = 0, stops = [], kick = 0, talking = false, gate = true, micStream = null;
   /* the call ends by itself: Deepak calls end_call when he is done. As a backstop, the page ends it after 8 of his turns with no answer, or 160 s without the visitor speaking:
      his silence lines (prompt v2) are up to 7 turns, and his own silence limit is 150 s */
   var aiRun = 0, winding = false, idleT = 0, turns = [];
   function idleWatch() { clearTimeout(idleT); idleT = setTimeout(function () { if (conv) stop(); }, 160000); }
-  /* voice_engaged: once per call, only if the call is still live at ENGAGED_S seconds (Suraj, 24 Nov 2026, F-605). Single constant so he can move it to 3 minutes later. */
-  var ENGAGED_S = 120, engagedT = 0;
-  function engagedWatch() { clearTimeout(engagedT); engagedT = setTimeout(function () { if (conv) track('voice_engaged', { lead_source: 'voice' }); }, ENGAGED_S * 1000); }
+  /* voice_engaged: once per call, only when Deepak calls the flag_voice_engaged tool — he calls it once a real problem, requirement, use case or idea is shared (Suraj, 25 Nov 2026). Replaces the F-605 120 s timer. */
+  function flagEngaged() { if (!engagedSent) { engagedSent = true; track('voice_engaged', { lead_source: 'voice' }); } return 'ok'; }
   /* once a tab: 'done' after the lead is sent or the visitor stops him (then he waits for a tap) */
   var MEM = 'labs-voice', mem = ''; try { mem = sessionStorage.getItem(MEM) || ''; } catch (e) {}
   function remember(v) { mem = v; try { sessionStorage.setItem(MEM, v); } catch (e) {} }
@@ -447,12 +446,12 @@ function listenLv(t) { var a = Math.abs(Math.sin(t * 5.3 + Math.sin(t * 1.1) * 3
     var fl = f.closest('.fld'); if (fl) { fl.classList.remove('filled'); void fl.offsetWidth; fl.classList.add('filled'); }
   }
   function idle(text, extra) { conv = null; ending = false; orb.setLevel(null); setState('ready', NAME); show(text || GREET, extra === undefined ? TAP : extra); }
-  function stop() { clearTimeout(idleT); clearTimeout(engagedT); var c = conv; conv = null; if (c) { try { c.endSession(); } catch (e) {} } if (sent) { summary = ''; try { sessionStorage.removeItem(SUM); } catch (e) {} } else saveSummary(); idle(sent ? 'Thank you. Our team will get back to you in the next hour.' : lastAi, sent ? '' : 'Tap me to talk again.'); live.textContent = 'The call ended.'; }
+  function stop() { clearTimeout(idleT); var c = conv; conv = null; if (c) { try { c.endSession(); } catch (e) {} } if (sent) { summary = ''; try { sessionStorage.removeItem(SUM); } catch (e) {} } else saveSummary(); idle(sent ? 'Thank you. Our team will get back to you in the next hour.' : lastAi, sent ? '' : 'Tap me to talk again.'); live.textContent = 'The call ended.'; }
   /* the live call: Deepak opens with his own first message (prompt v2) */
   function start() {
     if (OFF) { offNote(); return; }
     if (!PAGE.agent) { idle('The voice agent is not set up on this page. Please type your details below.', ''); return; }
-    stopIntro(); sent = false; ending = false; aiRun = 0; winding = false; turns = []; setState('connecting', 'Connecting');
+    stopIntro(); sent = false; ending = false; engagedSent = false; aiRun = 0; winding = false; turns = []; setState('connecting', 'Connecting');
     show('Connecting…', 'Allow the microphone when your browser asks.'); orb.setLevel(RM ? null : listenLv);
     loadSdk().then(function (EL) {
       if (state !== 'connecting') return null;
@@ -461,9 +460,10 @@ function listenLv(t) { var a = Math.abs(Math.sin(t * 5.3 + Math.sin(t * 1.1) * 3
         dynamicVariables: { time_of_day: TOD, service: PAGE.service || 'apps, software and AI', previous_summary: summary },
         clientTools: {
           fill_field: function (p) { fill(p && p.field, p && p.value); },
-          submit_quote: function () { return sendLead('voice', conv && conv.getId ? conv.getId() : '').then(function (r) { if (r.ok) { sent = true; remember('done'); } return r.ok ? 'Sent.' : 'Not sent: ' + r.why + '.'; }); }
+          submit_quote: function () { return sendLead('voice', conv && conv.getId ? conv.getId() : '').then(function (r) { if (r.ok) { sent = true; remember('done'); } return r.ok ? 'Sent.' : 'Not sent: ' + r.why + '.'; }); },
+          flag_voice_engaged: function () { return flagEngaged(); }
         },
-        onConnect: function () { track('voice_call_start', { lead_source: 'voice' }); setTimeout(dropMic, 1500); idleWatch(); engagedWatch(); },
+        onConnect: function () { track('voice_call_start', { lead_source: 'voice' }); setTimeout(dropMic, 1500); idleWatch(); },
         onModeChange: function (m) {
           if (state === 'ready') return;
           var sp = m && m.mode === 'speaking'; setState(sp ? 'speaking' : 'listening', sp ? 'Speaking' : 'Listening');
