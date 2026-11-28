@@ -1,16 +1,18 @@
 // Voice lead capture (T-1): request handlers. Each takes a Web Request and deps and returns a Response.
 // deps = { cfg, store, cal, sendEmail, now, log, limits: { ip, conv } }. The routes in api/voice/ pass liveDeps().
 // Tool refusals the agent should hear about are HTTP 200 with ok:false (ElevenLabs hides webhook tool errors).
+import { createHash, randomUUID } from 'node:crypto';
 import { voiceConfig, TZ } from './voice-config.js';
-import { NO_STORE, json, readBody, parseObject, clientIp, log as logLine, createLimiter } from './voice-http.js';
+import { NO_STORE, json, readBody, parseObject, clientIp, cookie, setCookie, log as logLine, createLimiter } from './voice-http.js';
 import { hasToolSecret, hasBasic } from './voice-auth.js';
 import { verifyElevenLabs } from './voice-hmac.js';
 import {
-  clip, normEmail, normPhone, captured, newLead, applySave, applyCallEnd, applyBooking, alertDecision, leadRow, leadStats,
+  clip, normEmail, normPhone, captured, newLead, applyOrigin, applySave, applyCallEnd, applyBooking, alertDecision, leadRow, leadStats,
   validConversationId, isTestConversation, leadIdFor,
 } from './voice-fields.js';
 import { slotWindow, buildSlotList, slotLabel, dayLabel } from './voice-slots.js';
 import { createCal, bookingRequest, CAL_REASONS } from './voice-cal.js';
+import { createElevenLabs } from './voice-elevenlabs.js';
 import { blobStore, upsertLead } from './voice-store.js';
 import { alertEmail, resendSender } from './voice-alert.js';
 
@@ -22,6 +24,8 @@ const LIST_MAX = 50;
 const LIVE_LIMITS = Object.freeze({
   ip: createLimiter({ limit: 300, windowMs: 60_000 }),
   conv: createLimiter({ limit: 60, windowMs: 60_000 }),
+  // A real visitor starts a call once or twice per visit; this is a burst guard against scripted abuse.
+  session: createLimiter({ limit: 6, windowMs: 10 * 60_000 }),
 });
 let live = null;
 export function liveDeps() {
@@ -30,7 +34,9 @@ export function liveDeps() {
   live = Object.freeze({
     cfg,
     store: blobStore(),
+    quotaStore: blobStore(undefined, 'voice-ip/'),
     cal: createCal({ apiKey: cfg.calKey, eventTypeId: cfg.calEventTypeId }),
+    elevenLabs: createElevenLabs({ apiKey: cfg.elevenLabsApiKey, agentId: cfg.agentId }),
     sendEmail: cfg.resendKey ? resendSender({ apiKey: cfg.resendKey, from: cfg.leadFrom, to: cfg.leadTo }) : null,
     now: () => Date.now(),
     log: logLine,
@@ -63,6 +69,89 @@ async function toolGuard(request, deps, route) {
   if (!validConversationId(args.conversation_id)) return deny(400, 'bad_conversation_id');
   if (!deps.limits.conv(args.conversation_id, now)) return deny(429, 'rate_limited');
   return { args, now, at: isoAt(now) };
+}
+
+// ---------- start_session (the page asks us for a one-time ElevenLabs call token) ----------
+// Only our own site's Origin gets a token, and only a few per IP per window; keeps the real
+// ElevenLabs key off the browser and stops a script elsewhere from running up our call credits.
+// On top of that window guard, SESSION_LIFETIME_LIMIT is a one-time-ever cap, kept in Blob
+// (voice-ip/<hashed key>.json) so it survives across function instances and cold starts.
+// It is checked against both the IP and a long-lived device cookie, so a visitor cannot get
+// a fresh quota just by changing networks (new IP, same browser) — whichever runs out first wins.
+const SESSION_HOSTS = Object.freeze(['elementalsai-labs.com', 'www.elementalsai-labs.com']);
+const SESSION_LIFETIME_LIMIT = 10;
+const DEVICE_COOKIE = 'elsai_vid';
+const DEVICE_COOKIE_MAX_AGE = 400 * 24 * 60 * 60; // 400 days: the longest Chrome allows
+
+function originHost(request) {
+  const raw = request.headers.get('origin') || request.headers.get('referer') || '';
+  try { return new URL(raw).hostname; } catch { return ''; }
+}
+
+const hashKey = (s) => createHash('sha256').update(s).digest('hex').slice(0, 16);
+
+// true if this key (an IP or a device id) is still under its lifetime cap (and bumps its count).
+async function allowLifetimeSession(store, key, limit) {
+  const out = await upsertLead(store, key, (cur) => {
+    const count = cur ? cur.count : 0;
+    if (count >= limit) return { error: 'quota_exceeded' };
+    return { lead: { count: count + 1 } };
+  });
+  return !out.error;
+}
+
+export async function startSession(request, deps) {
+  const now = deps.now();
+  const deny = (status, code, extra) => {
+    deps.log('voice.session.denied', { status, code });
+    return json(status, { ok: false, code }, extra);
+  };
+  if (!SESSION_HOSTS.includes(originHost(request))) return deny(403, 'wrong_origin');
+  const ip = clientIp(request);
+  if (!deps.limits.session(ip, now)) return deny(429, 'rate_limited');
+
+  const existingDeviceId = cookie(request, DEVICE_COOKIE);
+  const deviceId = existingDeviceId || randomUUID();
+  const cookieHeader = existingDeviceId ? {} : { 'Set-Cookie': setCookie(DEVICE_COOKIE, deviceId, DEVICE_COOKIE_MAX_AGE) };
+
+  if (!(await allowLifetimeSession(deps.quotaStore, `ip_${hashKey(ip)}`, SESSION_LIFETIME_LIMIT))) return deny(403, 'quota_exceeded', cookieHeader);
+  if (!(await allowLifetimeSession(deps.quotaStore, `dev_${hashKey(deviceId)}`, SESSION_LIFETIME_LIMIT))) return deny(403, 'quota_exceeded', cookieHeader);
+
+  const r = await deps.elevenLabs.getSignedUrl();
+  if (!r.ok) {
+    deps.log('voice.session.upstream_error', { status: r.status });
+    return json(502, { ok: false, code: 'upstream_error' }, cookieHeader);
+  }
+  return json(200, { ok: true, signedUrl: r.signedUrl }, cookieHeader);
+}
+
+export async function linkSession(request, deps) {
+  const now = deps.now();
+  const deny = (status, code) => {
+    deps.log('voice.session.link_denied', { status, code });
+    return json(status, { ok: false, code });
+  };
+  if (!SESSION_HOSTS.includes(originHost(request))) return deny(403, 'wrong_origin');
+  if (!deps.limits.ip(clientIp(request), now)) return deny(429, 'rate_limited');
+  const body = await readBody(request, TOOL_MAX_BYTES);
+  if (!body.ok) return deny(413, 'too_large');
+  const args = parseObject(body.text);
+  if (!args) return deny(400, 'bad_json');
+  const id = args.conversation_id;
+  if (!validConversationId(id)) return deny(400, 'bad_conversation_id');
+  const gclid = clip(args.gclid, 200);
+  if (!gclid) return deny(400, 'missing_gclid');
+  const page = clip(args.page, 100);
+  const at = isoAt(now);
+  try {
+    const out = await upsertLead(deps.store, id, (cur) => ({
+      lead: applyOrigin(cur || newLead({ conversationId: id, agentId: deps.cfg.agentId, at }), { gclid, page, at }),
+    }));
+    deps.log('voice.session.origin', { conv: id, lead_id: out.lead.lead_id, gclid });
+    return json(200, { ok: true, lead_id: out.lead.lead_id });
+  } catch (e) {
+    return serverError(deps, 'link_session', id, e);
+  }
 }
 
 // ---------- save_field ----------

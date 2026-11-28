@@ -81,6 +81,8 @@ export function newLead({ conversationId, agentId, at }) {
     conversation_id: conversationId,
     agent_id: agentId,
     source: 'voice',
+    gclid: null,
+    page: null,
     status: 'partial',
     test: isTestConversation(conversationId),
     fields: {},
@@ -131,10 +133,19 @@ export function visitorTurns(transcript) {
   return transcript.filter((t) => t && t.role === 'user' && typeof t.message === 'string' && REAL_TEXT.test(t.message)).length;
 }
 
+// Browser origin mapping: links a Google Ads click id (gclid) and landing page to the voice conversation.
+export function applyOrigin(lead, { gclid, page, at }) {
+  const g = clip(gclid, 200);
+  const p = clip(page, 100);
+  return { ...lead, gclid: g || lead.gclid || null, page: p || lead.page || null, last_seen: at };
+}
+
 // Post-call webhook: status, analysis values and summary. The turn-by-turn transcript is not kept.
 export function applyCallEnd(lead, { data, at }) {
   const an = (data && data.analysis) || {};
   const md = (data && data.metadata) || {};
+  const dv = (data && data.conversation_initiation_client_data && data.conversation_initiation_client_data.dynamic_variables) || {};
+  const gclid = clip(dv.gclid, 200) || lead.gclid || null;
   const turns = visitorTurns(data && data.transcript);
   const dc = {};
   for (const [k, r] of Object.entries(an.data_collection_results || {})) {
@@ -147,6 +158,7 @@ export function applyCallEnd(lead, { data, at }) {
   for (const [k, r] of Object.entries(an.evaluation_criteria_results || {})) evaluation[normKey(k)] = clip(r && r.result, 40);
   return recompute({
     ...lead,
+    gclid,
     fields,
     call: {
       status: clip(data && data.status, 40) || null,
@@ -204,6 +216,7 @@ export function leadRow(lead) {
   return {
     lead_id: lead.lead_id,
     conversation_id: lead.conversation_id,
+    gclid: lead.gclid || null,
     status: lead.status,
     test: lead.test,
     name: lead.fields.name ? lead.fields.name.value : null,

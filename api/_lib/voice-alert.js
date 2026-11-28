@@ -21,6 +21,7 @@ export function alertEmail(lead) {
     `Booking: ${booked ? `${lead.booking.start} (Cal.com ${lead.booking.uid})` : 'none'}`,
     `Summary: ${(lead.analysis && lead.analysis.summary) || '-'}`,
     `Call: ${lead.call ? `${lead.call.duration_secs == null ? '?' : lead.call.duration_secs} s, ${lead.call.termination_reason || 'no reason given'}` : '-'}`,
+    ...(lead.gclid ? [`GCLID: ${lead.gclid}`] : []),
     `Lead: ${lead.lead_id}, conversation ${lead.conversation_id}`,
   ];
   const email = lead.fields.email && lead.fields.email.confirmed ? lead.fields.email.value : undefined;

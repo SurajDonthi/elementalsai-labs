@@ -19,7 +19,7 @@ function onView(el, fn, th) {
 var PAGE = W.LABS || {};
 /* events for Tag Manager (Analytics, Google Ads conversions): generate_lead, phone_click, email_click, voice_call_start, voice_engaged.
    Funnel steps, Analytics only: scroll_50, scroll_90, try_it_used, library_click, quote_button_click, internal_link_click, form_start, budget_chosen, form_send_click, form_send_blocked, voice_responded. `detail` carries no personal data. */
-function track(event, data) { (W.dataLayer = W.dataLayer || []).push(Object.assign({ event: event }, data || {})); }
+function track(event, data) { var p = Object.assign({ event: event }, data || {}); if (ORIGIN && ORIGIN.gclid && !p.gclid) p.gclid = ORIGIN.gclid; (W.dataLayer = W.dataLayer || []).push(p); }
 var once = {};
 function trackOnce(event, data) { if (!once[event]) { once[event] = 1; track(event, data); } }
 d.addEventListener('click', function (e) {
@@ -227,6 +227,12 @@ var ORIGIN = (function () {
   if (Object.keys(q).length) { keep = q; keep.landing = location.pathname; try { sessionStorage.setItem('labs-origin', JSON.stringify(keep)); } catch (e) {} }
   return keep;
 })();
+if (ORIGIN && ORIGIN.gclid) {
+  (function setClarityGclid(tries) {
+    if (typeof W.clarity === 'function') { try { W.clarity('set', 'gclid', ORIGIN.gclid); } catch (e) {} }
+    else if (tries > 0) setTimeout(function () { setClarityGclid(tries - 1); }, 500);
+  })(20);
+}
 var valid = { name: function (v) { return v.trim().length > 1; }, idea: function (v) { return v.trim().length > 5; }, phone: function (v) { return v.replace(/\D/g, '').length >= 10; }, email: function (v) { return /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/.test(v.trim()); }, budget: function (v) { return v !== ''; } };
 /* sends the quote form; the voice agent uses it too. Resolves { ok, why } and never rejects */
 var sendLead = function () { return Promise.resolve({ ok: false, why: 'no form' }); };
@@ -453,11 +459,18 @@ function listenLv(t) { var a = Math.abs(Math.sin(t * 5.3 + Math.sin(t * 1.1) * 3
     if (!PAGE.agent) { idle('The voice agent is not set up on this page. Please type your details below.', ''); return; }
     stopIntro(); sent = false; ending = false; engagedSent = false; aiRun = 0; winding = false; turns = []; setState('connecting', 'Connecting');
     show('Connecting…', 'Allow the microphone when your browser asks.'); orb.setLevel(RM ? null : listenLv);
-    loadSdk().then(function (EL) {
+    /* a one-time call token from our own backend; the real ElevenLabs key never reaches the browser */
+    var fetchSessionUrl = function () {
+      return fetch('/api/voice/start-session', { headers: { Accept: 'application/json' } })
+        .then(function (r) { if (!r.ok) throw new Error('session ' + r.status); return r.json(); })
+        .then(function (d) { if (!d || !d.ok || !d.signedUrl) throw new Error('session bad_response'); return d.signedUrl; });
+    };
+    Promise.all([loadSdk(), fetchSessionUrl()]).then(function (r) {
+      var EL = r[0], signedUrl = r[1];
       if (state !== 'connecting') return null;
       return EL.Conversation.startSession({
-        agentId: PAGE.agent,
-        dynamicVariables: { time_of_day: TOD, service: PAGE.service || 'apps, software and AI', previous_summary: summary },
+        signedUrl: signedUrl,
+        dynamicVariables: { time_of_day: TOD, service: PAGE.service || 'apps, software and AI', previous_summary: summary, gclid: (ORIGIN && ORIGIN.gclid) || '' },
         clientTools: {
           fill_field: function (p) { fill(p && p.field, p && p.value); },
           submit_quote: function () { return sendLead('voice', conv && conv.getId ? conv.getId() : '').then(function (r) { if (r.ok) { sent = true; remember('done'); } return r.ok ? 'Sent.' : 'Not sent: ' + r.why + '.'; }); },
@@ -483,6 +496,15 @@ function listenLv(t) { var a = Math.abs(Math.sin(t * 5.3 + Math.sin(t * 1.1) * 3
       if (!c) return;
       if (state === 'ready' || state === 'idle') { try { c.endSession(); } catch (e) {} return; }
       conv = c;
+      var cid = c.getId && c.getId();
+      if (cid && ORIGIN && ORIGIN.gclid) {
+        fetch('/api/voice/start-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ conversation_id: cid, gclid: ORIGIN.gclid, page: location.pathname }),
+          keepalive: true
+        }).catch(function () {});
+      }
     }).catch(function (e) {
       dropMic(); var why = String(e && (e.name + ' ' + e.message));
       idle(/NotAllowed|Permission|denied/i.test(why) ? 'The microphone is blocked. Please type your details below, or allow the microphone and tap me.' : 'The voice agent could not start. Please type your details below.', '');
